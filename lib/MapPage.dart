@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -44,7 +45,28 @@ class _MapPageState extends State<MapPage> {
     //  );
     }
 
-    Marker addMarkerFunc(Marker marker)
+    void checkFirebase() {
+      try {
+
+        Future<QuerySnapshot> query = FirebaseFirestore.instance
+            .collectionGroup("markers").get();
+        query.then((value) {
+          value.docs.forEach((element) {
+            print(element.data());
+          });
+        });
+      }
+    catch(e)
+  {
+    print(e);
+  }
+  finally{
+        print("Completed");
+      }
+    }
+
+
+    Marker addMarkerFunc(Marker marker, String name, String address, String amountFood)
     {
       marker = new Marker(
           markerId: MarkerId("1"),
@@ -53,7 +75,7 @@ class _MapPageState extends State<MapPage> {
           draggable: false,
           onTap: () {
             setState(() {
-              createAlertDialog(context, "Ritas");
+              createAlertDialog(context, name, address, amountFood);
               print("Hello World");
             });
           });
@@ -62,13 +84,33 @@ class _MapPageState extends State<MapPage> {
     }
 
 
-    createAlertDialog(BuildContext context, String name){
+    createAlertDialog(BuildContext context, String name, String address, String amountFood){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
-            title: Text(name),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(child: Text(name,
+                  style: TextStyle(
+                      fontSize: 40.0
+                  ),),),
+               //  SizedBox(
+               //    width: 40.0,
+               //  ),
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            )
+              ,
             content: Column(
               children: [
-                Icon(Icons.accessible_forward)
+
+                Text(address),
+                Text("Current amount of food: $amountFood"),
               ],
             ),
           );
@@ -92,8 +134,9 @@ class _MapPageState extends State<MapPage> {
 
   @override
   void initState() {
-    marker1 = addMarkerFunc(marker1);
+    marker1 = addMarkerFunc(marker1, "Ritas", "2400 Chew Street, Allentown PA", "High");
     markers[marker1.markerId] = marker1;
+    checkFirebase();
     super.initState();
   }
 
