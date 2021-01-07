@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 class MapPage extends StatefulWidget {
   @override
@@ -15,9 +17,12 @@ class _MapPageState extends State<MapPage> {
   GoogleMapController mapController;
   //double currentZoom = 15.0;
   bool tracking = true;
-
   double currentSliderVal = 15.0;
-  
+
+  bool appInitialized = false;
+  final Map<String, List> locations = <String, List>{};
+
+
   final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   
   // MarkerId markerId1 = new MarkerId("1");
@@ -45,16 +50,29 @@ class _MapPageState extends State<MapPage> {
     //  );
     }
 
+    void initFlutterFire() async {
+      try {
+        await  Firebase.initializeApp();
+        setState(() {
+          appInitialized = true;
+        });
+      }
+      catch (e) {
+        print(e.toString());
+      }
+    }
+
     void checkFirebase() {
       try {
-
-        Future<QuerySnapshot> query = FirebaseFirestore.instance
-            .collectionGroup("markers").get();
-        query.then((value) {
-          value.docs.forEach((element) {
-            print(element.data());
-          });
+        FirebaseFirestore.instance
+            .collection('markers')
+            .get()
+            .then((QuerySnapshot querySnapshot) => {
+        querySnapshot.docs.forEach((doc) {
+          locations[doc['name']] = [doc['address'], doc['foodlevel'], doc['notes']];
+        })
         });
+
       }
     catch(e)
   {
@@ -81,6 +99,15 @@ class _MapPageState extends State<MapPage> {
           });
       return marker;
 
+    }
+
+    void checkMap() {
+    locations.forEach((key, value) {
+      print(key);
+      value.forEach((element) {
+        print(element);
+      });
+    });
     }
 
 
@@ -118,30 +145,7 @@ class _MapPageState extends State<MapPage> {
     }
 
 
-
-  // Future<bool> changeSettings({
-  //   LocationAccuracy accuracy = LocationAccuracy.high,
-  //   int interval = 1000,
-  //   double distanceFilter = 0,
-  // }) {
-  //   return LocationPlatform.instance.changeSettings(
-  //     accuracy: accuracy,
-  //     interval: interval,
-  //     distanceFilter: distanceFilter,
-  //   );
-  // }
-
-
-  @override
-  void initState() {
-    marker1 = addMarkerFunc(marker1, "Ritas", "2400 Chew Street, Allentown PA", "High");
-    markers[marker1.markerId] = marker1;
-    checkFirebase();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget mapPage() {
     return Stack(
       children: [
         GoogleMap(
@@ -152,23 +156,63 @@ class _MapPageState extends State<MapPage> {
           myLocationButtonEnabled: true,
           markers: Set<Marker>.of(markers.values),
         ),
-            Positioned(
-              bottom: 10.0,
-                left: 5.0,
-                child: Slider(
-                  value: currentSliderVal,
-                  min: 0,
-                  max: 50,
+        Positioned(
+            bottom: 10.0,
+            left: 5.0,
+            child: Slider(
+                value: currentSliderVal,
+                min: 0,
+                max: 50,
 
-                  onChanged: (double val) {
-                    setState(() {
-                      currentSliderVal = val;
-                      //currentZoom = val /2;
+                onChanged: (double val) {
+                  setState(() {
+                    currentSliderVal = val;
+                    //currentZoom = val /2;
                   });
                 })),
-
-
+        Positioned(
+            top: 10,
+            left: 10,
+            child: IconButton(
+                icon: Icon(Icons.adb_outlined),
+                onPressed: () {
+          checkFirebase();
+        })),
+        Positioned(
+            top: 10,
+            right: 10,
+            child: IconButton(
+                icon: Icon(Icons.adb_outlined),
+                onPressed: () {
+                  checkMap();
+                })),
       ],
     );
+  }
+
+  Widget errorPage() {
+    return Scaffold(
+      body: Text("Something went wrong"),
+    );
+  }
+
+
+  @override
+  void initState() {
+    marker1 = addMarkerFunc(marker1, "Ritas", "2400 Chew Street, Allentown PA", "High");
+    markers[marker1.markerId] = marker1;
+    initFlutterFire();
+    //checkFirebase();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (appInitialized) {
+      return mapPage();
+    }
+    else {
+      return errorPage();
+    }
   }
 }
