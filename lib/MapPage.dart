@@ -1,7 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 class MapPage extends StatefulWidget {
   @override
@@ -15,18 +19,24 @@ class _MapPageState extends State<MapPage> {
   GoogleMapController mapController;
   //double currentZoom = 15.0;
   bool tracking = true;
-
   double currentSliderVal = 15.0;
+
+  bool appInitialized = false;
+
+
+
+//  final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   
-  final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  
-  // MarkerId markerId1 = new MarkerId("1");
-  Marker marker1 = new Marker(
-    markerId: MarkerId("1"),
-    position: LatLng(40.5975, -75.5),
-    visible: true,
-    draggable: false,
-    );
+  // // MarkerId markerId1 = new MarkerId("1");
+  // Marker marker1 = new Marker(
+  //   markerId: MarkerId("1"),
+  //   position: LatLng(40.5975, -75.5),
+  //   visible: true,
+  //   draggable: false,
+  //   );
+
+  final Set<Marker> markers = <Marker>{};
+  final Map<String, List> locations = <String, List>{};
 
   
 
@@ -45,16 +55,29 @@ class _MapPageState extends State<MapPage> {
     //  );
     }
 
+    void initFlutterFire() async {
+      try {
+        await  Firebase.initializeApp();
+        setState(() {
+          appInitialized = true;
+        });
+      }
+      catch (e) {
+        print(e.toString());
+      }
+    }
+
     void checkFirebase() {
       try {
-
-        Future<QuerySnapshot> query = FirebaseFirestore.instance
-            .collectionGroup("markers").get();
-        query.then((value) {
-          value.docs.forEach((element) {
-            print(element.data());
-          });
+        FirebaseFirestore.instance
+            .collection('markers')
+            .get()
+            .then((QuerySnapshot querySnapshot) => {
+        querySnapshot.docs.forEach((doc) {
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes']];
+        })
         });
+
       }
     catch(e)
   {
@@ -80,6 +103,34 @@ class _MapPageState extends State<MapPage> {
             });
           });
       return marker;
+
+    }
+
+    void checkMap() {
+    locations.forEach((key, value) {
+      print(key);
+      value.forEach((element) {
+        print(element);
+      });
+    });
+    }
+
+    //value list goes [address, lat, long, foodlevel, notes]
+    void createMarkers(Set<Marker> markers, Map<String, List> locations) {
+      Marker tempMarker;
+    locations.forEach((key, value) {
+      tempMarker = new Marker(
+        markerId: MarkerId(key),
+        position: LatLng(double.parse(value[1]), double.parse(value[2])),
+        visible: true,
+        draggable: false,
+        onTap: () {
+          createAlertDialog(context, key, value[0], value[3]);
+          print("Markers have been made");
+        }
+      );
+      markers.add(tempMarker);
+    });
 
     }
 
@@ -117,31 +168,16 @@ class _MapPageState extends State<MapPage> {
         } );
     }
 
+    void checkMarkers() {
+    markers.forEach((element) {
+      print(element.markerId);
+      print(element.position);
+      print(element.visible);
+    });
+    }
 
 
-  // Future<bool> changeSettings({
-  //   LocationAccuracy accuracy = LocationAccuracy.high,
-  //   int interval = 1000,
-  //   double distanceFilter = 0,
-  // }) {
-  //   return LocationPlatform.instance.changeSettings(
-  //     accuracy: accuracy,
-  //     interval: interval,
-  //     distanceFilter: distanceFilter,
-  //   );
-  // }
-
-
-  @override
-  void initState() {
-    marker1 = addMarkerFunc(marker1, "Ritas", "2400 Chew Street, Allentown PA", "High");
-    markers[marker1.markerId] = marker1;
-    checkFirebase();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget mapPage() {
     return Stack(
       children: [
         GoogleMap(
@@ -150,25 +186,69 @@ class _MapPageState extends State<MapPage> {
           mapType: MapType.hybrid,
           myLocationEnabled: true,
           myLocationButtonEnabled: true,
-          markers: Set<Marker>.of(markers.values),
+          markers: markers,
         ),
-            Positioned(
-              bottom: 10.0,
-                left: 5.0,
-                child: Slider(
-                  value: currentSliderVal,
-                  min: 0,
-                  max: 50,
+        Positioned(
+            bottom: 10.0,
+            left: 5.0,
+            child: Slider(
+                value: currentSliderVal,
+                min: 0,
+                max: 50,
 
-                  onChanged: (double val) {
-                    setState(() {
-                      currentSliderVal = val;
-                      //currentZoom = val /2;
+                onChanged: (double val) {
+                  setState(() {
+                    currentSliderVal = val;
+                    //currentZoom = val /2;
                   });
                 })),
+        Positioned(
+            top: 10,
+            left: 10,
+            child: IconButton(
+                icon: Icon(Icons.adb_outlined),
+                onPressed: () {
+          checkFirebase();
+        })),
+        Positioned(
+            top: 50,
+            left: 10,
+            child: IconButton(
+                icon: Icon(Icons.adb_outlined),
+                onPressed: () {
+                  setState(() {
+                    createMarkers(markers, locations);
+                    //checkMarkers();
+                  });
 
-
+                })),
       ],
     );
+  }
+
+  Widget errorPage() {
+    return Scaffold(
+      body: Text("Something went wrong"),
+    );
+  }
+
+
+  @override
+  void initState() {
+    // marker1 = addMarkerFunc(marker1, "Ritas", "2400 Chew Street, Allentown PA", "High");
+    // markers[marker1.markerId] = marker1;
+    initFlutterFire();
+    //checkFirebase();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (appInitialized) {
+      return mapPage();
+    }
+    else {
+      return errorPage();
+    }
   }
 }
