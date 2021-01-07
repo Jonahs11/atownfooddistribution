@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -20,18 +22,21 @@ class _MapPageState extends State<MapPage> {
   double currentSliderVal = 15.0;
 
   bool appInitialized = false;
-  final Map<String, List> locations = <String, List>{};
 
 
-  final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+//  final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   
-  // MarkerId markerId1 = new MarkerId("1");
-  Marker marker1 = new Marker(
-    markerId: MarkerId("1"),
-    position: LatLng(40.5975, -75.5),
-    visible: true,
-    draggable: false,
-    );
+  // // MarkerId markerId1 = new MarkerId("1");
+  // Marker marker1 = new Marker(
+  //   markerId: MarkerId("1"),
+  //   position: LatLng(40.5975, -75.5),
+  //   visible: true,
+  //   draggable: false,
+  //   );
+
+  final Set<Marker> markers = <Marker>{};
+  final Map<String, List> locations = <String, List>{};
 
   
 
@@ -69,7 +74,7 @@ class _MapPageState extends State<MapPage> {
             .get()
             .then((QuerySnapshot querySnapshot) => {
         querySnapshot.docs.forEach((doc) {
-          locations[doc['name']] = [doc['address'], doc['foodlevel'], doc['notes']];
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes']];
         })
         });
 
@@ -110,6 +115,25 @@ class _MapPageState extends State<MapPage> {
     });
     }
 
+    //value list goes [address, lat, long, foodlevel, notes]
+    void createMarkers(Set<Marker> markers, Map<String, List> locations) {
+      Marker tempMarker;
+    locations.forEach((key, value) {
+      tempMarker = new Marker(
+        markerId: MarkerId(key),
+        position: LatLng(double.parse(value[1]), double.parse(value[2])),
+        visible: true,
+        draggable: false,
+        onTap: () {
+          createAlertDialog(context, key, value[0], value[3]);
+          print("Markers have been made");
+        }
+      );
+      markers.add(tempMarker);
+    });
+
+    }
+
 
     createAlertDialog(BuildContext context, String name, String address, String amountFood){
         return showDialog(context: context, builder: (context) {
@@ -144,6 +168,14 @@ class _MapPageState extends State<MapPage> {
         } );
     }
 
+    void checkMarkers() {
+    markers.forEach((element) {
+      print(element.markerId);
+      print(element.position);
+      print(element.visible);
+    });
+    }
+
 
   Widget mapPage() {
     return Stack(
@@ -154,7 +186,7 @@ class _MapPageState extends State<MapPage> {
           mapType: MapType.hybrid,
           myLocationEnabled: true,
           myLocationButtonEnabled: true,
-          markers: Set<Marker>.of(markers.values),
+          markers: markers,
         ),
         Positioned(
             bottom: 10.0,
@@ -179,12 +211,16 @@ class _MapPageState extends State<MapPage> {
           checkFirebase();
         })),
         Positioned(
-            top: 10,
-            right: 10,
+            top: 50,
+            left: 10,
             child: IconButton(
                 icon: Icon(Icons.adb_outlined),
                 onPressed: () {
-                  checkMap();
+                  setState(() {
+                    createMarkers(markers, locations);
+                    //checkMarkers();
+                  });
+
                 })),
       ],
     );
@@ -199,8 +235,8 @@ class _MapPageState extends State<MapPage> {
 
   @override
   void initState() {
-    marker1 = addMarkerFunc(marker1, "Ritas", "2400 Chew Street, Allentown PA", "High");
-    markers[marker1.markerId] = marker1;
+    // marker1 = addMarkerFunc(marker1, "Ritas", "2400 Chew Street, Allentown PA", "High");
+    // markers[marker1.markerId] = marker1;
     initFlutterFire();
     //checkFirebase();
     super.initState();
