@@ -29,4 +29,8 @@ class SuperListener {
     homePage.screenChanger(index);
   }
 
+  static void loadData() {
+    mapPage.checkFirebase();
+  }
+
 }

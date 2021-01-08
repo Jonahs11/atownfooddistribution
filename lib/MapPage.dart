@@ -61,13 +61,50 @@ class MapPageState extends State<MapPage> {
 
     //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
     void checkFirebase() {
+    Marker tempMarker;
+    String name;
+    String address;
+    double lat;
+    double long;
+    String foodLevel;
+    String notes;
       try {
         FirebaseFirestore.instance
             .collection('markers')
             .get()
             .then((QuerySnapshot querySnapshot) => {
         querySnapshot.docs.forEach((doc) {
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes']];
+           name = doc['name'];
+           address = doc['address'];
+           lat = double.parse(doc['lat']);
+           long = double.parse(doc['long']);
+           foodLevel = doc['foodlevel'];
+           notes = doc['notes'];
+
+
+           tempMarker = new Marker(
+             markerId: MarkerId(name),
+             position: LatLng(lat, long),
+             visible: true,
+             draggable: false,
+             onTap: () {
+               setState(() {
+                 createAlertDialog(context, name, address, foodLevel);
+               });
+             }
+
+           );
+
+           print(tempMarker.position);
+           print(tempMarker.markerId);
+           print(tempMarker.visible);
+           print(tempMarker.draggable);
+
+           setState(() {
+             markers.add(tempMarker);
+           });
+
+          //locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes']];
         })
         });
 
@@ -77,28 +114,10 @@ class MapPageState extends State<MapPage> {
     print(e);
   }
   finally{
-        print("Completed");
+          print("Completed");
       }
     }
 
-
-
-    // Marker addMarkerFunc(Marker marker, String name, String address, String amountFood)
-    // {
-    //   marker = new Marker(
-    //       markerId: MarkerId("1"),
-    //       position: LatLng(40.5975, -75.5),
-    //       visible: true,
-    //       draggable: false,
-    //       onTap: () {
-    //         setState(() {
-    //           createAlertDialog(context, name, address, amountFood);
-    //           print("Hello World");
-    //         });
-    //       });
-    //   return marker;
-    //
-    // }
 
   //method used to check what is currently being stored in the locations map
     void checkMap() {
@@ -211,18 +230,18 @@ class MapPageState extends State<MapPage> {
                 onPressed: () {
           checkFirebase();
         })),
-        Positioned(
-            top: 50,
-            left: 10,
-            child: IconButton(
-                icon: Icon(Icons.adb_outlined),
-                onPressed: () {
-                  setState(() {
-                    createMarkers(markers, locations);
-                    //checkMarkers();
-                  });
-
-                })),
+        // Positioned(
+        //     top: 50,
+        //     left: 10,
+        //     child: IconButton(
+        //         icon: Icon(Icons.adb_outlined),
+        //         onPressed: () {
+        //           setState(() {
+        //             //createMarkers(markers, locations);
+        //             //checkMarkers();
+        //           });
+        //
+        //         })),
       ],
     );
   }

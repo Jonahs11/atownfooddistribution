@@ -23,6 +23,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
           SizedBox(height: 100,),
           Text("Welcome!"),
           FlatButton(onPressed: () {
+            SuperListener.loadData();
             SuperListener.navTo(1);
           },
             child: Text("Continue"))
