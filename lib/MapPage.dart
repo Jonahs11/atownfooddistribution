@@ -1,5 +1,6 @@
-import 'dart:ffi';
 
+import 'package:atownfooddistribution/SuperListener.dart';
+import 'package:atownfooddistribution/main.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -9,33 +10,23 @@ import 'package:firebase_core/firebase_core.dart';
 
 class MapPage extends StatefulWidget {
   @override
-  _MapPageState createState() => _MapPageState();
+  MapPageState createState() => MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class MapPageState extends State<MapPage> {
 
-  CameraPosition _center = CameraPosition(target: LatLng(-45.71, 75));
+ // CameraPosition _center = CameraPosition(target: LatLng(-45.71, 75), zoom: currentZoom);
   Location location = new Location();
   GoogleMapController mapController;
-  //double currentZoom = 15.0;
+  double currentZoom = 15.0;
   bool tracking = true;
   double currentSliderVal = 15.0;
 
   bool appInitialized = false;
 
-
-
-//  final Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  
-  // // MarkerId markerId1 = new MarkerId("1");
-  // Marker marker1 = new Marker(
-  //   markerId: MarkerId("1"),
-  //   position: LatLng(40.5975, -75.5),
-  //   visible: true,
-  //   draggable: false,
-  //   );
-
+  //markers is a set that stores the Markers onto the Google Map
   final Set<Marker> markers = <Marker>{};
+  //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
   final Map<String, List> locations = <String, List>{};
 
   
@@ -55,6 +46,7 @@ class _MapPageState extends State<MapPage> {
     //  );
     }
 
+    //method used to initialize the database. This is necissary in order to pull anything from it
     void initFlutterFire() async {
       try {
         await  Firebase.initializeApp();
@@ -67,6 +59,7 @@ class _MapPageState extends State<MapPage> {
       }
     }
 
+    //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
     void checkFirebase() {
       try {
         FirebaseFirestore.instance
@@ -89,23 +82,25 @@ class _MapPageState extends State<MapPage> {
     }
 
 
-    Marker addMarkerFunc(Marker marker, String name, String address, String amountFood)
-    {
-      marker = new Marker(
-          markerId: MarkerId("1"),
-          position: LatLng(40.5975, -75.5),
-          visible: true,
-          draggable: false,
-          onTap: () {
-            setState(() {
-              createAlertDialog(context, name, address, amountFood);
-              print("Hello World");
-            });
-          });
-      return marker;
 
-    }
+    // Marker addMarkerFunc(Marker marker, String name, String address, String amountFood)
+    // {
+    //   marker = new Marker(
+    //       markerId: MarkerId("1"),
+    //       position: LatLng(40.5975, -75.5),
+    //       visible: true,
+    //       draggable: false,
+    //       onTap: () {
+    //         setState(() {
+    //           createAlertDialog(context, name, address, amountFood);
+    //           print("Hello World");
+    //         });
+    //       });
+    //   return marker;
+    //
+    // }
 
+  //method used to check what is currently being stored in the locations map
     void checkMap() {
     locations.forEach((key, value) {
       print(key);
@@ -116,6 +111,7 @@ class _MapPageState extends State<MapPage> {
     }
 
     //value list goes [address, lat, long, foodlevel, notes]
+  //method used to create all the Markers and populate the markers set with Markers
     void createMarkers(Set<Marker> markers, Map<String, List> locations) {
       Marker tempMarker;
     locations.forEach((key, value) {
@@ -135,6 +131,7 @@ class _MapPageState extends State<MapPage> {
     }
 
 
+    //method that return an alert dialog. This will be used when the markers are clicked on in app
     createAlertDialog(BuildContext context, String name, String address, String amountFood){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
@@ -176,32 +173,36 @@ class _MapPageState extends State<MapPage> {
     });
     }
 
-
+    //this method returns the standard map screen, and is what the users will see
+  //if there is not a problem while loading into the app
   Widget mapPage() {
     return Stack(
       children: [
         GoogleMap(
-          initialCameraPosition: _center,
+          initialCameraPosition: CameraPosition(
+              target: LatLng(45.5, -75.4), zoom: currentZoom),
           onMapCreated: onMapCreated,
           mapType: MapType.hybrid,
           myLocationEnabled: true,
           myLocationButtonEnabled: true,
           markers: markers,
-        ),
-        Positioned(
-            bottom: 10.0,
-            left: 5.0,
-            child: Slider(
-                value: currentSliderVal,
-                min: 0,
-                max: 50,
 
-                onChanged: (double val) {
-                  setState(() {
-                    currentSliderVal = val;
-                    //currentZoom = val /2;
-                  });
-                })),
+        ),
+        // Positioned(
+        //     bottom: 10.0,
+        //     left: 5.0,
+        //     child: Slider(
+        //         value: currentSliderVal,
+        //         min: 0,
+        //         max: 50,
+        //
+        //         onChanged: (double val) {
+        //           setState(() {
+        //             currentSliderVal = val;
+        //             currentZoom = val /2;
+        //             mapController.moveCamera(CameraUpdate.newCameraPosition( CameraPosition(zoom: currentZoom)));
+        //           });
+        //         })),
         Positioned(
             top: 10,
             left: 10,
@@ -226,6 +227,7 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
+  //error page thrown when there was an issue loading into the app
   Widget errorPage() {
     return Scaffold(
       body: Text("Something went wrong"),
@@ -235,8 +237,7 @@ class _MapPageState extends State<MapPage> {
 
   @override
   void initState() {
-    // marker1 = addMarkerFunc(marker1, "Ritas", "2400 Chew Street, Allentown PA", "High");
-    // markers[marker1.markerId] = marker1;
+    SuperListener.setPages(mPage: this);
     initFlutterFire();
     //checkFirebase();
     super.initState();
