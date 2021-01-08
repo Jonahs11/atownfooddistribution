@@ -18,15 +18,37 @@ class WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 100,),
-          Text("Welcome!"),
-          FlatButton(onPressed: () {
-            SuperListener.loadData();
-            SuperListener.navTo(1);
-          },
-            child: Text("Continue"))
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Welcome!\n"
+                  "",
+              style: TextStyle(
+
+              ),),
+            ],
+          ),
+
+
+          SizedBox(height: 200,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FlatButton(
+                  color: Colors.blue,
+                  onPressed: () {
+                    SuperListener.loadMap();
+                    SuperListener.navTo(1);
+                  },
+                  child: Text("Continue to map"))
+            ],
+          )
+
         ],
       ),
     );

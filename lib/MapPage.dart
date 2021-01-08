@@ -21,6 +21,8 @@ class MapPageState extends State<MapPage> {
   double currentZoom = 15.0;
   bool tracking = true;
   double currentSliderVal = 15.0;
+  double currentLat;
+  double currentLong;
 
   bool appInitialized = false;
 
@@ -32,8 +34,9 @@ class MapPageState extends State<MapPage> {
   
 
   //Function called when GoogleMap is implemented which, upon consent, tracks the user
-  void onMapCreated(GoogleMapController controller) {
+  void onMapCreated(GoogleMapController controller) async {
     mapController = controller;
+
 
       // location.onLocationChanged.listen((event) {
       //   mapController.animateCamera( CameraUpdate.newCameraPosition(
@@ -89,7 +92,7 @@ class MapPageState extends State<MapPage> {
              draggable: false,
              onTap: () {
                setState(() {
-                 createAlertDialog(context, name, address, foodLevel);
+                 createAlertDialog(context, name, address, foodLevel, notes);
                });
              }
 
@@ -131,27 +134,27 @@ class MapPageState extends State<MapPage> {
 
     //value list goes [address, lat, long, foodlevel, notes]
   //method used to create all the Markers and populate the markers set with Markers
-    void createMarkers(Set<Marker> markers, Map<String, List> locations) {
-      Marker tempMarker;
-    locations.forEach((key, value) {
-      tempMarker = new Marker(
-        markerId: MarkerId(key),
-        position: LatLng(double.parse(value[1]), double.parse(value[2])),
-        visible: true,
-        draggable: false,
-        onTap: () {
-          createAlertDialog(context, key, value[0], value[3]);
-          print("Markers have been made");
-        }
-      );
-      markers.add(tempMarker);
-    });
-
-    }
+  //   void createMarkers(Set<Marker> markers, Map<String, List> locations) {
+  //     Marker tempMarker;
+  //   locations.forEach((key, value) {
+  //     tempMarker = new Marker(
+  //       markerId: MarkerId(key),
+  //       position: LatLng(double.parse(value[1]), double.parse(value[2])),
+  //       visible: true,
+  //       draggable: false,
+  //       onTap: () {
+  //         createAlertDialog(context, key, value[0], value[3]);
+  //         print("Markers have been made");
+  //       }
+  //     );
+  //     markers.add(tempMarker);
+  //   });
+  //
+  //   }
 
 
     //method that return an alert dialog. This will be used when the markers are clicked on in app
-    createAlertDialog(BuildContext context, String name, String address, String amountFood){
+    createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
             title: Row(
@@ -178,6 +181,7 @@ class MapPageState extends State<MapPage> {
 
                 Text(address),
                 Text("Current amount of food: $amountFood"),
+                Text(notes)
               ],
             ),
           );
@@ -192,6 +196,22 @@ class MapPageState extends State<MapPage> {
     });
     }
 
+    void moveToMyLoc() async{
+
+    try {
+      LocationData myLoc = await location.getLocation();
+      currentLat = myLoc.latitude;
+      currentLong = myLoc.latitude;
+      mapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: LatLng(currentLat, currentLong))
+      ));
+    }
+    catch(e)
+      {
+        print("Error");
+      }
+    }
+
     //this method returns the standard map screen, and is what the users will see
   //if there is not a problem while loading into the app
   Widget mapPage() {
@@ -199,7 +219,7 @@ class MapPageState extends State<MapPage> {
       children: [
         GoogleMap(
           initialCameraPosition: CameraPosition(
-              target: LatLng(45.5, -75.4), zoom: currentZoom),
+              target: LatLng(40.6023, -75.4714), zoom: 13),
           onMapCreated: onMapCreated,
           mapType: MapType.hybrid,
           myLocationEnabled: true,
@@ -223,25 +243,13 @@ class MapPageState extends State<MapPage> {
         //           });
         //         })),
         Positioned(
-            top: 10,
-            left: 10,
-            child: IconButton(
-                icon: Icon(Icons.adb_outlined),
+            right: 10,
+            bottom: 150,
+            child: FloatingActionButton(
+                child: Icon(Icons.assignment_late_sharp),
                 onPressed: () {
-          checkFirebase();
+                  SuperListener.navTo(2);
         })),
-        // Positioned(
-        //     top: 50,
-        //     left: 10,
-        //     child: IconButton(
-        //         icon: Icon(Icons.adb_outlined),
-        //         onPressed: () {
-        //           setState(() {
-        //             //createMarkers(markers, locations);
-        //             //checkMarkers();
-        //           });
-        //
-        //         })),
       ],
     );
   }
@@ -257,6 +265,7 @@ class MapPageState extends State<MapPage> {
   @override
   void initState() {
     SuperListener.setPages(mPage: this);
+
     initFlutterFire();
     //checkFirebase();
     super.initState();

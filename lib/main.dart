@@ -1,3 +1,4 @@
+import 'package:atownfooddistribution/InformationPage.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -35,6 +36,7 @@ class MyHomePageState extends State<MyHomePage> {
   int myIndex = 0;
   WelcomeScreen welcomeScreen = new WelcomeScreen();
   MapPage mapPage = new MapPage();
+  InformationPage informationPage = new InformationPage();
 
   @override
   void initState() {
@@ -56,7 +58,8 @@ class MyHomePageState extends State<MyHomePage> {
           index: myIndex,
           children: [
             welcomeScreen,
-            mapPage
+            mapPage,
+            informationPage
           ],
         )
         );
