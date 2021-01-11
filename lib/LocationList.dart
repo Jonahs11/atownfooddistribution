@@ -57,7 +57,14 @@ class LocationListState extends State<LocationList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("List of Locations"),
+        title: Row(
+          children: [
+            Text("List of Locations"),
+            IconButton(icon: Icon(Icons.close), onPressed: () {
+                SuperListener.removeListLocScreen();
+            })
+          ],
+        ),
       ),
       body: (
       ListView(

@@ -55,4 +55,8 @@ class SuperListener {
     return myLocations;
   }
 
+  static void removeListLocScreen() {
+    welcomeScreen.changeToWelcome();
+  }
+
 }

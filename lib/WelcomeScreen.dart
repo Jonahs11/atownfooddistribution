@@ -82,6 +82,12 @@ class WelcomeScreenState extends State<WelcomeScreen> {
     });
   }
 
+  void changeToWelcome() {
+    setState(() {
+      locListUp = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return locListUp? LocationList(locations): welcomeScreen();
