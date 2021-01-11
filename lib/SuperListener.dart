@@ -46,4 +46,8 @@ class SuperListener {
     //mapPage.moveToMyLoc();
   }
 
+  static Map getLocs(Map locations) {
+    return locations;
+  }
+
 }

@@ -6,6 +6,14 @@ class LocationList extends StatefulWidget {
 }
 
 class LocationListState extends State<LocationList> {
+
+
+  @override
+  void initState() {
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

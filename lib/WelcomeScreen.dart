@@ -42,7 +42,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
               FlatButton(
                   color: Colors.blue,
                   onPressed: () {
-                    SuperListener.loadMap();
+                   // SuperListener.loadMap();
                     SuperListener.navTo(1);
                   },
                   child: Text("Continue to map"))

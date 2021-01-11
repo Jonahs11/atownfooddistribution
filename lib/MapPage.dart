@@ -56,6 +56,7 @@ class MapPageState extends State<MapPage> {
         setState(() {
           appInitialized = true;
         });
+        checkFirebase();
       }
       catch (e) {
         print(e.toString());
