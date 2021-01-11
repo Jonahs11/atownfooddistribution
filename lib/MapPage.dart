@@ -7,6 +7,8 @@ import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+//locations is a map used to take the information from the cloud fire storage database and store it onto the phone
+final Map<String, List> locations = <String, List>{};
 
 class MapPage extends StatefulWidget {
   @override
@@ -28,8 +30,7 @@ class MapPageState extends State<MapPage> {
 
   //markers is a set that stores the Markers onto the Google Map
   final Set<Marker> markers = <Marker>{};
-  //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
-  final Map<String, List> locations = <String, List>{};
+
 
   
 
@@ -284,6 +285,8 @@ class MapPageState extends State<MapPage> {
     SuperListener.setPages(mPage: this);
 
     initFlutterFire();
+    print("LOADED IN");
+    checkMap();
     //checkFirebase();
     super.initState();
   }
