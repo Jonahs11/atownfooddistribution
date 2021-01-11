@@ -6,6 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
 final Map<String, List> locations = <String, List>{};
@@ -109,13 +111,11 @@ class MapPageState extends State<MapPage> {
            //   markers.add(tempMarker);
            // });
 
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes']];
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link']];
         }),
         createMarkers(markers, locations)
         });
 
-
-        print("THIS LINE HAS BEEN READ");
       }
     catch(e)
   {
@@ -150,7 +150,7 @@ class MapPageState extends State<MapPage> {
         visible: true,
         draggable: false,
         onTap: () {
-          createAlertDialog(context, key, value[0], value[3], value[4]);
+          createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
         }
       );
       setState(() {
@@ -162,7 +162,7 @@ class MapPageState extends State<MapPage> {
 
 
     //method that return an alert dialog. This will be used when the markers are clicked on in app
-    createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes){
+    createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
             title: Row(
@@ -189,7 +189,18 @@ class MapPageState extends State<MapPage> {
 
                 Text(address),
                 Text("Current amount of food: $amountFood"),
-                Text(notes)
+                Text(notes),
+                Row(
+                  children: [
+                    Text("Link:"),
+                    IconButton(
+                      icon: Icon(Icons.link),
+                      onPressed: () {
+                        launch(link);
+                      },
+                    )
+                  ],
+                )
               ],
             ),
           );
@@ -277,6 +288,16 @@ class MapPageState extends State<MapPage> {
     return Scaffold(
       body: Text("Something went wrong"),
     );
+  }
+
+  launchURL(String url) async{
+    print(url);
+    if(await canLaunch(url)) {
+      await launchURL(url);
+    }
+    else {
+      throw 'Could not launch $url';
+    }
   }
 
 
