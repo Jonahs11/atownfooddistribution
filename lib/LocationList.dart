@@ -29,15 +29,23 @@ class LocationListState extends State<LocationList> {
 
   List loadPlaces() {
     List<Widget> containers = [];
-    Container tempContainer;
+    Card tempCard;
     widget.myLocs.forEach((key, value) {
-      tempContainer = new Container(
-        child: Text(
-          key
+      tempCard = Card(
+        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+        child: Row(
+          children: [
+            Text(
+              key
+            ),
+            IconButton(icon: Icon(Icons.edit), onPressed: () {
+              print("Editing $key");
+            })
+          ],
         ),
       );
 
-      containers.add(tempContainer);
+      containers.add(tempCard);
     });
 
     return containers;
