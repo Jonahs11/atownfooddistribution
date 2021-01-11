@@ -77,40 +77,43 @@ class MapPageState extends State<MapPage> {
             .get()
             .then((QuerySnapshot querySnapshot) => {
         querySnapshot.docs.forEach((doc) {
-           name = doc['name'];
-           address = doc['address'];
-           lat = double.parse(doc['lat']);
-           long = double.parse(doc['long']);
-           foodLevel = doc['foodlevel'];
-           notes = doc['notes'];
+           // name = doc['name'];
+           // address = doc['address'];
+           // lat = double.parse(doc['lat']);
+           // long = double.parse(doc['long']);
+           // foodLevel = doc['foodlevel'];
+           // notes = doc['notes'];
+           //
+           //
+           // tempMarker = new Marker(
+           //   markerId: MarkerId(name),
+           //   position: LatLng(lat, long),
+           //   visible: true,
+           //   draggable: false,
+           //   onTap: () {
+           //     setState(() {
+           //       createAlertDialog(context, name, address, foodLevel, notes);
+           //     });
+           //   }
+           //
+           // );
+           //
+           // print(tempMarker.position);
+           // print(tempMarker.markerId);
+           // print(tempMarker.visible);
+           // print(tempMarker.draggable);
+           //
+           // setState(() {
+           //   markers.add(tempMarker);
+           // });
 
-
-           tempMarker = new Marker(
-             markerId: MarkerId(name),
-             position: LatLng(lat, long),
-             visible: true,
-             draggable: false,
-             onTap: () {
-               setState(() {
-                 createAlertDialog(context, name, address, foodLevel, notes);
-               });
-             }
-
-           );
-
-           print(tempMarker.position);
-           print(tempMarker.markerId);
-           print(tempMarker.visible);
-           print(tempMarker.draggable);
-
-           setState(() {
-             markers.add(tempMarker);
-           });
-
-          //locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes']];
-        })
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes']];
+        }),
+        createMarkers(markers, locations)
         });
 
+
+        print("THIS LINE HAS BEEN READ");
       }
     catch(e)
   {
@@ -120,6 +123,8 @@ class MapPageState extends State<MapPage> {
           print("Completed");
       }
     }
+
+
 
 
   //method used to check what is currently being stored in the locations map
@@ -134,23 +139,24 @@ class MapPageState extends State<MapPage> {
 
     //value list goes [address, lat, long, foodlevel, notes]
   //method used to create all the Markers and populate the markers set with Markers
-  //   void createMarkers(Set<Marker> markers, Map<String, List> locations) {
-  //     Marker tempMarker;
-  //   locations.forEach((key, value) {
-  //     tempMarker = new Marker(
-  //       markerId: MarkerId(key),
-  //       position: LatLng(double.parse(value[1]), double.parse(value[2])),
-  //       visible: true,
-  //       draggable: false,
-  //       onTap: () {
-  //         createAlertDialog(context, key, value[0], value[3]);
-  //         print("Markers have been made");
-  //       }
-  //     );
-  //     markers.add(tempMarker);
-  //   });
-  //
-  //   }
+    void createMarkers(Set<Marker> markers, Map<String, List> locations) {
+      Marker tempMarker;
+    locations.forEach((key, value) {
+      tempMarker = new Marker(
+        markerId: MarkerId(key),
+        position: LatLng(double.parse(value[1]), double.parse(value[2])),
+        visible: true,
+        draggable: false,
+        onTap: () {
+          createAlertDialog(context, key, value[0], value[3], value[4]);
+        }
+      );
+      setState(() {
+        markers.add(tempMarker);
+      });
+    });
+      print("Markers have been made");
+    }
 
 
     //method that return an alert dialog. This will be used when the markers are clicked on in app
@@ -250,6 +256,16 @@ class MapPageState extends State<MapPage> {
                 onPressed: () {
                   SuperListener.navTo(2);
         })),
+        Positioned(
+          left: 10,
+          bottom: 150,
+          child: IconButton(
+            icon: Icon(Icons.eleven_mp),
+            onPressed: () {
+              createMarkers(markers, locations);
+            },
+          )
+        )
       ],
     );
   }
