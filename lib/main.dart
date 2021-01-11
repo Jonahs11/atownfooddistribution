@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:atownfooddistribution/WelcomeScreen.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
+import 'package:atownfooddistribution/LocationList.dart';
 
 void main() {
   runApp(MyApp());
@@ -59,7 +60,7 @@ class MyHomePageState extends State<MyHomePage> {
           children: [
             welcomeScreen,
             mapPage,
-            informationPage
+            informationPage,
           ],
         )
         );

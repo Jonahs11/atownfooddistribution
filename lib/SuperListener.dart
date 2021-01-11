@@ -12,6 +12,7 @@ class SuperListener {
   static InformationPageState informationPage;
   static LocationListState locationlist;
 
+  Map myLocations;
 
   static void setPages({
     MyHomePageState hPage,
@@ -44,6 +45,18 @@ class SuperListener {
   static void loadMap() {
     mapPage.checkFirebase();
     //mapPage.moveToMyLoc();
+  }
+
+  void setMyLocs(Map<String, List> myLocations) {
+   this.myLocations = myLocations;
+  }
+
+  Map getLocs() {
+    return myLocations;
+  }
+
+  static void removeListLocScreen() {
+    welcomeScreen.changeToWelcome();
   }
 
 }
