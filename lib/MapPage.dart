@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/main.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +23,17 @@ class MapPageState extends State<MapPage> {
 
  // CameraPosition _center = CameraPosition(target: LatLng(-45.71, 75), zoom: currentZoom);
   Location location = new Location();
+  StreamSubscription<LocationData> locationStream;
   GoogleMapController mapController;
   double currentZoom = 15.0;
   bool tracking = true;
   double currentSliderVal = 15.0;
   double currentLat;
   double currentLong;
-
+  final mylocationEnabled = true;
   bool appInitialized = false;
+  bool cameraMovementOn = false;
+
 
   //markers is a set that stores the Markers onto the Google Map
   final Set<Marker> markers = <Marker>{};
@@ -39,18 +44,19 @@ class MapPageState extends State<MapPage> {
   //Function called when GoogleMap is implemented which, upon consent, tracks the user
   void onMapCreated(GoogleMapController controller) async {
     mapController = controller;
-
-
-      // location.onLocationChanged.listen((event) {
-      //   mapController.animateCamera( CameraUpdate.newCameraPosition(
-      //       CameraPosition(
-      //         target: LatLng(event.latitude, event.longitude),
-      //
-      //       )
-      //   ));
-      // }
-    //  );
+    locationStream =  location.onLocationChanged.listen((event) {
+      mapController.animateCamera( CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(event.latitude, event.longitude),
+            zoom: 16.0,
+          )
+      ));
     }
+    );
+    locationStream.pause();
+    }
+
+
 
     //method used to initialize the database. This is necissary in order to pull anything from it
     void initFlutterFire() async {
@@ -68,49 +74,12 @@ class MapPageState extends State<MapPage> {
 
     //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
     void checkFirebase() {
-    Marker tempMarker;
-    String name;
-    String address;
-    double lat;
-    double long;
-    String foodLevel;
-    String notes;
       try {
         FirebaseFirestore.instance
             .collection('markers')
             .get()
             .then((QuerySnapshot querySnapshot) => {
         querySnapshot.docs.forEach((doc) {
-           // name = doc['name'];
-           // address = doc['address'];
-           // lat = double.parse(doc['lat']);
-           // long = double.parse(doc['long']);
-           // foodLevel = doc['foodlevel'];
-           // notes = doc['notes'];
-           //
-           //
-           // tempMarker = new Marker(
-           //   markerId: MarkerId(name),
-           //   position: LatLng(lat, long),
-           //   visible: true,
-           //   draggable: false,
-           //   onTap: () {
-           //     setState(() {
-           //       createAlertDialog(context, name, address, foodLevel, notes);
-           //     });
-           //   }
-           //
-           // );
-           //
-           // print(tempMarker.position);
-           // print(tempMarker.markerId);
-           // print(tempMarker.visible);
-           // print(tempMarker.draggable);
-           //
-           // setState(() {
-           //   markers.add(tempMarker);
-           // });
-
           locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link']];
         }),
         createMarkers(markers, locations)
@@ -231,55 +200,86 @@ class MapPageState extends State<MapPage> {
       }
     }
 
+
+    void toggleSwitchSliderTap(bool val) {
+    print(cameraMovementOn);
+    if(cameraMovementOn) {
+      setState(() {
+        cameraMovementOn = false;
+        locationStream.pause();
+      });
+
+    }
+    else {
+      setState(() {
+        cameraMovementOn = true;
+        locationStream.resume();
+      });
+    }
+    print(cameraMovementOn);
+
+    }
+
+
     //this method returns the standard map screen, and is what the users will see
   //if there is not a problem while loading into the app
   Widget mapPage() {
-    return Stack(
-      children: [
-        GoogleMap(
-          initialCameraPosition: CameraPosition(
-              target: LatLng(40.6023, -75.4714), zoom: 13),
-          onMapCreated: onMapCreated,
-          mapType: MapType.hybrid,
-          myLocationEnabled: true,
-          myLocationButtonEnabled: true,
-          markers: markers,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: cameraMovementOn? Colors.blue: Colors.red,
+        title: cameraMovementOn? Text("Auto-Camera Movment On"): Text("Auto-Camera Movement Off")
+      ),
+      body: Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+                target: LatLng(40.6023, -75.4714), zoom: 16),
+            onMapCreated: onMapCreated,
+            mapType: MapType.hybrid,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: mylocationEnabled,
+            markers: markers,
+            // onTap: (LatLng pos) {
+            //   if(cameraMovementOn) {
+            //     setState(() {
+            //       cameraMovementOn = false;
+            //       locationStream.pause();
+            //     });
+            //   }
+            //}
 
-        ),
-        // Positioned(
-        //     bottom: 10.0,
-        //     left: 5.0,
-        //     child: Slider(
-        //         value: currentSliderVal,
-        //         min: 0,
-        //         max: 50,
-        //
-        //         onChanged: (double val) {
-        //           setState(() {
-        //             currentSliderVal = val;
-        //             currentZoom = val /2;
-        //             mapController.moveCamera(CameraUpdate.newCameraPosition( CameraPosition(zoom: currentZoom)));
-        //           });
-        //         })),
-        Positioned(
-            right: 10,
+          ),
+
+          Positioned(
+              right: 10,
+              bottom: 150,
+              child: FloatingActionButton(
+                  child: Icon(Icons.assignment_late_sharp),
+                  onPressed: () {
+                    SuperListener.navTo(2);
+          })),
+          Positioned(
+            left: 10,
             bottom: 150,
-            child: FloatingActionButton(
-                child: Icon(Icons.assignment_late_sharp),
-                onPressed: () {
-                  SuperListener.navTo(2);
-        })),
-        Positioned(
-          left: 10,
-          bottom: 150,
-          child: IconButton(
-            icon: Icon(Icons.eleven_mp),
-            onPressed: () {
-              createMarkers(markers, locations);
-            },
-          )
-        )
-      ],
+            child: IconButton(
+              icon: Icon(Icons.eleven_mp),
+              onPressed: () {
+                createMarkers(markers, locations);
+              },
+            )
+          ),
+          Positioned(
+            top: 50,
+              right: 5,
+              child: Switch(
+                value: cameraMovementOn,
+                onChanged: toggleSwitchSliderTap,
+                activeColor: Colors.blue,
+                inactiveTrackColor: Colors.red,
+
+              ))
+        ],
+      ),
     );
   }
 
