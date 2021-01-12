@@ -33,6 +33,7 @@ class MapPageState extends State<MapPage> {
   final mylocationEnabled = true;
   bool appInitialized = false;
   bool cameraMovementOn = false;
+  DateTime now = new DateTime.now();
 
 
   //markers is a set that stores the Markers onto the Google Map
@@ -74,6 +75,7 @@ class MapPageState extends State<MapPage> {
 
     //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
     void checkFirebase() {
+
       try {
         FirebaseFirestore.instance
             .collection('markers')
@@ -82,6 +84,7 @@ class MapPageState extends State<MapPage> {
         querySnapshot.docs.forEach((doc) {
           locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link']];
         }),
+          markers.clear(),
         createMarkers(markers, locations)
         });
 
@@ -183,22 +186,22 @@ class MapPageState extends State<MapPage> {
       print(element.visible);
     });
     }
-
-    void moveToMyLoc() async{
-
-    try {
-      LocationData myLoc = await location.getLocation();
-      currentLat = myLoc.latitude;
-      currentLong = myLoc.latitude;
-      mapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
-          target: LatLng(currentLat, currentLong))
-      ));
-    }
-    catch(e)
-      {
-        print("Error");
-      }
-    }
+    //
+    // void moveToMyLoc() async{
+    //
+    // try {
+    //   LocationData myLoc = await location.getLocation();
+    //   currentLat = myLoc.latitude;
+    //   currentLong = myLoc.latitude;
+    //   mapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    //       target: LatLng(currentLat, currentLong))
+    //   ));
+    // }
+    // catch(e)
+    //   {
+    //     print("Error");
+    //   }
+    // }
 
 
     void toggleSwitchSliderTap(bool val) {
@@ -220,14 +223,21 @@ class MapPageState extends State<MapPage> {
 
     }
 
-
     //this method returns the standard map screen, and is what the users will see
   //if there is not a problem while loading into the app
   Widget mapPage() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: cameraMovementOn? Colors.blue: Colors.red,
-        title: cameraMovementOn? Text("Auto-Camera Movment On"): Text("Auto-Camera Movement Off")
+        title: Column(
+          children: [
+            cameraMovementOn? Text("Auto-Camera Movment On"): Text("Auto-Camera Movement Off"),
+            Text("Map last updated on " + now.toString(),
+            style: TextStyle(
+              fontSize: 10.0,
+            ),)
+          ],
+        )
       ),
       body: Stack(
         children: [
@@ -259,16 +269,6 @@ class MapPageState extends State<MapPage> {
                     SuperListener.navTo(2);
           })),
           Positioned(
-            left: 10,
-            bottom: 150,
-            child: IconButton(
-              icon: Icon(Icons.eleven_mp),
-              onPressed: () {
-                createMarkers(markers, locations);
-              },
-            )
-          ),
-          Positioned(
             top: 50,
               right: 5,
               child: Switch(
@@ -277,6 +277,23 @@ class MapPageState extends State<MapPage> {
                 activeColor: Colors.blue,
                 inactiveTrackColor: Colors.red,
 
+              )),
+          Positioned(
+            top: 100.0,
+              left: 5.0,
+              child: Container(
+                color: Colors.white,
+                child: IconButton(
+            icon: Icon(
+                Icons.refresh,
+            ),
+              onPressed: () {
+              checkFirebase();
+              setState(() {
+                now = new DateTime.now();
+              });
+              },
+          ),
               ))
         ],
       ),
@@ -304,11 +321,8 @@ class MapPageState extends State<MapPage> {
   @override
   void initState() {
     SuperListener.setPages(mPage: this);
-
     initFlutterFire();
-    print("LOADED IN");
     checkMap();
-    //checkFirebase();
     super.initState();
   }
 
