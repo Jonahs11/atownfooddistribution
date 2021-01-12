@@ -130,9 +130,12 @@ class LocationListState extends State<LocationList> {
 
           FlatButton(
               onPressed: () {
+                setState(() {
                 print(myController1.text);
                 print(myController2.text);
                 updateFirebase(myController1.text, myController2.text, docID);
+                  editing = false;
+                });
           },
               child: Text("Save")
           )
