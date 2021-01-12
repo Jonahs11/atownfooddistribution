@@ -1,6 +1,5 @@
 
 import 'dart:async';
-
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/main.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +81,8 @@ class MapPageState extends State<MapPage> {
             .get()
             .then((QuerySnapshot querySnapshot) => {
         querySnapshot.docs.forEach((doc) {
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link']];
+          print(doc.id);
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id];
         }),
           markers.clear(),
         createMarkers(markers, locations)
@@ -294,6 +294,20 @@ class MapPageState extends State<MapPage> {
               });
               },
           ),
+              )),
+          Positioned(
+              top: 35.0,
+              left: 5.0,
+              child: Container(
+                color: Colors.white,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                  ),
+                  onPressed: () {
+                    SuperListener.navTo(0);
+                  }
+                ),
               ))
         ],
       ),
@@ -317,6 +331,18 @@ class MapPageState extends State<MapPage> {
     }
   }
 
+  void updateFirebase(String foodLevel, String notes, String id) {
+    try {
+      print(id);
+      FirebaseFirestore.instance.collection('markers').doc(id).
+      update({'notes': notes, 'foodlevel': foodLevel}).then((value) {
+        print("Success");
+      });
+    }
+    catch(e) {
+      print("THERE WAS AN ERROR");
+    }
+  }
 
   @override
   void initState() {
