@@ -59,4 +59,8 @@ class SuperListener {
     welcomeScreen.changeToWelcome();
   }
 
+  static void updateFirebase(String foodlevel, String notes, String id) {
+    mapPage.updateFirebase(foodlevel, notes, id);
+  }
+
 }
