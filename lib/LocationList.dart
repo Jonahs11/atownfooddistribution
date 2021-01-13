@@ -1,7 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:latlong/latlong.dart';
+
 
 class LocationList extends StatefulWidget {
 
@@ -20,6 +25,7 @@ class LocationListState extends State<LocationList> {
   final formKey = GlobalKey<FormState>();
   List<Widget> places = [];
   RefreshController refreshController = RefreshController();
+  final Distance distance = new Distance();
 
   @override
   void initState() {
@@ -35,33 +41,125 @@ class LocationListState extends State<LocationList> {
     });
   }
 
-  void loadPlaces() {
-    //List<Widget> containers = [];
-    Card tempCard;
-    //widget.myLocs.forEach((key, value)
-    locations.forEach((key, value)
-    {
-      tempCard = Card(
-        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-        child: Row(
+  void calcDistance(double lat1, double long1, double lat2, double long2) {
+    final R = 6731000;
+    double lat1r = lat1 * (pi / 180);
+    double long1r = long1 * (pi / 180);
+    double lat2r = lat2 * (pi / 180);
+    double long2r = long2 * (pi / 180);
+
+    double diffLat = (lat1r - lat2r).abs();
+    double diffLong = (long1r - long2r).abs();
+
+    double a = pow((sin(diffLat / 2)),2) + (cos(lat1r) * cos(lat2r) * pow((sin(diffLong / 2)), 2));
+    double c = 2  * atan2(sqrt(a), sqrt(1-a));
+    double d = R * c;
+    print(d);
+
+  }
+
+  Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              key
-            ),
-            IconButton(icon: Icon(Icons.edit), onPressed: () {
-              print("Editing $key");
-              setState(() {
-                currentLoc = key;
-                editing = true;
-              });
-            })
+            Center(child: Text(name,
+              style: TextStyle(
+                  fontSize: 40.0
+              ),),),
+            //  SizedBox(
+            //    width: 40.0,
+            //  ),
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        )
+        ,
+        content: Column(
+          children: [
+
+            Text(address),
+            Text("Current amount of food: $amountFood"),
+            Text(notes),
+            Row(
+              children: [
+                Text("Link:"),
+                IconButton(
+                  icon: Icon(Icons.link),
+                  onPressed: () {
+                    launch(link);
+                  },
+                )
+              ],
+            )
           ],
         ),
       );
+    } );
+  }
+
+  void loadPlaces() {
+    String name;
+    String address;
+    String foodLevel;
+    String notes;
+    String link;
+    Widget tempWidget;
+    Map<String, Future> popUps = {};
+    locations.forEach((key, value)
+    {
+      // name = key;
+      // address = value[0];
+      // foodLevel = value[3];
+      // notes = value[4];
+      // link = value[5];
+      // popUps[key] = SuperListener.createAlert(context, name, address, foodLevel, notes, link);
+
+      tempWidget = GestureDetector(
+        onTap: () {
+          createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+        },
+        child: Card(
+          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+          child: Row(
+            children: [
+              Text(
+                key
+              ),
+              IconButton(icon: Icon(Icons.edit), onPressed: () {
+                print("Editing $key");
+                setState(() {
+                  currentLoc = key;
+                  editing = true;
+                });
+              })
+            ],
+          ),
+        ),
+      );
       setState(() {
-        places.add(tempCard);
+        places.add(tempWidget);
       });
     });
+  }
+
+  double getDistance(double lat1, double long1, double lat2, double long2) {
+    double dist = distance.distance(LatLng(lat1, long1), LatLng(lat2, long2));
+    print(dist);
+    return dist;
+  }
+
+  void orderLocations() {
+    List distancePerLoc = [];
+
+    for(int i = 0; i < locations.length; i++){
+
+    }
 
   }
 
@@ -156,6 +254,7 @@ class LocationListState extends State<LocationList> {
     SuperListener.updateLocations();
     loadPlaces();
     refreshController.refreshCompleted();
+
   }
 
 
@@ -165,9 +264,6 @@ class LocationListState extends State<LocationList> {
           title: Row(
             children: [
               Text("List of Locations"),
-              // IconButton(icon: Icon(Icons.close), onPressed: () {
-              //   SuperListener.removeListLocScreen();
-              // })
             ],
           ),
         ),

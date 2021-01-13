@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  int myIndex = 0;
+  int myIndex = 1;
   WelcomeScreen welcomeScreen = new WelcomeScreen();
   MapPage mapPage = new MapPage();
   InformationPage informationPage = new InformationPage();
@@ -79,15 +79,18 @@ class MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.map_outlined),
-              label: "Map Page"
+              label: "Map Page",
+              backgroundColor: Colors.blue
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.list),
-              label: "Location List"
+              label: "Location List",
+              backgroundColor: Colors.blue
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.info),
-              label: "Information Page"
+              label: "Information Page",
+              backgroundColor: Colors.blue
           ),
         ],
         onTap: (int index) {
