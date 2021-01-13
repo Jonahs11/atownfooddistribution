@@ -20,12 +20,7 @@ class InformationPageState extends State<InformationPage> {
         children: [
           Row(
             children: [
-              IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  SuperListener.navTo(1);
-                },
-              )
+
             ],
           ),
           Text("Information Page!")

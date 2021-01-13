@@ -74,7 +74,6 @@ class MapPageState extends State<MapPage> {
 
     //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
     void checkFirebase() {
-
       try {
         FirebaseFirestore.instance
             .collection('markers')
@@ -295,20 +294,20 @@ class MapPageState extends State<MapPage> {
               },
           ),
               )),
-          Positioned(
-              top: 35.0,
-              left: 5.0,
-              child: Container(
-                color: Colors.white,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                  ),
-                  onPressed: () {
-                    SuperListener.navTo(0);
-                  }
-                ),
-              ))
+          // Positioned(
+          //     top: 35.0,
+          //     left: 5.0,
+          //     child: Container(
+          //       color: Colors.white,
+          //       child: IconButton(
+          //         icon: Icon(
+          //           Icons.arrow_back,
+          //         ),
+          //         onPressed: () {
+          //           SuperListener.navTo(0);
+          //         }
+          //       ),
+          //     ))
         ],
       ),
     );

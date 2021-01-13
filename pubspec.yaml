@@ -33,6 +33,7 @@ dependencies:
   cloud_firestore:
   firebase_core: ^0.5.3
   url_launcher: ^5.7.10
+  pull_to_refresh: ^1.6.3
 
 
 dev_dependencies:

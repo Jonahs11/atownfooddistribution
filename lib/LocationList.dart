@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/MapPage.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class LocationList extends StatefulWidget {
 
-  final Map myLocs;
-  const LocationList(this.myLocs);
+  // final Map myLocs;
+  // const LocationList(this.myLocs);
 
   @override
   LocationListState createState() => LocationListState();
@@ -17,6 +18,8 @@ class LocationListState extends State<LocationList> {
   bool editing = false;
   String currentLoc;
   final formKey = GlobalKey<FormState>();
+  List<Widget> places = [];
+  RefreshController refreshController = RefreshController();
 
   @override
   void initState() {
@@ -25,15 +28,19 @@ class LocationListState extends State<LocationList> {
   }
 
   void loadKeys() {
-    widget.myLocs.keys.forEach((element) {
+    //widget.myLocs.keys.forEach((element)
+    locations.keys.forEach((element)
+    {
      print(element);
     });
   }
 
-  List loadPlaces() {
-    List<Widget> containers = [];
+  void loadPlaces() {
+    //List<Widget> containers = [];
     Card tempCard;
-    widget.myLocs.forEach((key, value) {
+    //widget.myLocs.forEach((key, value)
+    locations.forEach((key, value)
+    {
       tempCard = Card(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
         child: Row(
@@ -51,11 +58,11 @@ class LocationListState extends State<LocationList> {
           ],
         ),
       );
-
-      containers.add(tempCard);
+      setState(() {
+        places.add(tempCard);
+      });
     });
 
-    return containers;
   }
 
   void updateFirebase(String foodLevel, String notes, String id) {
@@ -144,22 +151,39 @@ class LocationListState extends State<LocationList> {
     );
   }
 
+  void onRefresh() {
+    print("Refreshing now");
+    SuperListener.updateLocations();
+    loadPlaces();
+    refreshController.refreshCompleted();
+  }
+
+
   Widget viewingPage() {
     return Scaffold(
         appBar: AppBar(
           title: Row(
             children: [
               Text("List of Locations"),
-              IconButton(icon: Icon(Icons.close), onPressed: () {
-                SuperListener.removeListLocScreen();
-              })
+              // IconButton(icon: Icon(Icons.close), onPressed: () {
+              //   SuperListener.removeListLocScreen();
+              // })
             ],
           ),
         ),
         body: (
-            ListView(
-                children: loadPlaces()
-            )
+        SmartRefresher(
+          controller: refreshController,
+          enablePullDown: true,
+          child: ListView(
+              children: places.isEmpty? [Text("Swipe down to refresh")] : places
+              // [
+              //   Text("GOYA")
+              // ]
+          ),
+          onRefresh: onRefresh,
+        )
+
         )
     );
   }

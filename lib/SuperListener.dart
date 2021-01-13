@@ -63,4 +63,12 @@ class SuperListener {
     mapPage.updateFirebase(foodlevel, notes, id);
   }
 
+  static void updateLocList() {
+    locationlist.loadPlaces();
+  }
+
+  static void updateLocations() {
+    mapPage.checkFirebase();
+  }
+
 }
