@@ -52,9 +52,6 @@ class SuperListener {
    this.myLocations = myLocations;
   }
 
-  Map getLocs() {
-    return myLocations;
-  }
 
   static void removeListLocScreen() {
     welcomeScreen.changeToWelcome();

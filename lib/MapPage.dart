@@ -12,7 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 
 //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
-final Map<String, List> locations = <String, List>{};
+ Map<String, List> locations = <String, List>{};
 
 class MapPage extends StatefulWidget {
   @override
@@ -77,22 +77,23 @@ class MapPageState extends State<MapPage> {
     }
 
     //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
-    void checkFirebase() async{
+    void checkFirebase() async {
     Location location = new Location();
     LocationData currentLoc =  await location.getLocation();
     double distance;
       try {
-        FirebaseFirestore.instance
+         FirebaseFirestore.instance
             .collection('markers')
             .get()
             .then((QuerySnapshot querySnapshot) => {
         querySnapshot.docs.forEach((doc) {
-          distance = SuperListener.calcDistance(currentLoc.latitude, currentLoc.longitude, doc["lat"], doc["long"]);
+          distance = SuperListener.calcDistance(currentLoc.latitude, currentLoc.longitude, double.parse(doc["lat"]), double.parse(doc["long"]));
 
           locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance];
+          print("LOC Updated");
         }),
           markers.clear(),
-        createMarkers(markers, locations)
+          createMarkers(markers),
         });
 
       }
@@ -101,6 +102,7 @@ class MapPageState extends State<MapPage> {
     print(e);
   }
   finally{
+
           print("Completed");
       }
     }
@@ -120,7 +122,7 @@ class MapPageState extends State<MapPage> {
 
     //value list goes [address, lat, long, foodlevel, notes]
   //method used to create all the Markers and populate the markers set with Markers
-    void createMarkers(Set<Marker> markers, Map<String, List> locations) {
+    void createMarkers(Set<Marker> markers) {
       Marker tempMarker;
     locations.forEach((key, value) {
       tempMarker = new Marker(

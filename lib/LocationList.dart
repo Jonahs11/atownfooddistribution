@@ -6,6 +6,8 @@ import 'package:atownfooddistribution/MapPage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:latlong/latlong.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 
 class LocationList extends StatefulWidget {
@@ -26,6 +28,7 @@ class LocationListState extends State<LocationList> {
   List<Widget> places = [];
   RefreshController refreshController = RefreshController();
   final Distance distance = new Distance();
+  List<Widget> sortedPlaces = [];
 
   @override
   void initState() {
@@ -33,30 +36,6 @@ class LocationListState extends State<LocationList> {
     super.initState();
   }
 
-  void loadKeys() {
-    //widget.myLocs.keys.forEach((element)
-    locations.keys.forEach((element)
-    {
-     print(element);
-    });
-  }
-
-  void calcDistance(double lat1, double long1, double lat2, double long2) {
-    final R = 6731000;
-    double lat1r = lat1 * (pi / 180);
-    double long1r = long1 * (pi / 180);
-    double lat2r = lat2 * (pi / 180);
-    double long2r = long2 * (pi / 180);
-
-    double diffLat = (lat1r - lat2r).abs();
-    double diffLong = (long1r - long2r).abs();
-
-    double a = pow((sin(diffLat / 2)),2) + (cos(lat1r) * cos(lat2r) * pow((sin(diffLong / 2)), 2));
-    double c = 2  * atan2(sqrt(a), sqrt(1-a));
-    double d = R * c;
-    print(d);
-
-  }
 
   Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
     return showDialog(context: context, builder: (context) {
@@ -103,49 +82,71 @@ class LocationListState extends State<LocationList> {
     } );
   }
 
+  Widget createCardForLocList(String key, List value) {
+    return GestureDetector(
+      onTap: () {
+        createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+      },
+      child: Card(
+        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+        child: Row(
+          children: [
+            Text(
+                key
+            ),
+            IconButton(icon: Icon(Icons.edit), onPressed: () {
+              print("Editing $key");
+              setState(() {
+                currentLoc = key;
+                editing = true;
+              });
+            }),
+            Text(value[7].toString()),
+
+          ],
+        ),
+      ),
+    );
+  }
+
   void loadPlaces() {
-    String name;
-    String address;
-    String foodLevel;
-    String notes;
-    String link;
+    places.clear();
     Widget tempWidget;
-    Map<String, Future> popUps = {};
+    double distance;
+    List nameDist = [];
+    List tempTuple = [];
+
     locations.forEach((key, value)
     {
-      // name = key;
-      // address = value[0];
-      // foodLevel = value[3];
-      // notes = value[4];
-      // link = value[5];
-      // popUps[key] = SuperListener.createAlert(context, name, address, foodLevel, notes, link);
 
-      tempWidget = GestureDetector(
-        onTap: () {
-          createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
-        },
-        child: Card(
-          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-          child: Row(
-            children: [
-              Text(
-                key
-              ),
-              IconButton(icon: Icon(Icons.edit), onPressed: () {
-                print("Editing $key");
-                setState(() {
-                  currentLoc = key;
-                  editing = true;
-                });
-              })
-            ],
-          ),
-        ),
-      );
+      distance = value[7];
+      tempTuple = [key, distance];
+      nameDist.add(tempTuple);
+
+    });
+    bool noChanges = true;
+    do {
+      noChanges = true;
+      for(int i = 0; i < nameDist.length - 1; i++) {
+
+        if(nameDist[i][1] > nameDist[i+1][1]) {
+          tempTuple = nameDist[i];
+          nameDist[i] = nameDist[i+1];
+          nameDist[i+1] = tempTuple;
+          noChanges = false;
+        }
+      }
+    }
+    while(!noChanges);
+
+    for(int k= 0; k < nameDist.length; k++) {
+      print(locations[nameDist[k][0]][4]);
+      tempWidget = createCardForLocList(nameDist[k][0], locations[nameDist[k][0]]);
       setState(() {
         places.add(tempWidget);
       });
-    });
+    }
+
   }
 
   double getDistance(double lat1, double long1, double lat2, double long2) {
@@ -154,14 +155,6 @@ class LocationListState extends State<LocationList> {
     return dist;
   }
 
-  void orderLocations() {
-    List distancePerLoc = [];
-
-    for(int i = 0; i < locations.length; i++){
-
-    }
-
-  }
 
   void updateFirebase(String foodLevel, String notes, String id) {
     SuperListener.updateFirebase(foodLevel, notes, id);
@@ -249,11 +242,10 @@ class LocationListState extends State<LocationList> {
     );
   }
 
-  void onRefresh() {
-    print("Refreshing now");
-    SuperListener.updateLocations();
-    loadPlaces();
-    refreshController.refreshCompleted();
+  void onRefresh()   {
+      SuperListener.updateLocations();
+      loadPlaces();
+      refreshController.refreshCompleted();
 
   }
 
@@ -273,9 +265,6 @@ class LocationListState extends State<LocationList> {
           enablePullDown: true,
           child: ListView(
               children: places.isEmpty? [Text("Swipe down to refresh")] : places
-              // [
-              //   Text("GOYA")
-              // ]
           ),
           onRefresh: onRefresh,
         )
