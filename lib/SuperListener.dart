@@ -77,5 +77,9 @@ class SuperListener {
     return dist;
   }
 
+   List getListLocations() {
+    return locationlist.getListLocs();
+  }
+
 
 }

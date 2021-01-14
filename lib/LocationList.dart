@@ -6,8 +6,7 @@ import 'package:atownfooddistribution/MapPage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:latlong/latlong.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:atownfooddistribution/Search.dart';
 
 
 class LocationList extends StatefulWidget {
@@ -34,6 +33,14 @@ class LocationListState extends State<LocationList> {
   void initState() {
     SuperListener.setPages(lPage: this);
     super.initState();
+  }
+
+  List getListLocs() {
+    List locationNames = [];
+    locations.keys.forEach((element) {
+      locationNames.add(element);
+    });
+    return locationNames;
   }
 
 
@@ -254,8 +261,15 @@ class LocationListState extends State<LocationList> {
     return Scaffold(
         appBar: AppBar(
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text("List of Locations"),
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(context: context, delegate: Search());
+                },
+              )
             ],
           ),
         ),
