@@ -4,6 +4,7 @@ import 'package:atownfooddistribution/WelcomeScreen.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 import 'package:atownfooddistribution/InformationPage.dart';
 import 'package:atownfooddistribution/LocationList.dart';
+import 'package:latlong/latlong.dart';
 
 class SuperListener {
   static  MyHomePageState homePage;
@@ -51,9 +52,6 @@ class SuperListener {
    this.myLocations = myLocations;
   }
 
-  Map getLocs() {
-    return myLocations;
-  }
 
   static void removeListLocScreen() {
     welcomeScreen.changeToWelcome();
@@ -62,5 +60,26 @@ class SuperListener {
   static void updateFirebase(String foodlevel, String notes, String id) {
     mapPage.updateFirebase(foodlevel, notes, id);
   }
+
+  static void updateLocList() {
+    locationlist.loadPlaces();
+  }
+
+  static void updateLocations() {
+    mapPage.checkFirebase();
+  }
+  static Future createAlert(BuildContext context, String name, String address, String amountFood, String notes, String link) {
+    return mapPage.createAlertDialog(context, name, address, amountFood, notes, link);
+  }
+
+  static double calcDistance(double lat1, double long1, double lat2, double long2) {
+    double dist = Distance().calculator.distance(LatLng(lat1, long1), LatLng(lat2, long2));
+    return dist;
+  }
+
+   List getListLocations() {
+    return locationlist.getListLocs();
+  }
+
 
 }

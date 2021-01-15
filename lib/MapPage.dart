@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/main.dart';
@@ -10,8 +9,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
+
+
 //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
-final Map<String, List> locations = <String, List>{};
+ Map<String, List> locations = <String, List>{};
 
 class MapPage extends StatefulWidget {
   @override
@@ -33,6 +34,7 @@ class MapPageState extends State<MapPage> {
   bool appInitialized = false;
   bool cameraMovementOn = false;
   DateTime now = new DateTime.now();
+  GestureDetector gestureDetector = new GestureDetector();
 
 
   //markers is a set that stores the Markers onto the Google Map
@@ -45,6 +47,8 @@ class MapPageState extends State<MapPage> {
   void onMapCreated(GoogleMapController controller) async {
     mapController = controller;
     locationStream =  location.onLocationChanged.listen((event) {
+
+     // print("$currentLat is the lat and $currentLong is the long");
       mapController.animateCamera( CameraUpdate.newCameraPosition(
           CameraPosition(
             target: LatLng(event.latitude, event.longitude),
@@ -73,19 +77,23 @@ class MapPageState extends State<MapPage> {
     }
 
     //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
-    void checkFirebase() {
-
+    void checkFirebase() async {
+    Location location = new Location();
+    LocationData currentLoc =  await location.getLocation();
+    double distance;
       try {
-        FirebaseFirestore.instance
+         FirebaseFirestore.instance
             .collection('markers')
             .get()
             .then((QuerySnapshot querySnapshot) => {
         querySnapshot.docs.forEach((doc) {
-          print(doc.id);
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id];
+          distance = SuperListener.calcDistance(currentLoc.latitude, currentLoc.longitude, double.parse(doc["lat"]), double.parse(doc["long"]));
+
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance];
+          print("LOC Updated");
         }),
           markers.clear(),
-        createMarkers(markers, locations)
+          createMarkers(markers),
         });
 
       }
@@ -94,6 +102,7 @@ class MapPageState extends State<MapPage> {
     print(e);
   }
   finally{
+
           print("Completed");
       }
     }
@@ -113,7 +122,7 @@ class MapPageState extends State<MapPage> {
 
     //value list goes [address, lat, long, foodlevel, notes]
   //method used to create all the Markers and populate the markers set with Markers
-    void createMarkers(Set<Marker> markers, Map<String, List> locations) {
+    void createMarkers(Set<Marker> markers) {
       Marker tempMarker;
     locations.forEach((key, value) {
       tempMarker = new Marker(
@@ -134,7 +143,7 @@ class MapPageState extends State<MapPage> {
 
 
     //method that return an alert dialog. This will be used when the markers are clicked on in app
-    createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
+     Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
             title: Row(
@@ -186,22 +195,6 @@ class MapPageState extends State<MapPage> {
       print(element.visible);
     });
     }
-    //
-    // void moveToMyLoc() async{
-    //
-    // try {
-    //   LocationData myLoc = await location.getLocation();
-    //   currentLat = myLoc.latitude;
-    //   currentLong = myLoc.latitude;
-    //   mapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
-    //       target: LatLng(currentLat, currentLong))
-    //   ));
-    // }
-    // catch(e)
-    //   {
-    //     print("Error");
-    //   }
-    // }
 
 
     void toggleSwitchSliderTap(bool val) {
@@ -242,32 +235,15 @@ class MapPageState extends State<MapPage> {
       body: Stack(
         children: [
           GoogleMap(
-            initialCameraPosition: CameraPosition(
-                target: LatLng(40.6023, -75.4714), zoom: 16),
-            onMapCreated: onMapCreated,
-            mapType: MapType.hybrid,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: mylocationEnabled,
-            markers: markers,
-            // onTap: (LatLng pos) {
-            //   if(cameraMovementOn) {
-            //     setState(() {
-            //       cameraMovementOn = false;
-            //       locationStream.pause();
-            //     });
-            //   }
-            //}
-
+          initialCameraPosition: CameraPosition(
+              target: LatLng(40.6023, -75.4714), zoom: 12),
+          onMapCreated: onMapCreated,
+          mapType: MapType.hybrid,
+          myLocationEnabled: true,
+          myLocationButtonEnabled: mylocationEnabled,
+          markers: markers,
           ),
 
-          Positioned(
-              right: 10,
-              bottom: 150,
-              child: FloatingActionButton(
-                  child: Icon(Icons.assignment_late_sharp),
-                  onPressed: () {
-                    SuperListener.navTo(2);
-          })),
           Positioned(
             top: 50,
               right: 5,
@@ -295,20 +271,6 @@ class MapPageState extends State<MapPage> {
               },
           ),
               )),
-          Positioned(
-              top: 35.0,
-              left: 5.0,
-              child: Container(
-                color: Colors.white,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                  ),
-                  onPressed: () {
-                    SuperListener.navTo(0);
-                  }
-                ),
-              ))
         ],
       ),
     );

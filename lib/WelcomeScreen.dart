@@ -40,37 +40,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
             ],
           ),
 
-
           SizedBox(height: 200,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FlatButton(
-                  color: Colors.blue,
-                  onPressed: () {
-                    // SuperListener.loadMap();
-                    SuperListener.navTo(1);
-                  },
-                  child: Text("Continue to map")),
-            ],
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FlatButton(
-                  color: Colors.blue,
-                  onPressed: () {
-                    // SuperListener.navTo(3);
-                    setState(() {
-                      showLocs();
-                      locListUp = true;
-                    });
-                  },
-                  child: Text("Continue to Location list")),
-            ],
-          ),
-
         ],
       ),
     );
@@ -90,6 +60,6 @@ class WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return locListUp? LocationList(locations): welcomeScreen();
+    return locListUp? LocationList(): welcomeScreen();
   }
 }

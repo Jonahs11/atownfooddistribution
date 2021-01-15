@@ -34,10 +34,12 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  int myIndex = 0;
+  int myIndex = 1;
   WelcomeScreen welcomeScreen = new WelcomeScreen();
   MapPage mapPage = new MapPage();
   InformationPage informationPage = new InformationPage();
+  LocationList locationList = new LocationList();
+  bool oneClick = false;
 
   @override
   void initState() {
@@ -60,9 +62,47 @@ class MyHomePageState extends State<MyHomePage> {
           children: [
             welcomeScreen,
             mapPage,
+            locationList,
             informationPage,
           ],
-        )
+        ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blue,
+        currentIndex: myIndex,
+       selectedItemColor: Colors.red,
+       // selectedItemColor: Colors.red,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.accessibility_new_rounded),
+              label: "Welcome Screen",
+            backgroundColor: Colors.blue
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.map_outlined),
+              label: "Map Page",
+              backgroundColor: Colors.blue
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: "Location List",
+              backgroundColor: Colors.blue
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.info),
+              label: "Information Page",
+              backgroundColor: Colors.blue
+          ),
+        ],
+        onTap: (int index) {
+          setState(() {
+            if(!oneClick) {
+              SuperListener.updateLocList();
+              oneClick = true;
+            }
+            myIndex = index;
+          });
+        } ,
+      ),
         );
   }
 }

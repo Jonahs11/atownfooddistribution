@@ -1,11 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/MapPage.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:latlong/latlong.dart';
+import 'package:atownfooddistribution/Search.dart';
+
 
 class LocationList extends StatefulWidget {
 
-  final Map myLocs;
-  const LocationList(this.myLocs);
+  // final Map myLocs;
+  // const LocationList(this.myLocs);
 
   @override
   LocationListState createState() => LocationListState();
@@ -17,6 +24,10 @@ class LocationListState extends State<LocationList> {
   bool editing = false;
   String currentLoc;
   final formKey = GlobalKey<FormState>();
+  List<Widget> places = [];
+  RefreshController refreshController = RefreshController();
+  final Distance distance = new Distance();
+  List<Widget> sortedPlaces = [];
 
   @override
   void initState() {
@@ -24,22 +35,71 @@ class LocationListState extends State<LocationList> {
     super.initState();
   }
 
-  void loadKeys() {
-    widget.myLocs.keys.forEach((element) {
-     print(element);
+  List getListLocs() {
+    List locationNames = [];
+    locations.keys.forEach((element) {
+      locationNames.add(element);
     });
+    return locationNames;
   }
 
-  List loadPlaces() {
-    List<Widget> containers = [];
-    Card tempCard;
-    widget.myLocs.forEach((key, value) {
-      tempCard = Card(
+
+  Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(child: Text(name,
+              style: TextStyle(
+                  fontSize: 40.0
+              ),),),
+            //  SizedBox(
+            //    width: 40.0,
+            //  ),
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        )
+        ,
+        content: Column(
+          children: [
+
+            Text(address),
+            Text("Current amount of food: $amountFood"),
+            Text(notes),
+            Row(
+              children: [
+                Text("Link:"),
+                IconButton(
+                  icon: Icon(Icons.link),
+                  onPressed: () {
+                    launch(link);
+                  },
+                )
+              ],
+            )
+          ],
+        ),
+      );
+    } );
+  }
+
+  Widget createCardForLocList(String key, List value) {
+    return GestureDetector(
+      onTap: () {
+        createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+      },
+      child: Card(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
         child: Row(
           children: [
             Text(
-              key
+                key
             ),
             IconButton(icon: Icon(Icons.edit), onPressed: () {
               print("Editing $key");
@@ -47,16 +107,61 @@ class LocationListState extends State<LocationList> {
                 currentLoc = key;
                 editing = true;
               });
-            })
+            }),
+            Text(value[7].toString()),
+
           ],
         ),
-      );
-
-      containers.add(tempCard);
-    });
-
-    return containers;
+      ),
+    );
   }
+
+  void loadPlaces() {
+    places.clear();
+    Widget tempWidget;
+    double distance;
+    List nameDist = [];
+    List tempTuple = [];
+
+    locations.forEach((key, value)
+    {
+
+      distance = value[7];
+      tempTuple = [key, distance];
+      nameDist.add(tempTuple);
+
+    });
+    bool noChanges = true;
+    do {
+      noChanges = true;
+      for(int i = 0; i < nameDist.length - 1; i++) {
+
+        if(nameDist[i][1] > nameDist[i+1][1]) {
+          tempTuple = nameDist[i];
+          nameDist[i] = nameDist[i+1];
+          nameDist[i+1] = tempTuple;
+          noChanges = false;
+        }
+      }
+    }
+    while(!noChanges);
+
+    for(int k= 0; k < nameDist.length; k++) {
+      print(locations[nameDist[k][0]][4]);
+      tempWidget = createCardForLocList(nameDist[k][0], locations[nameDist[k][0]]);
+      setState(() {
+        places.add(tempWidget);
+      });
+    }
+
+  }
+
+  double getDistance(double lat1, double long1, double lat2, double long2) {
+    double dist = distance.distance(LatLng(lat1, long1), LatLng(lat2, long2));
+    print(dist);
+    return dist;
+  }
+
 
   void updateFirebase(String foodLevel, String notes, String id) {
     SuperListener.updateFirebase(foodLevel, notes, id);
@@ -144,22 +249,40 @@ class LocationListState extends State<LocationList> {
     );
   }
 
+  void onRefresh()   {
+      SuperListener.updateLocations();
+      loadPlaces();
+      refreshController.refreshCompleted();
+
+  }
+
+
   Widget viewingPage() {
     return Scaffold(
         appBar: AppBar(
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text("List of Locations"),
-              IconButton(icon: Icon(Icons.close), onPressed: () {
-                SuperListener.removeListLocScreen();
-              })
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(context: context, delegate: Search());
+                },
+              )
             ],
           ),
         ),
         body: (
-            ListView(
-                children: loadPlaces()
-            )
+        SmartRefresher(
+          controller: refreshController,
+          enablePullDown: true,
+          child: ListView(
+              children: places.isEmpty? [Text("Swipe down to refresh")] : places
+          ),
+          onRefresh: onRefresh,
+        )
+
         )
     );
   }
