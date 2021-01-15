@@ -81,5 +81,9 @@ class SuperListener {
     return locationlist.getListLocs();
   }
 
+  static Future makeAlert(BuildContext context, String key, List value) {
+    return locationlist.createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+  }
+
 
 }

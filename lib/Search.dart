@@ -1,5 +1,6 @@
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:flutter/material.dart';
+import 'package:atownfooddistribution/MapPage.dart';
 
 class Search extends SearchDelegate<String> {
 
@@ -38,7 +39,8 @@ class Search extends SearchDelegate<String> {
           final String listItem = myList[index];
           return ListTile(
             onTap: () {
-              showResults(context);
+              print("Card for ${myList[index]} should come up");
+              SuperListener.makeAlert(context, myList[index], locations[myList[index]]);
             },
             title: Text(listItem),);
         });
@@ -56,16 +58,19 @@ class Search extends SearchDelegate<String> {
         style: TextStyle(
         ),
       ),
-    ) : ListView.builder(
-        itemCount: myList.length,
-        itemBuilder: (context, index) {
-          final String listItem = myList[index];
-          return ListTile(
-            onTap: () {
-              showResults(context);
-            },
-            title: Text(listItem),);
-        });
+    ) : Container(
+      color: Colors.grey,
+      child: ListView.builder(
+          itemCount: myList.length,
+          itemBuilder: (context, index) {
+            final String listItem = myList[index];
+            return ListTile(
+              onTap: () {
+                showResults(context);
+              },
+              title: Text(listItem),);
+          }),
+    );
   }
 
 }
