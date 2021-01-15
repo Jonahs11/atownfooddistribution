@@ -1,31 +1,35 @@
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/MapPage.dart';
+import 'package:atownfooddistribution/SuperListener.dart';
 
 class Search extends SearchDelegate<String> {
 
-
-
+  bool searchOpen = false;
 
   @override
   List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(icon: Icon(Icons.clear), onPressed: () {
-        query = "";
-    })
-    ];
+     return [
+    //   IconButton(icon: Icon(Icons.clear), onPressed: () {
+    //     query = "";
+    // })
+     ];
   }
 
   @override
   Widget buildLeading(BuildContext context) {
+    searchOpen = true;
+    print("The Search is now open!");
     return IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
       close(context, null);
+      searchOpen = false;
     });
   }
 
   @override
   Widget buildResults(BuildContext context) {
     print("ACCESSING build results");
+
 
     final List myList = query.isEmpty ?
     SuperListener().getListLocations():
@@ -38,12 +42,6 @@ class Search extends SearchDelegate<String> {
         itemBuilder: (context, index) {
           final String listItem = myList[index];
            return SuperListener.createCard(listItem, locations[listItem]);
-          // ListTile(
-          //   onTap: () {
-          //     print("Card for ${myList[index]} should come up");
-          //     SuperListener.makeAlert(context, myList[index], locations[myList[index]]);
-          //   },
-          //   title: Text(listItem),);
         });
 
   }
@@ -66,11 +64,7 @@ class Search extends SearchDelegate<String> {
           itemBuilder: (context, index) {
             final String listItem = myList[index];
              return SuperListener.createCard(listItem, locations[listItem]);
-            // ListTile(
-            //   onTap: () {
-            //     showResults(context);
-            //   },
-            //   title: Text(listItem),);
+
           }),
     );
   }

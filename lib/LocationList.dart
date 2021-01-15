@@ -1,3 +1,4 @@
+//import 'dart:html';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:latlong/latlong.dart';
 import 'package:atownfooddistribution/Search.dart';
 
+Search mySearch = Search();
 
 class LocationList extends StatefulWidget {
 
@@ -50,10 +52,31 @@ class LocationListState extends State<LocationList> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(child: Text(name,
-              style: TextStyle(
-                  fontSize: 40.0
-              ),),),
+            Center(child: Row(
+              children: [
+                Text(name,
+                  style: TextStyle(
+                      fontSize: 40.0
+                  ),),
+                IconButton(icon: Icon(Icons.edit), onPressed: () {
+                  setState(() {
+                    editing = true;
+                     Navigator.of(context).pop();
+                     try{
+                       if(mySearch.searchOpen) {
+                         mySearch.close(context, null);
+                       }
+                     }
+                     catch(e) {
+                       print("Error With Search");
+                     }
+
+                    currentLoc = name;
+
+                  });
+                })
+              ],
+            ),),
             //  SizedBox(
             //    width: 40.0,
             //  ),
@@ -101,13 +124,13 @@ class LocationListState extends State<LocationList> {
             Text(
                 key
             ),
-            IconButton(icon: Icon(Icons.edit), onPressed: () {
-              print("Editing $key");
-              setState(() {
-                currentLoc = key;
-                editing = true;
-              });
-            }),
+            // IconButton(icon: Icon(Icons.edit), onPressed: () {
+            //   print("Editing $key");
+            //   setState(() {
+            //     currentLoc = key;
+            //     editing = true;
+            //   });
+            // }),
             Text(value[7].toString()),
 
           ],
@@ -192,6 +215,7 @@ class LocationListState extends State<LocationList> {
             children: [
               IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
                 setState(() {
+                  mySearch.searchOpen = false;
                   editing = false;
                 });
               })
@@ -236,10 +260,10 @@ class LocationListState extends State<LocationList> {
           FlatButton(
               onPressed: () {
                 setState(() {
-                print(myController1.text);
-                print(myController2.text);
                 updateFirebase(myController1.text, myController2.text, docID);
+                SuperListener.updateLocations();
                   editing = false;
+                  mySearch.searchOpen = false;
                 });
           },
               child: Text("Save")
@@ -267,7 +291,7 @@ class LocationListState extends State<LocationList> {
               IconButton(
                 icon: Icon(Icons.search),
                 onPressed: () {
-                  showSearch(context: context, delegate: Search());
+                  showSearch(context: context, delegate: mySearch);
                 },
               )
             ],

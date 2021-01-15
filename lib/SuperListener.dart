@@ -1,3 +1,4 @@
+import 'package:atownfooddistribution/Search.dart';
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/main.dart';
 import 'package:atownfooddistribution/WelcomeScreen.dart';
@@ -6,12 +7,15 @@ import 'package:atownfooddistribution/InformationPage.dart';
 import 'package:atownfooddistribution/LocationList.dart';
 import 'package:latlong/latlong.dart';
 
+
 class SuperListener {
   static  MyHomePageState homePage;
   static MapPageState mapPage;
   static WelcomeScreenState welcomeScreen;
   static InformationPageState informationPage;
   static LocationListState locationlist;
+
+  Search search = new Search();
 
   Map myLocations;
 
@@ -88,6 +92,10 @@ class SuperListener {
   static createCard(String key, List value) {
     return locationlist.createCardForLocList(key, value);
   }
+
+  //  static void closeSearch(BuildContext context) {
+  //   Search().closeSearch(context);
+  // }
 
 
 }
