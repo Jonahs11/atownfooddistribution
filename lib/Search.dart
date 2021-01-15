@@ -37,12 +37,13 @@ class Search extends SearchDelegate<String> {
         itemCount: myList.length,
         itemBuilder: (context, index) {
           final String listItem = myList[index];
-          return ListTile(
-            onTap: () {
-              print("Card for ${myList[index]} should come up");
-              SuperListener.makeAlert(context, myList[index], locations[myList[index]]);
-            },
-            title: Text(listItem),);
+           return SuperListener.createCard(listItem, locations[listItem]);
+          // ListTile(
+          //   onTap: () {
+          //     print("Card for ${myList[index]} should come up");
+          //     SuperListener.makeAlert(context, myList[index], locations[myList[index]]);
+          //   },
+          //   title: Text(listItem),);
         });
 
   }
@@ -64,11 +65,12 @@ class Search extends SearchDelegate<String> {
           itemCount: myList.length,
           itemBuilder: (context, index) {
             final String listItem = myList[index];
-            return ListTile(
-              onTap: () {
-                showResults(context);
-              },
-              title: Text(listItem),);
+             return SuperListener.createCard(listItem, locations[listItem]);
+            // ListTile(
+            //   onTap: () {
+            //     showResults(context);
+            //   },
+            //   title: Text(listItem),);
           }),
     );
   }
