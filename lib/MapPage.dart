@@ -48,7 +48,7 @@ class MapPageState extends State<MapPage> {
     mapController = controller;
     locationStream =  location.onLocationChanged.listen((event) {
 
-      print("$currentLat is the lat and $currentLong is the long");
+     // print("$currentLat is the lat and $currentLong is the long");
       mapController.animateCamera( CameraUpdate.newCameraPosition(
           CameraPosition(
             target: LatLng(event.latitude, event.longitude),
@@ -195,22 +195,6 @@ class MapPageState extends State<MapPage> {
       print(element.visible);
     });
     }
-    //
-    // void moveToMyLoc() async{
-    //
-    // try {
-    //   LocationData myLoc = await location.getLocation();
-    //   currentLat = myLoc.latitude;
-    //   currentLong = myLoc.latitude;
-    //   mapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
-    //       target: LatLng(currentLat, currentLong))
-    //   ));
-    // }
-    // catch(e)
-    //   {
-    //     print("Error");
-    //   }
-    // }
 
 
     void toggleSwitchSliderTap(bool val) {
@@ -252,7 +236,7 @@ class MapPageState extends State<MapPage> {
         children: [
           GoogleMap(
           initialCameraPosition: CameraPosition(
-              target: LatLng(40.6023, -75.4714), zoom: 16),
+              target: LatLng(40.6023, -75.4714), zoom: 12),
           onMapCreated: onMapCreated,
           mapType: MapType.hybrid,
           myLocationEnabled: true,
