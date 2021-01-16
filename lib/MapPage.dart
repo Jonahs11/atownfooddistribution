@@ -77,7 +77,7 @@ class MapPageState extends State<MapPage> {
     }
 
     //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
-    void checkFirebase() async {
+    Future<void> checkFirebase() async {
     Location location = new Location();
     LocationData currentLoc =  await location.getLocation();
     double distance;

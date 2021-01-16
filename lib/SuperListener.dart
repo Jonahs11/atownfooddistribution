@@ -1,3 +1,4 @@
+import 'package:atownfooddistribution/Search.dart';
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/main.dart';
 import 'package:atownfooddistribution/WelcomeScreen.dart';
@@ -6,6 +7,7 @@ import 'package:atownfooddistribution/InformationPage.dart';
 import 'package:atownfooddistribution/LocationList.dart';
 import 'package:latlong/latlong.dart';
 
+
 class SuperListener {
   static  MyHomePageState homePage;
   static MapPageState mapPage;
@@ -13,7 +15,7 @@ class SuperListener {
   static InformationPageState informationPage;
   static LocationListState locationlist;
 
-  Map myLocations;
+  Search search = new Search();
 
   static void setPages({
     MyHomePageState hPage,
@@ -48,9 +50,9 @@ class SuperListener {
     //mapPage.moveToMyLoc();
   }
 
-  void setMyLocs(Map<String, List> myLocations) {
-   this.myLocations = myLocations;
-  }
+  // void setMyLocs(Map<String, List> myLocations) {
+  //  this.myLocations = myLocations;
+  // }
 
 
   static void removeListLocScreen() {
@@ -65,8 +67,8 @@ class SuperListener {
     locationlist.loadPlaces();
   }
 
-  static void updateLocations() {
-    mapPage.checkFirebase();
+  static Future<void> updateLocations() async {
+     mapPage.checkFirebase();
   }
   static Future createAlert(BuildContext context, String name, String address, String amountFood, String notes, String link) {
     return mapPage.createAlertDialog(context, name, address, amountFood, notes, link);
@@ -80,6 +82,18 @@ class SuperListener {
    List getListLocations() {
     return locationlist.getListLocs();
   }
+
+  static Future makeAlert(BuildContext context, String key, List value) {
+    return locationlist.createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+  }
+
+  static createCard(String key, List value) {
+    return locationlist.createCardForLocList(key, value);
+  }
+
+  //  static void closeSearch(BuildContext context) {
+  //   Search().closeSearch(context);
+  // }
 
 
 }
