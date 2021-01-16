@@ -124,6 +124,7 @@ class LocationListState extends State<LocationList> {
             Text(
                 key
             ),
+            SizedBox(width: 50.0,),
             // IconButton(icon: Icon(Icons.edit), onPressed: () {
             //   print("Editing $key");
             //   setState(() {
@@ -148,7 +149,6 @@ class LocationListState extends State<LocationList> {
 
     locations.forEach((key, value)
     {
-
       distance = value[7];
       tempTuple = [key, distance];
       nameDist.add(tempTuple);
@@ -274,8 +274,7 @@ class LocationListState extends State<LocationList> {
   }
 
   void onRefresh()   {
-      SuperListener.updateLocations();
-      loadPlaces();
+      SuperListener.updateLocations().then((value) => loadPlaces());
       refreshController.refreshCompleted();
 
   }
@@ -293,7 +292,15 @@ class LocationListState extends State<LocationList> {
                 onPressed: () {
                   showSearch(context: context, delegate: mySearch);
                 },
-              )
+              ),
+              IconButton(icon: Icon(Icons.refresh), onPressed: () {
+                setState(() {
+                  print("Hello");
+
+                  places.clear();
+                });
+
+              })
             ],
           ),
         ),
@@ -306,7 +313,6 @@ class LocationListState extends State<LocationList> {
           ),
           onRefresh: onRefresh,
         )
-
         )
     );
   }

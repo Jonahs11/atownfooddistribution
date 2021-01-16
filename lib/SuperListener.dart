@@ -17,8 +17,6 @@ class SuperListener {
 
   Search search = new Search();
 
-  Map myLocations;
-
   static void setPages({
     MyHomePageState hPage,
     MapPageState mPage,
@@ -52,9 +50,9 @@ class SuperListener {
     //mapPage.moveToMyLoc();
   }
 
-  void setMyLocs(Map<String, List> myLocations) {
-   this.myLocations = myLocations;
-  }
+  // void setMyLocs(Map<String, List> myLocations) {
+  //  this.myLocations = myLocations;
+  // }
 
 
   static void removeListLocScreen() {
@@ -69,8 +67,8 @@ class SuperListener {
     locationlist.loadPlaces();
   }
 
-  static void updateLocations() {
-    mapPage.checkFirebase();
+  static Future<void> updateLocations() async {
+     mapPage.checkFirebase();
   }
   static Future createAlert(BuildContext context, String name, String address, String amountFood, String notes, String link) {
     return mapPage.createAlertDialog(context, name, address, amountFood, notes, link);
