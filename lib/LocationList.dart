@@ -12,7 +12,6 @@ import 'package:atownfooddistribution/Search.dart';
 Search mySearch = Search();
 
 class LocationList extends StatefulWidget {
-
   // final Map myLocs;
   // const LocationList(this.myLocs);
 
@@ -21,7 +20,6 @@ class LocationList extends StatefulWidget {
 }
 
 class LocationListState extends State<LocationList> {
-
   List<String> keys = [];
   bool editing = false;
   String currentLoc;
@@ -30,11 +28,18 @@ class LocationListState extends State<LocationList> {
   RefreshController refreshController = RefreshController();
   final Distance distance = new Distance();
   List<Widget> sortedPlaces = [];
+  bool administrator = false;
 
   @override
   void initState() {
     SuperListener.setPages(lPage: this);
     super.initState();
+  }
+
+  void makeAdmin() {
+    setState(() {
+      administrator = true;
+    });
   }
 
   List getListLocs() {
@@ -45,71 +50,66 @@ class LocationListState extends State<LocationList> {
     return locationNames;
   }
 
-
-  Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
-    return showDialog(context: context, builder: (context) {
-      return AlertDialog(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(child: Row(
-              children: [
-                Text(name,
-                  style: TextStyle(
-                      fontSize: 40.0
-                  ),),
-                IconButton(icon: Icon(Icons.edit), onPressed: () {
+  Future createAlertDialog(BuildContext context, String name, String address,
+      String amountFood, String notes, String link) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                name,
+                style: TextStyle(fontSize: 30.0),
+              ),
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
                   setState(() {
                     editing = true;
-                     Navigator.of(context).pop();
-                     try{
-                       if(mySearch.searchOpen) {
-                         mySearch.close(context, null);
-                       }
-                     }
-                     catch(e) {
-                       print("Error With Search");
-                     }
+                    Navigator.of(context).pop();
+                    try {
+                      if (mySearch.searchOpen) {
+                        mySearch.close(context, null);
+                      }
+                    } catch (e) {
+                      print("Error With Search");
+                    }
 
                     currentLoc = name;
-
                   });
-                })
-              ],
-            ),),
-            //  SizedBox(
-            //    width: 40.0,
-            //  ),
-            IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        )
-        ,
-        content: Column(
-          children: [
-
-            Text(address),
-            Text("Current amount of food: $amountFood"),
-            Text(notes),
-            Row(
-              children: [
-                Text("Link:"),
-                IconButton(
-                  icon: Icon(Icons.link),
-                  onPressed: () {
-                    launch(link);
-                  },
-                )
-              ],
-            )
-          ],
-        ),
-      );
-    } );
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+          content: Column(
+            children: [
+              Text(address),
+              Text("Current amount of food: $amountFood"),
+              Text(notes),
+              Row(
+                children: [
+                  Text("Link:"),
+                  IconButton(
+                    icon: Icon(Icons.link),
+                    onPressed: () {
+                      launch(link);
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget createCardForLocList(String key, List value) {
@@ -117,24 +117,27 @@ class LocationListState extends State<LocationList> {
       onTap: () {
         createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
       },
-      child: Card(
-        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-        child: Row(
-          children: [
-            Text(
-                key
+      child: Container(
+        height: 60.0,
+        child: Card(
+          elevation: 4.0,
+          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  key,
+                  style: TextStyle(fontSize: 18.0),
+                ),
+                Text(
+                  value[7].toString(),
+                  style: TextStyle(fontSize: 18.0),
+                ),
+              ],
             ),
-            SizedBox(width: 50.0,),
-            // IconButton(icon: Icon(Icons.edit), onPressed: () {
-            //   print("Editing $key");
-            //   setState(() {
-            //     currentLoc = key;
-            //     editing = true;
-            //   });
-            // }),
-            Text(value[7].toString()),
-
-          ],
+          ),
         ),
       ),
     );
@@ -147,36 +150,32 @@ class LocationListState extends State<LocationList> {
     List nameDist = [];
     List tempTuple = [];
 
-    locations.forEach((key, value)
-    {
+    locations.forEach((key, value) {
       distance = value[7];
       tempTuple = [key, distance];
       nameDist.add(tempTuple);
-
     });
     bool noChanges = true;
     do {
       noChanges = true;
-      for(int i = 0; i < nameDist.length - 1; i++) {
-
-        if(nameDist[i][1] > nameDist[i+1][1]) {
+      for (int i = 0; i < nameDist.length - 1; i++) {
+        if (nameDist[i][1] > nameDist[i + 1][1]) {
           tempTuple = nameDist[i];
-          nameDist[i] = nameDist[i+1];
-          nameDist[i+1] = tempTuple;
+          nameDist[i] = nameDist[i + 1];
+          nameDist[i + 1] = tempTuple;
           noChanges = false;
         }
       }
-    }
-    while(!noChanges);
+    } while (!noChanges);
 
-    for(int k= 0; k < nameDist.length; k++) {
+    for (int k = 0; k < nameDist.length; k++) {
       print(locations[nameDist[k][0]][4]);
-      tempWidget = createCardForLocList(nameDist[k][0], locations[nameDist[k][0]]);
+      tempWidget =
+          createCardForLocList(nameDist[k][0], locations[nameDist[k][0]]);
       setState(() {
         places.add(tempWidget);
       });
     }
-
   }
 
   double getDistance(double lat1, double long1, double lat2, double long2) {
@@ -184,7 +183,6 @@ class LocationListState extends State<LocationList> {
     print(dist);
     return dist;
   }
-
 
   void updateFirebase(String foodLevel, String notes, String id) {
     SuperListener.updateFirebase(foodLevel, notes, id);
@@ -196,12 +194,10 @@ class LocationListState extends State<LocationList> {
     String foodLevel = locations[key][3];
     String notes = locations[key][4];
     String docID = locations[key][6];
-    TextEditingController myController1 = new TextEditingController(
-      text: foodLevel
-    );
-    TextEditingController myController2 = new TextEditingController(
-      text: notes
-    );
+    TextEditingController myController1 =
+        new TextEditingController(text: foodLevel);
+    TextEditingController myController2 =
+        new TextEditingController(text: notes);
     TextEditingController myController3 = new TextEditingController();
     TextEditingController myController4 = new TextEditingController();
 
@@ -213,27 +209,24 @@ class LocationListState extends State<LocationList> {
         children: [
           Row(
             children: [
-              IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
-                setState(() {
-                  mySearch.searchOpen = false;
-                  editing = false;
-                });
-              })
+              IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  setState(() {
+                    mySearch.searchOpen = false;
+                    editing = false;
+                  });
+                },
+              ),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("Location Name: "),
-              Text(name)
-            ],
+            children: [Text("Location Name: "), Text(name)],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("Address of Location: "),
-              Text(address)
-            ],
+            children: [Text("Address of Location: "), Text(address)],
           ),
           Card(
             child: Padding(
@@ -245,8 +238,7 @@ class LocationListState extends State<LocationList> {
                   children: [
                     TextFormField(
                       controller: myController1,
-                      onChanged: (String val) {
-                      },
+                      onChanged: (String val) {},
                     ),
                     TextFormField(
                       controller: myController2,
@@ -256,29 +248,25 @@ class LocationListState extends State<LocationList> {
               ),
             ),
           ),
-
           FlatButton(
               onPressed: () {
                 setState(() {
-                updateFirebase(myController1.text, myController2.text, docID);
-                SuperListener.updateLocations();
+                  updateFirebase(myController1.text, myController2.text, docID);
+                  SuperListener.updateLocations();
                   editing = false;
                   mySearch.searchOpen = false;
                 });
-          },
-              child: Text("Save")
-          )
+              },
+              child: Text("Save"))
         ],
       ),
     );
   }
 
-  void onRefresh()   {
-      SuperListener.updateLocations().then((value) => loadPlaces());
-      refreshController.refreshCompleted();
-
+  void onRefresh() {
+    SuperListener.updateLocations().then((value) => loadPlaces());
+    refreshController.refreshCompleted();
   }
-
 
   Widget viewingPage() {
     return Scaffold(
@@ -293,32 +281,30 @@ class LocationListState extends State<LocationList> {
                   showSearch(context: context, delegate: mySearch);
                 },
               ),
-              IconButton(icon: Icon(Icons.refresh), onPressed: () {
-                setState(() {
-                  print("Hello");
+              IconButton(
+                  icon: Icon(Icons.refresh),
+                  onPressed: () {
+                    setState(() {
+                      print("Hello");
 
-                  places.clear();
-                });
-
-              })
+                      places.clear();
+                    });
+                  })
             ],
           ),
         ),
-        body: (
-        SmartRefresher(
+        body: (SmartRefresher(
           controller: refreshController,
           enablePullDown: true,
           child: ListView(
-              children: places.isEmpty? [Text("Swipe down to refresh")] : places
-          ),
+              children:
+                  places.isEmpty ? [Text("Swipe down to refresh")] : places),
           onRefresh: onRefresh,
-        )
-        )
-    );
+        )));
   }
 
   @override
   Widget build(BuildContext context) {
-    return editing? editingPage(currentLoc): viewingPage();
+    return editing ? editingPage(currentLoc) : viewingPage();
   }
 }
