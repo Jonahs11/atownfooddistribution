@@ -1,5 +1,7 @@
 //import 'dart:html';
+import 'dart:io';
 import 'dart:math';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
@@ -8,6 +10,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:latlong/latlong.dart';
 import 'package:atownfooddistribution/Search.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:convert';
 
 Search mySearch = Search();
 
@@ -30,11 +34,51 @@ class LocationListState extends State<LocationList> {
   RefreshController refreshController = RefreshController();
   final Distance distance = new Distance();
   List<Widget> sortedPlaces = [];
+  List favorites = [];
+
+  Directory directory;
+  File jsonFile;
+  String fileName = 'favorites.json';
+  bool fileExists;
+  List fileContent = [];
+
+
+  bool viewingLocList = true;
+  bool viewingFavList = false;
+  bool editingLoc = false;
+  bool searchInUse = false;
 
   @override
   void initState() {
     SuperListener.setPages(lPage: this);
+    loadInFile();
     super.initState();
+  }
+
+  void loadInFile() {
+    getApplicationDocumentsDirectory().then((Directory directory) {
+      this.directory = directory;
+      jsonFile = new File(directory.path + "/" + fileName);
+      fileExists = jsonFile.existsSync();
+
+      if(fileExists) {
+        this.setState(() {
+          favorites = json.decode(jsonFile.readAsStringSync());
+          print("Favs loaded in");
+        });
+      }
+      else
+      {
+        createFile(favorites);
+      }
+
+    });
+  }
+
+  void checkFavsContents() {
+    for(String i in favorites) {
+      print(i);
+    }
   }
 
   List getListLocs() {
@@ -44,6 +88,26 @@ class LocationListState extends State<LocationList> {
     });
     return locationNames;
   }
+
+  void writeToFile(List favs) {
+    print("Writing to file");
+    if(fileExists) {
+      print("File exists");
+      jsonFile.writeAsStringSync(jsonEncode(favs));
+    }
+    else {
+      print("Creating new file");
+      createFile(favs);
+    }
+  }
+
+  void createFile(List favs) {
+    //File file = new File(directory.path + "/" + fileName);
+    jsonFile.createSync();
+    fileExists = true;
+    jsonFile.writeAsStringSync(jsonEncode(favs));
+  }
+
 
 
   Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
@@ -61,6 +125,10 @@ class LocationListState extends State<LocationList> {
                 IconButton(icon: Icon(Icons.edit), onPressed: () {
                   setState(() {
                     editing = true;
+                    viewingLocList = false;
+                    viewingFavList = false;
+                    searchInUse = false;
+
                      Navigator.of(context).pop();
                      try{
                        if(mySearch.searchOpen) {
@@ -114,6 +182,7 @@ class LocationListState extends State<LocationList> {
 
   Widget createCardForLocList(String key, List value) {
     return GestureDetector(
+      key: UniqueKey(),
       onTap: () {
         createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
       },
@@ -125,13 +194,26 @@ class LocationListState extends State<LocationList> {
                 key
             ),
             SizedBox(width: 50.0,),
-            // IconButton(icon: Icon(Icons.edit), onPressed: () {
-            //   print("Editing $key");
-            //   setState(() {
-            //     currentLoc = key;
-            //     editing = true;
-            //   });
-            // }),
+            IconButton(
+                icon: Icon(
+                  Icons.star,
+                  color: favorites.contains(key)? Colors.yellowAccent: Colors.grey,
+                ),
+                onPressed: () {
+                 if(favorites.contains(key)) {
+                   print("Removing");
+                   setState(() {
+                     favorites.remove(key);
+                   });
+                 }
+                 else {
+                   print("adding");
+                   setState(() {
+                     favorites.add(key);
+                   });
+                 }
+                 writeToFile(favorites);
+            }),
             Text(value[7].toString()),
 
           ],
@@ -139,6 +221,7 @@ class LocationListState extends State<LocationList> {
       ),
     );
   }
+
 
   void loadPlaces() {
     places.clear();
@@ -217,6 +300,9 @@ class LocationListState extends State<LocationList> {
                 setState(() {
                   mySearch.searchOpen = false;
                   editing = false;
+                  viewingFavList = false;
+                  viewingLocList = true;
+
                 });
               })
             ],
@@ -262,8 +348,10 @@ class LocationListState extends State<LocationList> {
                 setState(() {
                 updateFirebase(myController1.text, myController2.text, docID);
                 SuperListener.updateLocations();
-                  editing = false;
-                  mySearch.searchOpen = false;
+                mySearch.searchOpen = false;
+                editing = false;
+                viewingFavList = false;
+                viewingLocList = true;
                 });
           },
               child: Text("Save")
@@ -280,6 +368,44 @@ class LocationListState extends State<LocationList> {
   }
 
 
+  Widget favoritesPage() {
+    List<Widget> myFavs = [];
+    for(String i in favorites) {
+      Widget tempWidget = createCardForLocList(i , locations[i]);
+      myFavs.add(tempWidget);
+    }
+    return Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back_rounded),
+                onPressed: () {
+                  setState(() {
+                    viewingFavList = false;
+                    viewingLocList = true;
+                  });
+                },
+              ),
+              Text("Favorite Locations Page"),
+
+            ],
+          ),
+        ),
+        body: (
+            SmartRefresher(
+              controller: refreshController,
+              enablePullDown: true,
+              child: ListView(
+                  children: myFavs.isEmpty? [Text("You have selected no favorites")] : myFavs
+              ),
+              onRefresh: onRefresh,
+            )
+        )
+    );
+  }
+
   Widget viewingPage() {
     return Scaffold(
         appBar: AppBar(
@@ -295,11 +421,18 @@ class LocationListState extends State<LocationList> {
               ),
               IconButton(icon: Icon(Icons.refresh), onPressed: () {
                 setState(() {
-                  print("Hello");
-
-                  places.clear();
+                  checkFavsContents();
+                 // places.clear();
                 });
 
+              }),
+              IconButton(
+                  icon: Icon(Icons.star),
+                  onPressed: () {
+                    setState(() {
+                      viewingFavList = true;
+                      viewingLocList = false;
+                    });
               })
             ],
           ),
@@ -319,6 +452,15 @@ class LocationListState extends State<LocationList> {
 
   @override
   Widget build(BuildContext context) {
-    return editing? editingPage(currentLoc): viewingPage();
+    if(editing) {
+      return editingPage(currentLoc);
+    }
+    else if(viewingLocList) {
+      return viewingPage();
+    }
+    else if(viewingFavList) {
+      return favoritesPage();
+    }
+   // return editing? editingPage(currentLoc): viewingPage();
   }
 }
