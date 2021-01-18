@@ -149,10 +149,12 @@ class MapPageState extends State<MapPage> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(child: Text(name,
-                  style: TextStyle(
-                      fontSize: 40.0
-                  ),),),
+                Expanded(
+                  child: Center(child:
+                  Text(name
+
+                    ),),
+                ),
                //  SizedBox(
                //    width: 40.0,
                //  ),

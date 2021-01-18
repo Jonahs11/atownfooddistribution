@@ -122,7 +122,7 @@ class LocationListState extends State<LocationList> {
                 children: [
                   Text(name,
                     style: TextStyle(
-                      
+
                     ),),
                   IconButton(icon: Icon(Icons.edit), onPressed: () {
                     setState(() {
