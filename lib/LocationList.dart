@@ -116,42 +116,35 @@ class LocationListState extends State<LocationList> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(child: Row(
-              children: [
-                Flex(direction: Axis.horizontal,
-                children: [
-                  Text(name,
-                    style: TextStyle(
+            Expanded(
+              child: Text(name),
+            ),
+            Expanded(child: Expanded(
+              child: IconButton(icon: Icon(Icons.edit), onPressed: () {
+                setState(() {
+                  editing = true;
+                  viewingLocList = false;
+                  viewingFavList = false;
+                  searchInUse = false;
 
-                    ),),
-                  IconButton(icon: Icon(Icons.edit), onPressed: () {
-                    setState(() {
-                      editing = true;
-                      viewingLocList = false;
-                      viewingFavList = false;
-                      searchInUse = false;
+                  Navigator.of(context).pop();
+                  try{
+                    if(mySearch.searchOpen) {
+                      mySearch.close(context, null);
+                    }
+                  }
+                  catch(e) {
+                    print("Error With Search");
+                  }
 
-                      Navigator.of(context).pop();
-                      try{
-                        if(mySearch.searchOpen) {
-                          mySearch.close(context, null);
-                        }
-                      }
-                      catch(e) {
-                        print("Error With Search");
-                      }
+                  currentLoc = name;
 
-                      currentLoc = name;
-
-                    });
-                  })
-                ],)
-
-              ],
-            ),),
-            //  SizedBox(
-            //    width: 40.0,
-            //  ),
+                });
+              }),
+            )),
+             SizedBox(
+               width: 40.0,
+             ),
             IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
@@ -194,32 +187,34 @@ class LocationListState extends State<LocationList> {
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
         child: Row(
           children: [
-            Text(
-                key
+            Expanded(
+              child: Text(
+                  key
+              ),
             ),
-            SizedBox(width: 50.0,),
-            IconButton(
-                icon: Icon(
-                  Icons.star,
-                  color: favorites.contains(key)? Colors.yellowAccent: Colors.grey,
-                ),
-                onPressed: () {
-                 if(favorites.contains(key)) {
-                   print("Removing");
-                   setState(() {
-                     favorites.remove(key);
-                   });
-                 }
-                 else {
-                   print("adding");
-                   setState(() {
-                     favorites.add(key);
-                   });
-                 }
-                 writeToFile(favorites);
-                 loadPlaces();
-            }),
-            Text(value[7].toString()),
+            Expanded(
+              child: IconButton(
+                  icon: Icon(
+                    Icons.star,
+                    color: favorites.contains(key)? Colors.yellowAccent: Colors.grey,
+                  ),
+                  onPressed: () {
+                   if(favorites.contains(key)) {
+                     print("Removing");
+                     setState(() {
+                       favorites.remove(key);
+                     });
+                   }
+                   else {
+                     print("adding");
+                     setState(() {
+                       favorites.add(key);
+                     });
+                   }
+                   writeToFile(favorites);
+                   loadPlaces();
+              }),
+            ),
 
           ],
         ),
