@@ -213,6 +213,7 @@ class LocationListState extends State<LocationList> {
                    });
                  }
                  writeToFile(favorites);
+                 loadPlaces();
             }),
             Text(value[7].toString()),
 
