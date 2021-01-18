@@ -118,31 +118,35 @@ class LocationListState extends State<LocationList> {
           children: [
             Center(child: Row(
               children: [
-                Text(name,
-                  style: TextStyle(
-                      fontSize: 40.0
-                  ),),
-                IconButton(icon: Icon(Icons.edit), onPressed: () {
-                  setState(() {
-                    editing = true;
-                    viewingLocList = false;
-                    viewingFavList = false;
-                    searchInUse = false;
+                Flex(direction: Axis.horizontal,
+                children: [
+                  Text(name,
+                    style: TextStyle(
+                      
+                    ),),
+                  IconButton(icon: Icon(Icons.edit), onPressed: () {
+                    setState(() {
+                      editing = true;
+                      viewingLocList = false;
+                      viewingFavList = false;
+                      searchInUse = false;
 
-                     Navigator.of(context).pop();
-                     try{
-                       if(mySearch.searchOpen) {
-                         mySearch.close(context, null);
-                       }
-                     }
-                     catch(e) {
-                       print("Error With Search");
-                     }
+                      Navigator.of(context).pop();
+                      try{
+                        if(mySearch.searchOpen) {
+                          mySearch.close(context, null);
+                        }
+                      }
+                      catch(e) {
+                        print("Error With Search");
+                      }
 
-                    currentLoc = name;
+                      currentLoc = name;
 
-                  });
-                })
+                    });
+                  })
+                ],)
+
               ],
             ),),
             //  SizedBox(
