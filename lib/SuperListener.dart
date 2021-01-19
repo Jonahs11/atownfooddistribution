@@ -87,13 +87,14 @@ class SuperListener {
     return locationlist.createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
   }
 
-  static createCard(String key, List value) {
-    return locationlist.createCardForLocList(key, value);
+  // static createCard(String key, List value) {
+  //   return locationlist.createCardForLocList(key, value);
+  // }
+
+  static writeToFile(List favs) {
+    locationlist.writeToFile(favs);
   }
 
-  //  static void closeSearch(BuildContext context) {
-  //   Search().closeSearch(context);
-  // }
 
 
 }

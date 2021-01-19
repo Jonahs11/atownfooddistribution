@@ -2,6 +2,7 @@ import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
+import 'package:atownfooddistribution/LocationCard.dart';
 
 class Search extends SearchDelegate<String> {
 
@@ -41,7 +42,7 @@ class Search extends SearchDelegate<String> {
         itemCount: myList.length,
         itemBuilder: (context, index) {
           final String listItem = myList[index];
-           return SuperListener.createCard(listItem, locations[listItem]);
+           return LocationCard(key: UniqueKey(), name: listItem, value: locations[listItem]);
         });
 
   }
@@ -63,7 +64,7 @@ class Search extends SearchDelegate<String> {
           itemCount: myList.length,
           itemBuilder: (context, index) {
             final String listItem = myList[index];
-             return SuperListener.createCard(listItem, locations[listItem]);
+             return LocationCard(key: UniqueKey(), name: listItem, value: locations[listItem]);
 
           }),
     );

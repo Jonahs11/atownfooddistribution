@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:async';
 
+import 'package:atownfooddistribution/LocationCard.dart';
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/MapPage.dart';
@@ -177,50 +178,49 @@ class LocationListState extends State<LocationList> {
     } );
   }
 
-  Widget createCardForLocList(String key, List value) {
-    return GestureDetector(
-      key: UniqueKey(),
-      onTap: () {
-        createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
-      },
-      child: Card(
-        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                  key
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                  icon: Icon(
-                    Icons.star,
-                    color: favorites.contains(key)? Colors.yellowAccent: Colors.grey,
-                  ),
-                  onPressed: () {
-                   if(favorites.contains(key)) {
-                     print("Removing");
-                     setState(() {
-                       favorites.remove(key);
-                     });
-                   }
-                   else {
-                     print("adding");
-                     setState(() {
-                       favorites.add(key);
-                     });
-                   }
-                   writeToFile(favorites);
-                   loadPlaces();
-              }),
-            ),
-
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget createCardForLocList(String key, List value) {
+  //   return GestureDetector(
+  //     onTap: () {
+  //       createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+  //     },
+  //     child: Card(
+  //       margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+  //       child: Row(
+  //         children: [
+  //           Expanded(
+  //             child: Text(
+  //                 key
+  //             ),
+  //           ),
+  //           Expanded(
+  //             child: IconButton(
+  //                 icon: Icon(
+  //                   Icons.star,
+  //                   color: favorites.contains(key)? Colors.yellowAccent: Colors.grey,
+  //                 ),
+  //                 onPressed: () {
+  //                  if(favorites.contains(key)) {
+  //                    print("Removing");
+  //                    setState(() {
+  //                      favorites.remove(key);
+  //                    });
+  //                  }
+  //                  else {
+  //                    print("adding");
+  //                    setState(() {
+  //                      favorites.add(key);
+  //                    });
+  //                  }
+  //                  writeToFile(favorites);
+  //                  loadPlaces();
+  //             }),
+  //           ),
+  //
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
 
   void loadPlaces() {
@@ -254,7 +254,7 @@ class LocationListState extends State<LocationList> {
 
     for(int k= 0; k < nameDist.length; k++) {
       print(locations[nameDist[k][0]][4]);
-      tempWidget = createCardForLocList(nameDist[k][0], locations[nameDist[k][0]]);
+      tempWidget = LocationCard(key: UniqueKey(), name: nameDist[k][0], value: locations[nameDist[k][0]], favorites: favorites);
       setState(() {
         places.add(tempWidget);
       });
@@ -371,7 +371,7 @@ class LocationListState extends State<LocationList> {
   Widget favoritesPage() {
     List<Widget> myFavs = [];
     for(String i in favorites) {
-      Widget tempWidget = createCardForLocList(i , locations[i]);
+      Widget tempWidget = LocationCard(key: UniqueKey(), name: i, value: locations[i], favorites: favorites,);
       myFavs.add(tempWidget);
     }
     return Scaffold(
@@ -464,3 +464,4 @@ class LocationListState extends State<LocationList> {
    // return editing? editingPage(currentLoc): viewingPage();
   }
 }
+
