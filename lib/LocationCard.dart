@@ -33,12 +33,83 @@ class _LocationCardState extends State<LocationCard> {
 
    _LocationCardState({this.name, this.value, this.favorites});
 
+
+   Future removeFavoriteConfirmation(BuildContext context) {
+     return showDialog(context: context, builder: (context) {
+       return AlertDialog(
+         title: Text("Are you sure you would like to remove $name as a favorite?"),
+         content: Row(
+           children: [
+             FlatButton(
+                 onPressed: () {
+                   if(this.mounted) {
+                     setState(() {
+                       favorites.remove(name);
+                       SuperListener.writeToFile(favorites);
+                       Navigator.of(context).pop();
+                     });
+                   }
+                   else {
+                       favorites.remove(name);
+                       SuperListener.writeToFile(favorites);
+                       Navigator.of(context).pop();
+                   }
+                 },
+                 child: Text("Yes Remove $name")),
+             FlatButton(
+                 onPressed: () {
+                   print("Keeping");
+                   Navigator.of(context).pop();
+                 },
+                 child: Text("No cancel")),
+           ],
+         ),
+       );
+     });
+   }
+
+   Future addFavoriteConfirmation(BuildContext context) {
+     return showDialog(context: context, builder: (context) {
+       return AlertDialog(
+         title: Text("Please confirm whether you would like to add $name as a favorite?"),
+         content: Row(
+           children: [
+             FlatButton(
+                 onPressed: () {
+                   if(this.mounted) {
+                     setState(() {
+                       favorites.add(name);
+                       SuperListener.writeToFile(favorites);
+                       Navigator.of(context).pop();
+                     });
+                   }
+                   else
+                     {
+                       favorites.add(name);
+                       SuperListener.writeToFile(favorites);
+                       Navigator.of(context).pop();
+                     }
+
+                 },
+                 child: Text("Yes add $name")),
+             FlatButton(
+                 onPressed: () {
+                   print("Keeping");
+                   Navigator.of(context).pop();
+                 },
+                 child: Text("No cancel")),
+           ],
+         ),
+       );
+     });
+   }
+
   @override
   Widget build(BuildContext context) {
     //return Widget createCardForLocList(String key, List value) {
     return GestureDetector(
       onTap: () {
-        SuperListener.createAlert(context, widget.name, widget.value[0], widget.value[3], widget.value[4], widget.value[5]);
+        SuperListener.createAlert(context, name, value[0], value[3], value[4], value[5]);
       },
       child: Card(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
@@ -46,29 +117,23 @@ class _LocationCardState extends State<LocationCard> {
           children: [
             Expanded(
               child: Text(
-                  widget.name
+                  name
               ),
             ),
             Expanded(
               child: IconButton(
                   icon: Icon(
                     Icons.star,
-                    color: widget.favorites.contains(widget.name)? Colors.yellowAccent: Colors.grey,
+                    color: favorites.contains(name)? Colors.yellowAccent: Colors.grey,
                   ),
                   onPressed: () {
-                    if(widget.favorites.contains(widget.name)) {
-                      print("Removing");
-                      setState(() {
-                        widget.favorites.remove(widget.name);
-                      });
+                    if(favorites.contains(name)) {
+                      removeFavoriteConfirmation(context);
                     }
                     else {
-                      print("adding");
-                      setState(() {
-                        widget.favorites.add(widget.name);
-                      });
+                      addFavoriteConfirmation(context);
                     }
-                    SuperListener.writeToFile(widget.favorites);
+                    print("File being updated");
                   }),
             ),
           ],
@@ -77,3 +142,4 @@ class _LocationCardState extends State<LocationCard> {
     );
   }
 }
+

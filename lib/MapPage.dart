@@ -62,6 +62,8 @@ class MapPageState extends State<MapPage> {
 
 
 
+
+
     //method used to initialize the database. This is necissary in order to pull anything from it
     void initFlutterFire() async {
       try {

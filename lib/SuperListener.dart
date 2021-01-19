@@ -95,12 +95,8 @@ class SuperListener {
     locationlist.writeToFile(favs);
   }
 
-  static refreshLocList() {
-    locationlist.setState(() {
-
-    });
+  static moveToFavs() {
+    locationlist.moveToFavs();
   }
-
-
 
 }

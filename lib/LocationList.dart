@@ -47,7 +47,6 @@ class LocationListState extends State<LocationList> {
   bool viewingLocList = true;
   bool viewingFavList = false;
   bool editingLoc = false;
-  bool searchInUse = false;
 
   @override
   void initState() {
@@ -55,6 +54,7 @@ class LocationListState extends State<LocationList> {
     loadInFile();
     super.initState();
   }
+
 
   void loadInFile() {
     getApplicationDocumentsDirectory().then((Directory directory) {
@@ -82,6 +82,14 @@ class LocationListState extends State<LocationList> {
     }
   }
 
+  void moveToFavs() {
+    setState(() {
+      viewingLocList = false;
+      editingLoc = false;
+      viewingFavList = true;
+    });
+  }
+
   List getListLocs() {
     List locationNames = [];
     locations.keys.forEach((element) {
@@ -94,6 +102,7 @@ class LocationListState extends State<LocationList> {
     print("Writing to file");
     if(fileExists) {
       print("File exists");
+      jsonFile.delete();
       jsonFile.writeAsStringSync(jsonEncode(favs));
     }
     else {
@@ -126,7 +135,6 @@ class LocationListState extends State<LocationList> {
                   editing = true;
                   viewingLocList = false;
                   viewingFavList = false;
-                  searchInUse = false;
 
                   Navigator.of(context).pop();
                   try{
@@ -177,50 +185,6 @@ class LocationListState extends State<LocationList> {
       );
     } );
   }
-
-  // Widget createCardForLocList(String key, List value) {
-  //   return GestureDetector(
-  //     onTap: () {
-  //       createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
-  //     },
-  //     child: Card(
-  //       margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-  //       child: Row(
-  //         children: [
-  //           Expanded(
-  //             child: Text(
-  //                 key
-  //             ),
-  //           ),
-  //           Expanded(
-  //             child: IconButton(
-  //                 icon: Icon(
-  //                   Icons.star,
-  //                   color: favorites.contains(key)? Colors.yellowAccent: Colors.grey,
-  //                 ),
-  //                 onPressed: () {
-  //                  if(favorites.contains(key)) {
-  //                    print("Removing");
-  //                    setState(() {
-  //                      favorites.remove(key);
-  //                    });
-  //                  }
-  //                  else {
-  //                    print("adding");
-  //                    setState(() {
-  //                      favorites.add(key);
-  //                    });
-  //                  }
-  //                  writeToFile(favorites);
-  //                  loadPlaces();
-  //             }),
-  //           ),
-  //
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
 
   void loadPlaces() {
