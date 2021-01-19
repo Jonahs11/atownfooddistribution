@@ -7,6 +7,7 @@ import 'package:atownfooddistribution/LocationCard.dart';
 class Search extends SearchDelegate<String> {
 
   bool searchOpen = false;
+  List favs = SuperListener.getFavs();
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -42,7 +43,7 @@ class Search extends SearchDelegate<String> {
         itemCount: myList.length,
         itemBuilder: (context, index) {
           final String listItem = myList[index];
-           return LocationCard(key: UniqueKey(), name: listItem, value: locations[listItem]);
+           return LocationCard(key: UniqueKey(), name: listItem, value: locations[listItem], favorites: favs,);
         });
 
   }
@@ -64,8 +65,7 @@ class Search extends SearchDelegate<String> {
           itemCount: myList.length,
           itemBuilder: (context, index) {
             final String listItem = myList[index];
-             return LocationCard(key: UniqueKey(), name: listItem, value: locations[listItem]);
-
+             return LocationCard(key: UniqueKey(), name: listItem, value: locations[listItem], favorites: favs,);
           }),
     );
   }
