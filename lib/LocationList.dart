@@ -47,6 +47,13 @@ class LocationListState extends State<LocationList> {
   bool viewingLocList = true;
   bool viewingFavList = false;
   bool editingLoc = false;
+  bool viewingAlphaList = false;
+
+
+  List<String> options = ["Alphabetical", "Distance", "Favorites"];
+  String currentValue = "Distance";
+
+  DropdownMenuItem selectedItem;
 
   @override
   void initState() {
@@ -71,9 +78,17 @@ class LocationListState extends State<LocationList> {
       else
       {
         createFile(favorites);
+        print("THERE was no file but now there is!");
       }
 
     });
+  }
+
+  void createFile(List favs) {
+    //File file = new File(directory.path + "/" + fileName);
+    jsonFile.createSync();
+    fileExists = true;
+    //jsonFile.writeAsStringSync(jsonEncode(favs));
   }
 
   void checkFavsContents() {
@@ -102,7 +117,6 @@ class LocationListState extends State<LocationList> {
     print("Writing to file");
     if(fileExists) {
       print("File exists");
-      jsonFile.delete();
       jsonFile.writeAsStringSync(jsonEncode(favs));
     }
     else {
@@ -111,12 +125,7 @@ class LocationListState extends State<LocationList> {
     }
   }
 
-  void createFile(List favs) {
-    //File file = new File(directory.path + "/" + fileName);
-    jsonFile.createSync();
-    fileExists = true;
-    jsonFile.writeAsStringSync(jsonEncode(favs));
-  }
+
 
 
 
@@ -129,28 +138,26 @@ class LocationListState extends State<LocationList> {
             Expanded(
               child: Text(name),
             ),
-            Expanded(child: Expanded(
-              child: IconButton(icon: Icon(Icons.edit), onPressed: () {
-                setState(() {
-                  editing = true;
-                  viewingLocList = false;
-                  viewingFavList = false;
+            Expanded(child: IconButton(icon: Icon(Icons.edit), onPressed: () {
+              setState(() {
+                editing = true;
+                viewingLocList = false;
+                viewingFavList = false;
 
-                  Navigator.of(context).pop();
-                  try{
-                    if(mySearch.searchOpen) {
-                      mySearch.close(context, null);
-                    }
+                Navigator.of(context).pop();
+                try{
+                  if(mySearch.searchOpen) {
+                    mySearch.close(context, null);
                   }
-                  catch(e) {
-                    print("Error With Search");
-                  }
+                }
+                catch(e) {
+                  print("Error With Search");
+                }
 
-                  currentLoc = name;
+                currentLoc = name;
 
-                });
-              }),
-            )),
+              });
+            })),
              SizedBox(
                width: 40.0,
              ),
@@ -187,7 +194,7 @@ class LocationListState extends State<LocationList> {
   }
 
 
-  void loadPlaces() {
+  void loadPlacesByDistance() {
     places.clear();
     Widget tempWidget;
     double distance;
@@ -223,7 +230,14 @@ class LocationListState extends State<LocationList> {
         places.add(tempWidget);
       });
     }
+  }
 
+  loadPlacesAlphabetically() {
+    setState(() {
+      LocationCard temp = places[1];
+      places[1] = places[0];
+      places[0] = temp;
+    });
   }
 
   double getDistance(double lat1, double long1, double lat2, double long2) {
@@ -326,7 +340,7 @@ class LocationListState extends State<LocationList> {
   }
 
   void onRefresh()   {
-      SuperListener.updateLocations().then((value) => loadPlaces());
+      SuperListener.updateLocations().then((value) => loadPlacesByDistance());
       refreshController.refreshCompleted();
 
   }
@@ -341,21 +355,31 @@ class LocationListState extends State<LocationList> {
     return Scaffold(
         appBar: AppBar(
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back_rounded),
-                onPressed: () {
-                  setState(() {
-                    viewingFavList = false;
-                    viewingLocList = true;
-                  });
-                },
-              ),
-              Text("Favorite Locations Page"),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Text("List of Locations"),
+            DropdownButton<String>(
+              value: currentValue,
+              items: options.map((String dropDownStringItem) {
+                return DropdownMenuItem<String>(
+                  value: dropDownStringItem,
+                  child: Text(dropDownStringItem),
+                );
+              }).toList(),
+              onChanged: (String newItemChoice) {
+                newOrderedValueSelected(newItemChoice);
+              },
 
-            ],
-          ),
+            ),
+
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                showSearch(context: context, delegate: mySearch);
+              },
+            ),
+          ],
+        ),
         ),
         body: (
             SmartRefresher(
@@ -370,48 +394,115 @@ class LocationListState extends State<LocationList> {
     );
   }
 
-  Widget viewingPage() {
+  Widget alphaPage() {
     return Scaffold(
         appBar: AppBar(
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("List of Locations"),
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  showSearch(context: context, delegate: mySearch);
-                },
-              ),
-              IconButton(icon: Icon(Icons.refresh), onPressed: () {
-                setState(() {
-                  checkFavsContents();
-                 // places.clear();
-                });
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Text("List of Locations"),
+            DropdownButton<String>(
+              value: currentValue,
+              items: options.map((String dropDownStringItem) {
+                return DropdownMenuItem<String>(
+                  value: dropDownStringItem,
+                  child: Text(dropDownStringItem),
+                );
+              }).toList(),
+              onChanged: (String newItemChoice) {
+                newOrderedValueSelected(newItemChoice);
+              },
 
-              }),
-              IconButton(
-                  icon: Icon(Icons.star),
-                  onPressed: () {
-                    setState(() {
-                      viewingFavList = true;
-                      viewingLocList = false;
-                    });
-              })
-            ],
-          ),
+            ),
+
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                showSearch(context: context, delegate: mySearch);
+              },
+            ),
+          ],
+        ),
         ),
         body: (
-        SmartRefresher(
-          controller: refreshController,
-          enablePullDown: true,
-          child: ListView(
-              children: places.isEmpty? [Text("Swipe down to refresh")] : places
-          ),
-          onRefresh: onRefresh,
-        )
+            SmartRefresher(
+              controller: refreshController,
+              enablePullDown: true,
+              child: ListView(
+                  children: []
+              ),
+              onRefresh: onRefresh,
+            )
         )
     );
+  }
+
+  Widget distancePage() {
+    return Scaffold(
+        appBar: locListAppBar(),
+        body:
+            SmartRefresher(
+              controller: refreshController,
+              enablePullDown: true,
+              child: ListView(
+                  children: places.isEmpty? [Text("Swipe down to refresh")] : places
+              ),
+              onRefresh: onRefresh,
+            )
+        );
+  }
+
+  AppBar locListAppBar() {
+    return AppBar(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text("Sort By: "),
+          DropdownButton<String>(
+            value: currentValue,
+            items: options.map((String dropDownStringItem) {
+              return DropdownMenuItem<String>(
+                value: dropDownStringItem,
+                child: Text(dropDownStringItem),
+              );
+            }).toList(),
+            onChanged: (String newItemChoice) {
+              newOrderedValueSelected(newItemChoice);
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: mySearch);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  newOrderedValueSelected(String choice) {
+    if(choice != currentValue) {
+      setState(() {
+        currentValue = choice;
+
+        if(currentValue == "Favorites") {
+          viewingLocList = false;
+          viewingAlphaList = false;
+          viewingFavList = true;
+        }
+        else if(currentValue == "Alphabetical") {
+          viewingLocList = false;
+          viewingFavList = false;
+          viewingAlphaList = true;
+        }
+        else if(currentValue == "Distance") {
+          viewingFavList = false;
+          viewingAlphaList = false;
+          viewingLocList = true;
+        }
+      });
+    }
   }
 
   @override
@@ -420,10 +511,13 @@ class LocationListState extends State<LocationList> {
       return editingPage(currentLoc);
     }
     else if(viewingLocList) {
-      return viewingPage();
+      return distancePage();
     }
     else if(viewingFavList) {
       return favoritesPage();
+    }
+    else if(viewingAlphaList) {
+      return alphaPage();
     }
    // return editing? editingPage(currentLoc): viewingPage();
   }

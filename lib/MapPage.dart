@@ -154,7 +154,6 @@ class MapPageState extends State<MapPage> {
                 Expanded(
                   child: Center(child:
                   Text(name
-
                     ),),
                 ),
                //  SizedBox(

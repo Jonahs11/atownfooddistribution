@@ -55,13 +55,19 @@ class _LocationCardState extends State<LocationCard> {
                        Navigator.of(context).pop();
                    }
                  },
-                 child: Text("Yes Remove $name")),
+                 child: Text("Yes Remove.",
+                 style: TextStyle(
+                   color: Colors.red
+                 ),)),
              FlatButton(
                  onPressed: () {
                    print("Keeping");
                    Navigator.of(context).pop();
                  },
-                 child: Text("No cancel")),
+                 child: Text("No cancel",
+                 style: TextStyle(
+                   color: Colors.black87
+                 ),)),
            ],
          ),
        );
@@ -91,13 +97,19 @@ class _LocationCardState extends State<LocationCard> {
                      }
 
                  },
-                 child: Text("Yes add $name")),
+                 child: Text("Yes add location.",
+                 style: TextStyle(
+                   color: Colors.blue
+                 ),)),
              FlatButton(
                  onPressed: () {
                    print("Keeping");
                    Navigator.of(context).pop();
                  },
-                 child: Text("No cancel")),
+                 child: Text("No cancel.",
+                 style: TextStyle(
+                   color: Colors.black87
+                 ),)),
            ],
          ),
        );
@@ -109,7 +121,7 @@ class _LocationCardState extends State<LocationCard> {
     //return Widget createCardForLocList(String key, List value) {
     return GestureDetector(
       onTap: () {
-        SuperListener.createAlert(context, name, value[0], value[3], value[4], value[5]);
+        SuperListener.createAlertWEdit(context, name, value[0], value[3], value[4], value[5]);
       },
       child: Card(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),

@@ -64,14 +64,18 @@ class SuperListener {
   }
 
   static void updateLocList() {
-    locationlist.loadPlaces();
+    locationlist.loadPlacesByDistance();
   }
 
   static Future<void> updateLocations() async {
      mapPage.checkFirebase();
   }
-  static Future createAlert(BuildContext context, String name, String address, String amountFood, String notes, String link) {
-    return mapPage.createAlertDialog(context, name, address, amountFood, notes, link);
+  // static Future createAlert(BuildContext context, String name, String address, String amountFood, String notes, String link) {
+  //   return mapPage.createAlertDialog(context, name, address, amountFood, notes, link);
+  // }
+
+  static Future createAlertWEdit(BuildContext context, String name, String address, String amountFood, String notes, String link) {
+    return locationlist.createAlertDialog(context, name, address, amountFood, notes, link);
   }
 
   static double calcDistance(double lat1, double long1, double lat2, double long2) {

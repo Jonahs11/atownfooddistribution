@@ -8,6 +8,7 @@ class Search extends SearchDelegate<String> {
 
   bool searchOpen = false;
   List favs = SuperListener.getFavs();
+  //bool addedOrRemovedFav = false;
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -25,7 +26,7 @@ class Search extends SearchDelegate<String> {
     return IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
       close(context, null);
       searchOpen = false;
-      SuperListener.moveToFavs();
+      //SuperListener.moveToFavs();
     });
   }
 
