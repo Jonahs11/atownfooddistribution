@@ -395,6 +395,20 @@ class LocationListState extends State<LocationList> {
   }
 
   Widget alphaPage() {
+    List nameList = [];
+    for(LocationCard i in places) {
+      nameList.add(i.name);
+    }
+
+    nameList.sort();
+    List<LocationCard> alphaPlaces = [];
+    for(String i in nameList) {
+      Widget tempWidget = LocationCard(key: UniqueKey(), name: i, value: locations[i], favorites: favorites,);
+      alphaPlaces.add(tempWidget);
+
+    }
+
+
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -429,7 +443,7 @@ class LocationListState extends State<LocationList> {
               controller: refreshController,
               enablePullDown: true,
               child: ListView(
-                  children: []
+                  children: alphaPlaces
               ),
               onRefresh: onRefresh,
             )
