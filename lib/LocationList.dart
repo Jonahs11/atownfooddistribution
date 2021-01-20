@@ -129,7 +129,7 @@ class LocationListState extends State<LocationList> {
 
 
 
-  Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
+  Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone){
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
         title: Row(
@@ -173,12 +173,14 @@ class LocationListState extends State<LocationList> {
         content: Column(
           children: [
 
-            Text(address),
-            Text("Current amount of food: $amountFood"),
-            Text(notes),
+            Text("Address: $address.\n"),
+            Text("Current amount of food: $amountFood\n"),
+            Text("Additional Notes: $notes\n"),
+            Text("Hours of Operation: $schedule"),
+            Text("Requirements to be served: $requirements\n"),
             Row(
               children: [
-                Text("Link:"),
+                Text("Link to Directions:"),
                 IconButton(
                   icon: Icon(Icons.link),
                   onPressed: () {
@@ -186,11 +188,34 @@ class LocationListState extends State<LocationList> {
                   },
                 )
               ],
+            ),
+            Row(
+              children: [
+                Text("Phone Number: "),
+                FlatButton(onPressed:() {
+                  setState(() {
+                    makePhoneCall('tel:$phone');
+                  });
+                } ,
+                    child: Text(phone,
+                    style: TextStyle(
+                      color: Colors.blueAccent
+                    ),))
+              ],
             )
           ],
         ),
       );
     } );
+  }
+
+  Future<void> makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+    else {
+      throw 'Could not lauch url';
+    }
   }
 
 
@@ -227,6 +252,8 @@ class LocationListState extends State<LocationList> {
       print(locations[nameDist[k][0]][4]);
       tempWidget = LocationCard(key: UniqueKey(), name: nameDist[k][0], value: locations[nameDist[k][0]], favorites: favorites);
       setState(() {
+        print(nameDist[k][0]);
+        print("^^^");
         places.add(tempWidget);
       });
     }
@@ -339,7 +366,7 @@ class LocationListState extends State<LocationList> {
     );
   }
 
-  void onRefresh()   {
+  void onRefresh()  {
       SuperListener.updateLocations().then((value) => loadPlacesByDistance());
       refreshController.refreshCompleted();
 
@@ -353,34 +380,7 @@ class LocationListState extends State<LocationList> {
       myFavs.add(tempWidget);
     }
     return Scaffold(
-        appBar: AppBar(
-          title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // Text("List of Locations"),
-            DropdownButton<String>(
-              value: currentValue,
-              items: options.map((String dropDownStringItem) {
-                return DropdownMenuItem<String>(
-                  value: dropDownStringItem,
-                  child: Text(dropDownStringItem),
-                );
-              }).toList(),
-              onChanged: (String newItemChoice) {
-                newOrderedValueSelected(newItemChoice);
-              },
-
-            ),
-
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(context: context, delegate: mySearch);
-              },
-            ),
-          ],
-        ),
-        ),
+        appBar: locListAppBar(),
         body: (
             SmartRefresher(
               controller: refreshController,
@@ -405,39 +405,9 @@ class LocationListState extends State<LocationList> {
     for(String i in nameList) {
       Widget tempWidget = LocationCard(key: UniqueKey(), name: i, value: locations[i], favorites: favorites,);
       alphaPlaces.add(tempWidget);
-
     }
-
-
     return Scaffold(
-        appBar: AppBar(
-          title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // Text("List of Locations"),
-            DropdownButton<String>(
-              value: currentValue,
-              items: options.map((String dropDownStringItem) {
-                return DropdownMenuItem<String>(
-                  value: dropDownStringItem,
-                  child: Text(dropDownStringItem),
-                );
-              }).toList(),
-              onChanged: (String newItemChoice) {
-                newOrderedValueSelected(newItemChoice);
-              },
-
-            ),
-
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(context: context, delegate: mySearch);
-              },
-            ),
-          ],
-        ),
-        ),
+        appBar: locListAppBar(),
         body: (
             SmartRefresher(
               controller: refreshController,
@@ -533,7 +503,6 @@ class LocationListState extends State<LocationList> {
     else if(viewingAlphaList) {
       return alphaPage();
     }
-   // return editing? editingPage(currentLoc): viewingPage();
   }
 }
 

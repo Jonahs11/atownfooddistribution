@@ -91,7 +91,7 @@ class MapPageState extends State<MapPage> {
         querySnapshot.docs.forEach((doc) {
           distance = SuperListener.calcDistance(currentLoc.latitude, currentLoc.longitude, double.parse(doc["lat"]), double.parse(doc["long"]));
 
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance];
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance, doc['schedule'], doc['requirements'], doc['phone']];
           print("LOC Updated");
         }),
           markers.clear(),
@@ -108,8 +108,6 @@ class MapPageState extends State<MapPage> {
           print("Completed");
       }
     }
-
-
 
 
   //method used to check what is currently being stored in the locations map
@@ -133,7 +131,7 @@ class MapPageState extends State<MapPage> {
         visible: true,
         draggable: false,
         onTap: () {
-          createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+          createAlertDialog(context, key, value[0], value[3], value[4], value[5], value[8], value[9], value[10]);
         }
       );
       setState(() {
@@ -145,7 +143,7 @@ class MapPageState extends State<MapPage> {
 
 
     //method that return an alert dialog. This will be used when the markers are clicked on in app
-     Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
+     Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
             title: Row(
@@ -171,18 +169,34 @@ class MapPageState extends State<MapPage> {
             content: Column(
               children: [
 
-                Text(address),
-                Text("Current amount of food: $amountFood"),
-                Text(notes),
+                Text("Address: $address.\n"),
+                Text("Current amount of food: $amountFood\n"),
+                Text("Additional Notes: $notes\n"),
+                Text("Hours of Operation: $schedule\n"),
+                Text("Requirements to be served: $requirements\n"),
                 Row(
                   children: [
-                    Text("Link:"),
+                    Text("Link to Directions:"),
                     IconButton(
                       icon: Icon(Icons.link),
                       onPressed: () {
                         launch(link);
                       },
                     )
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text("Phone Number: "),
+                    FlatButton(onPressed:() {
+                      setState(() {
+                        SuperListener.makePhoneCall('tel:$phone');
+                      });
+                    } ,
+                        child: Text(phone,
+                          style: TextStyle(
+                              color: Colors.blueAccent
+                          ),))
                   ],
                 )
               ],

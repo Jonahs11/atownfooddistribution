@@ -74,8 +74,8 @@ class SuperListener {
   //   return mapPage.createAlertDialog(context, name, address, amountFood, notes, link);
   // }
 
-  static Future createAlertWEdit(BuildContext context, String name, String address, String amountFood, String notes, String link) {
-    return locationlist.createAlertDialog(context, name, address, amountFood, notes, link);
+  static Future createAlertWEdit(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone) {
+    return locationlist.createAlertDialog(context, name, address, amountFood, notes, link, schedule, requirements, phone);
   }
 
   static double calcDistance(double lat1, double long1, double lat2, double long2) {
@@ -88,7 +88,7 @@ class SuperListener {
   }
 
   static Future makeAlert(BuildContext context, String key, List value) {
-    return locationlist.createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+    return locationlist.createAlertDialog(context, key, value[0], value[3], value[4], value[5], value[8], value[9], value[10]);
   }
 
   static getFavs() {
@@ -101,6 +101,9 @@ class SuperListener {
 
   static moveToFavs() {
     locationlist.moveToFavs();
+  }
+  static makePhoneCall(String url) {
+    locationlist.makePhoneCall(url);
   }
 
 }
