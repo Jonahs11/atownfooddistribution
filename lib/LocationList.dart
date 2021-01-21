@@ -13,6 +13,7 @@ import 'package:latlong/latlong.dart';
 import 'package:atownfooddistribution/Search.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
+import 'package:table_calendar/table_calendar.dart';
 
 Search mySearch = Search();
 
@@ -130,6 +131,7 @@ class LocationListState extends State<LocationList> {
 
 
   Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone){
+    CalendarController calendarController = new CalendarController();
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
         title: Row(
@@ -172,23 +174,23 @@ class LocationListState extends State<LocationList> {
         ,
         content: Column(
           children: [
-
-            Text("Address: $address.\n"),
+            Row(children: [
+              Expanded(
+                child: FlatButton(
+                    onPressed: () {
+                      launch(link);
+                },
+                    child: Text("Address: $address\n",
+                    style: TextStyle(
+                      color: Colors.blueAccent
+                    )
+                      ,)),
+              )
+            ],),
             Text("Current amount of food: $amountFood\n"),
             Text("Additional Notes: $notes\n"),
             Text("Hours of Operation: $schedule"),
             Text("Requirements to be served: $requirements\n"),
-            Row(
-              children: [
-                Text("Link to Directions:"),
-                IconButton(
-                  icon: Icon(Icons.link),
-                  onPressed: () {
-                    launch(link);
-                  },
-                )
-              ],
-            ),
             Row(
               children: [
                 Text("Phone Number: "),
@@ -201,8 +203,13 @@ class LocationListState extends State<LocationList> {
                     style: TextStyle(
                       color: Colors.blueAccent
                     ),))
-              ],
-            )
+              ]
+            ),
+            // Container(
+            //   width: 100,
+            //   height: 100,
+            //     child: TableCalendar(
+            //         calendarController: calendarController))
           ],
         ),
       );
