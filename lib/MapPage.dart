@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:atownfooddistribution/CalendarPage.dart';
 
 
 
@@ -35,6 +36,8 @@ class MapPageState extends State<MapPage> {
   bool cameraMovementOn = false;
   DateTime now = new DateTime.now();
   GestureDetector gestureDetector = new GestureDetector();
+
+  //List weeklyReps = [];
 
 
   //markers is a set that stores the Markers onto the Google Map
@@ -93,9 +96,19 @@ class MapPageState extends State<MapPage> {
 
           locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance, doc['schedule'], doc['requirements'], doc['phone']];
           print("LOC Updated");
+          if(doc['weekly'] == 'true') {
+            List days = [];
+            for(int i = 0; i < doc["day"].toString().length; i = i+2) {
+              days.add(int.parse(doc["day"][i]));
+              print(doc["day"][i]);
+            }
+            weeklyRepeats.add([doc['name'], days]);
+
+          }
         }),
           markers.clear(),
           createMarkers(markers),
+
         });
 
       }
