@@ -13,24 +13,7 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
 
 
-
-
-  // Map<String, int> monthStarts = {
-  //
-  //   "February": 1,
-  //   "March": 1,
-  //   "April": 4,
-  //   "May": 6,
-  //   "June": 2,
-  //   "July": 4,
-  //   "August": 0,
-  //   "September": 3,
-  //   "October": 5,
-  //   "November": 1,
-  //   "December": 3
-  // };
-
-  List locsAndReps = [["Salem United Methodist Church", 3]];
+  List<dynamic> weeklyRepeats = [["Salem United Methodist Church", [3]]];
   Map<String, List> allDateTimes = {};
 
   CalendarController calendarController = new CalendarController();
@@ -87,25 +70,25 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
 
-  void setUpRecurrences() {
-    locsAndReps.forEach((element) {
-      allDateTimes.addAll(findDatesWeeklyRepeat(element[1], element[0]));
-    });
-
-    events.forEach((eventDateTime, listNames) {
-      allDateTimes.forEach((name, dateTimesForName) {
-
-        if(allDateTimes[name].contains(eventDateTime)) {
-          events[eventDateTime].add(name);
-        }
-      });
-    });
-
-  }
+  // void setUpRecurrences() {
+  //   locsAndReps.forEach((element) {
+  //     allDateTimes.addAll(findDatesWeeklyRepeat(element[1], element[0]));
+  //   });
+  //
+  //   events.forEach((eventDateTime, listNames) {
+  //     allDateTimes.forEach((name, dateTimesForName) {
+  //
+  //       if(allDateTimes[name].contains(eventDateTime)) {
+  //         events[eventDateTime].add(name);
+  //       }
+  //     });
+  //   });
+  //
+  // }
 
   @override
   void initState() {
-    setUpRecurrences();
+    //setUpRecurrences();
     super.initState();
   }
   @override
@@ -146,13 +129,43 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
+  void onVisibleDayChanged(DateTime startDay, DateTime endDay, CalendarFormat calenderFormat) {
+    int startDate = startDay.day;
+    int endDate = endDay.day;
+    DateTime currentDay = startDay;
+    Duration increment1Day = Duration(days: 1);
+
+    for(int i = 0; i < 7; i++) {
+      for(int k = 0; k < weeklyRepeats.length; k++) {
+
+        events.addAll({currentDay: []});
+        print("$currentDay has been added");
+        if(weeklyRepeats[k][1].contains(i)) {
+          String name = weeklyRepeats[k][0];
+          setState(() {
+            events[currentDay].add(name);
+          });
+        }
+
+      }
+      currentDay = currentDay.add(increment1Day);
+
+    }
+
+  }
+
   Widget buildTableCalendar() {
     return TableCalendar(
       calendarController: calendarController,
       events: events,
+      initialCalendarFormat: CalendarFormat.week,
+      availableGestures: AvailableGestures.none,
       onDaySelected:(date, events, holidays) {
         onDaySelected(events);
-      }
+      },
+
+      onVisibleDaysChanged: onVisibleDayChanged
+
       );
   }
 
