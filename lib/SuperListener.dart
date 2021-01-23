@@ -62,7 +62,7 @@ class SuperListener {
   }
 
   static void updateLocList() {
-    locationlist.loadPlaces();
+    locationlist.loadPlacesByDistance();
   }
 
   static Future<void> updateLocations() async {
@@ -73,6 +73,7 @@ class SuperListener {
       String amountFood, String notes, String link) {
     return mapPage.createAlertDialog(
         context, name, address, amountFood, notes, link);
+
   }
 
   static double calcDistance(
@@ -92,14 +93,23 @@ class SuperListener {
         context, key, value[0], value[3], value[4], value[5]);
   }
 
-  static createCard(String key, List value) {
-    return locationlist.createCardForLocList(key, value);
+  static getFavs() {
+    return locationlist.favorites;
   }
 
-  //  static void closeSearch(BuildContext context) {
-  //   Search().closeSearch(context);
-  // }
   static void makeAdmin() {
     locationlist.makeAdmin();
   }
+
+  static writeToFile(List favs) {
+    locationlist.writeToFile(favs);
+  }
+
+  static moveToFavs() {
+    locationlist.moveToFavs();
+  }
+  static makePhoneCall(String url) {
+    locationlist.makePhoneCall(url);
+  }
+
 }

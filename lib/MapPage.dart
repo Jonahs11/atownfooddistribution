@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:atownfooddistribution/CalendarPage.dart';
 
 
 
@@ -36,6 +37,8 @@ class MapPageState extends State<MapPage> {
   DateTime now = new DateTime.now();
   GestureDetector gestureDetector = new GestureDetector();
 
+  //List weeklyReps = [];
+
 
   //markers is a set that stores the Markers onto the Google Map
   final Set<Marker> markers = <Marker>{};
@@ -59,6 +62,8 @@ class MapPageState extends State<MapPage> {
     );
     locationStream.pause();
     }
+
+
 
 
 
@@ -89,11 +94,21 @@ class MapPageState extends State<MapPage> {
         querySnapshot.docs.forEach((doc) {
           distance = SuperListener.calcDistance(currentLoc.latitude, currentLoc.longitude, double.parse(doc["lat"]), double.parse(doc["long"]));
 
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance];
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance, doc['schedule'], doc['requirements'], doc['phone']];
           print("LOC Updated");
+          if(doc['weekly'] == 'true') {
+            List days = [];
+            for(int i = 0; i < doc["day"].toString().length; i = i+2) {
+              days.add(int.parse(doc["day"][i]));
+              print(doc["day"][i]);
+            }
+            weeklyRepeats.add([doc['name'], days]);
+
+          }
         }),
           markers.clear(),
           createMarkers(markers),
+
         });
 
       }
@@ -106,8 +121,6 @@ class MapPageState extends State<MapPage> {
           print("Completed");
       }
     }
-
-
 
 
   //method used to check what is currently being stored in the locations map
@@ -131,7 +144,7 @@ class MapPageState extends State<MapPage> {
         visible: true,
         draggable: false,
         onTap: () {
-          createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+          createAlertDialog(context, key, value[0], value[3], value[4], value[5], value[8], value[9], value[10]);
         }
       );
       setState(() {
@@ -143,16 +156,17 @@ class MapPageState extends State<MapPage> {
 
 
     //method that return an alert dialog. This will be used when the markers are clicked on in app
-     Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
+     Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(child: Text(name,
-                  style: TextStyle(
-                      fontSize: 40.0
-                  ),),),
+                Expanded(
+                  child: Center(child:
+                  Text(name
+                    ),),
+                ),
                //  SizedBox(
                //    width: 40.0,
                //  ),
@@ -168,18 +182,34 @@ class MapPageState extends State<MapPage> {
             content: Column(
               children: [
 
-                Text(address),
-                Text("Current amount of food: $amountFood"),
-                Text(notes),
+                Text("Address: $address.\n"),
+                Text("Current amount of food: $amountFood\n"),
+                Text("Additional Notes: $notes\n"),
+                Text("Hours of Operation: $schedule\n"),
+                Text("Requirements to be served: $requirements\n"),
                 Row(
                   children: [
-                    Text("Link:"),
+                    Text("Link to Directions:"),
                     IconButton(
                       icon: Icon(Icons.link),
                       onPressed: () {
                         launch(link);
                       },
                     )
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text("Phone Number: "),
+                    FlatButton(onPressed:() {
+                      setState(() {
+                        SuperListener.makePhoneCall('tel:$phone');
+                      });
+                    } ,
+                        child: Text(phone,
+                          style: TextStyle(
+                              color: Colors.blueAccent
+                          ),))
                   ],
                 )
               ],
