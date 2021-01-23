@@ -20,101 +20,101 @@ class LocationCard extends StatefulWidget {
 
   @override
   _LocationCardState createState() => _LocationCardState(
-    name: name,
-    value: value,
-    favorites: favorites
+      name: name,
+      value: value,
+      favorites: favorites
   );
 }
 
 class _LocationCardState extends State<LocationCard> {
-   String name;
-   List value;
-   List favorites;
+  String name;
+  List value;
+  List favorites;
 
-   _LocationCardState({this.name, this.value, this.favorites});
+  _LocationCardState({this.name, this.value, this.favorites});
 
 
-   Future removeFavoriteConfirmation(BuildContext context) {
-     return showDialog(context: context, builder: (context) {
-       return AlertDialog(
-         title: Text("Are you sure you would like to remove $name as a favorite?"),
-         content: Row(
-           children: [
-             FlatButton(
-                 onPressed: () {
-                   if(this.mounted) {
-                     setState(() {
-                       favorites.remove(name);
-                       SuperListener.writeToFile(favorites);
-                       Navigator.of(context).pop();
-                     });
-                   }
-                   else {
-                       favorites.remove(name);
-                       SuperListener.writeToFile(favorites);
-                       Navigator.of(context).pop();
-                   }
-                 },
-                 child: Text("Yes Remove.",
-                 style: TextStyle(
-                   color: Colors.red
-                 ),)),
-             FlatButton(
-                 onPressed: () {
-                   print("Keeping");
-                   Navigator.of(context).pop();
-                 },
-                 child: Text("No cancel",
-                 style: TextStyle(
-                   color: Colors.black87
-                 ),)),
-           ],
-         ),
-       );
-     });
-   }
+  Future removeFavoriteConfirmation(BuildContext context) {
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text("Are you sure you would like to remove $name as a favorite?"),
+        content: Row(
+          children: [
+            FlatButton(
+                onPressed: () {
+                  if(this.mounted) {
+                    setState(() {
+                      favorites.remove(name);
+                      SuperListener.writeToFile(favorites);
+                      Navigator.of(context).pop();
+                    });
+                  }
+                  else {
+                    favorites.remove(name);
+                    SuperListener.writeToFile(favorites);
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Text("Yes Remove.",
+                  style: TextStyle(
+                      color: Colors.red
+                  ),)),
+            FlatButton(
+                onPressed: () {
+                  print("Keeping");
+                  Navigator.of(context).pop();
+                },
+                child: Text("No cancel",
+                  style: TextStyle(
+                      color: Colors.black87
+                  ),)),
+          ],
+        ),
+      );
+    });
+  }
 
-   Future addFavoriteConfirmation(BuildContext context) {
-     return showDialog(context: context, builder: (context) {
-       return AlertDialog(
-         title: Text("Please confirm whether you would like to add $name as a favorite?"),
-         content: Row(
-           children: [
-             FlatButton(
-                 onPressed: () {
-                   if(this.mounted) {
-                     setState(() {
-                       favorites.add(name);
-                       SuperListener.writeToFile(favorites);
-                       Navigator.of(context).pop();
-                     });
-                   }
-                   else
-                     {
-                       favorites.add(name);
-                       SuperListener.writeToFile(favorites);
-                       Navigator.of(context).pop();
-                     }
+  Future addFavoriteConfirmation(BuildContext context) {
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text("Please confirm whether you would like to add $name as a favorite?"),
+        content: Row(
+          children: [
+            FlatButton(
+                onPressed: () {
+                  if(this.mounted) {
+                    setState(() {
+                      favorites.add(name);
+                      SuperListener.writeToFile(favorites);
+                      Navigator.of(context).pop();
+                    });
+                  }
+                  else
+                  {
+                    favorites.add(name);
+                    SuperListener.writeToFile(favorites);
+                    Navigator.of(context).pop();
+                  }
 
-                 },
-                 child: Text("Yes add location.",
-                 style: TextStyle(
-                   color: Colors.blue
-                 ),)),
-             FlatButton(
-                 onPressed: () {
-                   print("Keeping");
-                   Navigator.of(context).pop();
-                 },
-                 child: Text("No cancel.",
-                 style: TextStyle(
-                   color: Colors.black87
-                 ),)),
-           ],
-         ),
-       );
-     });
-   }
+                },
+                child: Text("Yes add location.",
+                  style: TextStyle(
+                      color: Colors.blue
+                  ),)),
+            FlatButton(
+                onPressed: () {
+                  print("Keeping");
+                  Navigator.of(context).pop();
+                },
+                child: Text("No cancel.",
+                  style: TextStyle(
+                      color: Colors.black87
+                  ),)),
+          ],
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,4 +154,3 @@ class _LocationCardState extends State<LocationCard> {
     );
   }
 }
-

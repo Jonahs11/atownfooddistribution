@@ -232,7 +232,7 @@ class _CalendarPageState extends State<CalendarPage> {
     weeklyRepeats.forEach((element) {
       print(element);
     });
-    //addPeriodicDays(currentDay, increment1Day);
+    addPeriodicDays(currentDay, increment1Day);
 
 
 

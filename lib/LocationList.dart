@@ -119,114 +119,67 @@ class LocationListState extends State<LocationList> {
   }
 
   
-  Future createAlertDialog(BuildContext context, String name, String address,
-      String amountFood, String notes, String link) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                name,
-                style: TextStyle(fontSize: 30.0),
-              ),
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  setState(() {
-                    editing = true;
-                    Navigator.of(context).pop();
-                    try {
-                      if (mySearch.searchOpen) {
-                        mySearch.close(context, null);
-                      }
-                    } catch (e) {
-                      print("Error With Search");
-                    }
-
-                    currentLoc = name;
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          ),
-          content: Column(
-            children: [
-              Text(address),
-              Text("Current amount of food: $amountFood"),
-              Text(notes),
-              Row(
-                children: [
-                  Text("Link:"),
-                  IconButton(
-                    icon: Icon(Icons.link),
-                    onPressed: () {
-                      launch(link);
-                    },
-                  )
-                ],
-              )
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget createCardForLocList(String key, List value) {
-    return GestureDetector(
-      onTap: () {
-        createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
-      },
-      child: Container(
-        height: 60.0,
-        child: Card(
-          elevation: 4.0,
-          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  key,
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                Text(
-                  value[7].toString(),
-                  style: TextStyle(fontSize: 18.0),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void writeToFile(List favs) {
-    print("Writing to file");
-    if(fileExists) {
-      print("File exists");
-      jsonFile.writeAsStringSync(jsonEncode(favs));
-    }
-    else {
-      print("Creating new file");
-      createFile(favs);
-    }
-  }
-
-
-
-
+  // Future createAlertDialog(BuildContext context, String name, String address,
+  //     String amountFood, String notes, String link) {
+  //   return showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text(
+  //               name,
+  //               style: TextStyle(fontSize: 30.0),
+  //             ),
+  //             IconButton(
+  //               icon: Icon(Icons.edit),
+  //               onPressed: () {
+  //                 setState(() {
+  //                   editing = true;
+  //                   Navigator.of(context).pop();
+  //                   try {
+  //                     if (mySearch.searchOpen) {
+  //                       mySearch.close(context, null);
+  //                     }
+  //                   } catch (e) {
+  //                     print("Error With Search");
+  //                   }
+  //
+  //                   currentLoc = name;
+  //                 });
+  //               },
+  //             ),
+  //             IconButton(
+  //               icon: Icon(Icons.close),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             )
+  //           ],
+  //         ),
+  //         content: Column(
+  //           children: [
+  //             Text(address),
+  //             Text("Current amount of food: $amountFood"),
+  //             Text(notes),
+  //             Row(
+  //               children: [
+  //                 Text("Link:"),
+  //                 IconButton(
+  //                   icon: Icon(Icons.link),
+  //                   onPressed: () {
+  //                     launch(link);
+  //                   },
+  //                 )
+  //               ],
+  //             )
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone){
     CalendarController calendarController = new CalendarController();
@@ -258,9 +211,9 @@ class LocationListState extends State<LocationList> {
 
               });
             })),
-             SizedBox(
-               width: 40.0,
-             ),
+            SizedBox(
+              width: 40.0,
+            ),
             IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
@@ -277,11 +230,11 @@ class LocationListState extends State<LocationList> {
                 child: FlatButton(
                     onPressed: () {
                       launch(link);
-                },
+                    },
                     child: Text("Address: $address\n",
-                    style: TextStyle(
-                      color: Colors.blueAccent
-                    )
+                      style: TextStyle(
+                          color: Colors.blueAccent
+                      )
                       ,)),
               )
             ],),
@@ -290,18 +243,18 @@ class LocationListState extends State<LocationList> {
             Text("Hours of Operation: $schedule"),
             Text("Requirements to be served: $requirements\n"),
             Row(
-              children: [
-                Text("Phone Number: "),
-                FlatButton(onPressed:() {
-                  setState(() {
-                    makePhoneCall('tel:$phone');
-                  });
-                } ,
-                    child: Text(phone,
-                    style: TextStyle(
-                      color: Colors.blueAccent
-                    ),))
-              ]
+                children: [
+                  Text("Phone Number: "),
+                  FlatButton(onPressed:() {
+                    setState(() {
+                      makePhoneCall('tel:$phone');
+                    });
+                  } ,
+                      child: Text(phone,
+                        style: TextStyle(
+                            color: Colors.blueAccent
+                        ),))
+                ]
             ),
             // Container(
             //   width: 100,
@@ -313,6 +266,25 @@ class LocationListState extends State<LocationList> {
       );
     } );
   }
+
+
+  void writeToFile(List favs) {
+    print("Writing to file");
+    if(fileExists) {
+      print("File exists");
+      jsonFile.writeAsStringSync(jsonEncode(favs));
+    }
+    else {
+      print("Creating new file");
+      createFile(favs);
+    }
+  }
+
+
+
+
+
+
 
   Future<void> makePhoneCall(String url) async {
     if (await canLaunch(url)) {
@@ -455,10 +427,10 @@ class LocationListState extends State<LocationList> {
     );
   }
 
-  void onRefresh() {
-    SuperListener.updateLocations().then((value) => loadPlaces());
-    refreshController.refreshCompleted();
-  }
+  // void onRefresh() {
+  //   SuperListener.updateLocations().then((value) => loadPlaces());
+  //   refreshController.refreshCompleted();
+  // }
 
 
   void onRefresh()  {
