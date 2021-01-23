@@ -18,7 +18,6 @@ import 'package:table_calendar/table_calendar.dart';
 Search mySearch = Search();
 
 class LocationList extends StatefulWidget {
-
   // final Map myLocs;
   // const LocationList(this.myLocs);
 
@@ -27,7 +26,6 @@ class LocationList extends StatefulWidget {
 }
 
 class LocationListState extends State<LocationList> {
-
   List<String> keys = [];
   bool editing = false;
   String currentLoc;
@@ -36,6 +34,7 @@ class LocationListState extends State<LocationList> {
   RefreshController refreshController = RefreshController();
   final Distance distance = new Distance();
   List<Widget> sortedPlaces = [];
+  bool administrator = false;
   List favorites = [];
 
   Directory directory;
@@ -63,6 +62,11 @@ class LocationListState extends State<LocationList> {
     super.initState();
   }
 
+  void makeAdmin() {
+    setState(() {
+      administrator = true;
+    });
+ }
 
   void loadInFile() {
     getApplicationDocumentsDirectory().then((Directory directory) {
@@ -112,6 +116,100 @@ class LocationListState extends State<LocationList> {
       locationNames.add(element);
     });
     return locationNames;
+  }
+
+  
+  Future createAlertDialog(BuildContext context, String name, String address,
+      String amountFood, String notes, String link) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                name,
+                style: TextStyle(fontSize: 30.0),
+              ),
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  setState(() {
+                    editing = true;
+                    Navigator.of(context).pop();
+                    try {
+                      if (mySearch.searchOpen) {
+                        mySearch.close(context, null);
+                      }
+                    } catch (e) {
+                      print("Error With Search");
+                    }
+
+                    currentLoc = name;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+          content: Column(
+            children: [
+              Text(address),
+              Text("Current amount of food: $amountFood"),
+              Text(notes),
+              Row(
+                children: [
+                  Text("Link:"),
+                  IconButton(
+                    icon: Icon(Icons.link),
+                    onPressed: () {
+                      launch(link);
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget createCardForLocList(String key, List value) {
+    return GestureDetector(
+      onTap: () {
+        createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+      },
+      child: Container(
+        height: 60.0,
+        child: Card(
+          elevation: 4.0,
+          margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  key,
+                  style: TextStyle(fontSize: 18.0),
+                ),
+                Text(
+                  value[7].toString(),
+                  style: TextStyle(fontSize: 18.0),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void writeToFile(List favs) {
@@ -233,29 +331,25 @@ class LocationListState extends State<LocationList> {
     List nameDist = [];
     List tempTuple = [];
 
-    locations.forEach((key, value)
-    {
+    locations.forEach((key, value) {
       distance = value[7];
       tempTuple = [key, distance];
       nameDist.add(tempTuple);
-
     });
     bool noChanges = true;
     do {
       noChanges = true;
-      for(int i = 0; i < nameDist.length - 1; i++) {
-
-        if(nameDist[i][1] > nameDist[i+1][1]) {
+      for (int i = 0; i < nameDist.length - 1; i++) {
+        if (nameDist[i][1] > nameDist[i + 1][1]) {
           tempTuple = nameDist[i];
-          nameDist[i] = nameDist[i+1];
-          nameDist[i+1] = tempTuple;
+          nameDist[i] = nameDist[i + 1];
+          nameDist[i + 1] = tempTuple;
           noChanges = false;
         }
       }
-    }
-    while(!noChanges);
+    } while (!noChanges);
 
-    for(int k= 0; k < nameDist.length; k++) {
+    for (int k = 0; k < nameDist.length; k++) {
       print(locations[nameDist[k][0]][4]);
       tempWidget = LocationCard(key: UniqueKey(), name: nameDist[k][0], value: locations[nameDist[k][0]], favorites: favorites);
       setState(() {
@@ -280,7 +374,6 @@ class LocationListState extends State<LocationList> {
     return dist;
   }
 
-
   void updateFirebase(String foodLevel, String notes, String id) {
     SuperListener.updateFirebase(foodLevel, notes, id);
   }
@@ -291,12 +384,10 @@ class LocationListState extends State<LocationList> {
     String foodLevel = locations[key][3];
     String notes = locations[key][4];
     String docID = locations[key][6];
-    TextEditingController myController1 = new TextEditingController(
-      text: foodLevel
-    );
-    TextEditingController myController2 = new TextEditingController(
-      text: notes
-    );
+    TextEditingController myController1 =
+        new TextEditingController(text: foodLevel);
+    TextEditingController myController2 =
+        new TextEditingController(text: notes);
     TextEditingController myController3 = new TextEditingController();
     TextEditingController myController4 = new TextEditingController();
 
@@ -321,17 +412,11 @@ class LocationListState extends State<LocationList> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("Location Name: "),
-              Text(name)
-            ],
+            children: [Text("Location Name: "), Text(name)],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("Address of Location: "),
-              Text(address)
-            ],
+            children: [Text("Address of Location: "), Text(address)],
           ),
           Card(
             child: Padding(
@@ -343,8 +428,7 @@ class LocationListState extends State<LocationList> {
                   children: [
                     TextFormField(
                       controller: myController1,
-                      onChanged: (String val) {
-                      },
+                      onChanged: (String val) {},
                     ),
                     TextFormField(
                       controller: myController2,
@@ -354,7 +438,6 @@ class LocationListState extends State<LocationList> {
               ),
             ),
           ),
-
           FlatButton(
               onPressed: () {
                 setState(() {
@@ -365,13 +448,18 @@ class LocationListState extends State<LocationList> {
                 viewingFavList = false;
                 viewingLocList = true;
                 });
-          },
-              child: Text("Save")
-          )
+              },
+              child: Text("Save"))
         ],
       ),
     );
   }
+
+  void onRefresh() {
+    SuperListener.updateLocations().then((value) => loadPlaces());
+    refreshController.refreshCompleted();
+  }
+
 
   void onRefresh()  {
       SuperListener.updateLocations().then((value) => loadPlacesByDistance());
