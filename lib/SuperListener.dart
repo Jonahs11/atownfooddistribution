@@ -84,9 +84,6 @@ class SuperListener {
     return locationlist.getListLocs();
   }
 
-  static Future createAlertWEdit(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone) {
-    return locationlist.createAlertDialog(context, name, address, amountFood, notes, link, schedule, requirements, phone);
-  }
 
   static Future makeAlert(BuildContext context, String key, List value) {
     return locationlist.createAlertDialog(

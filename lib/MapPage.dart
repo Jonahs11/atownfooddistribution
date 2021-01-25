@@ -175,13 +175,11 @@ class MapPageState extends State<MapPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Center(child:
-                  Text(name
-                    ),),
+                  child: Text(name),
                 ),
-               //  SizedBox(
-               //    width: 40.0,
-               //  ),
+                SizedBox(
+                  width: 40.0,
+                ),
                 IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
@@ -190,45 +188,45 @@ class MapPageState extends State<MapPage> {
                 )
               ],
             )
-              ,
+            ,
             content: Column(
               children: [
-
-                Text("Address: $address.\n"),
-                Text("Current amount of food: $amountFood\n"),
-                Text("Additional Notes: $notes\n"),
-                Text("Hours of Operation: $schedule\n"),
-                Text("Requirements to be served: $requirements\n"),
-                Row(
-                  children: [
-                    Text("Link to Directions:"),
-                    IconButton(
-                      icon: Icon(Icons.link),
-                      onPressed: () {
-                        launch(link);
-                      },
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text("Phone Number: "),
-                    FlatButton(onPressed:() {
-                      setState(() {
-                        SuperListener.makePhoneCall('tel:$phone');
-                      });
-                    } ,
-                        child: Text(phone,
+                Row(children: [
+                  Expanded(
+                    child: FlatButton(
+                        onPressed: () {
+                          launch(link);
+                        },
+                        child: Text("Address: $address\n",
                           style: TextStyle(
                               color: Colors.blueAccent
-                          ),))
-                  ],
-                )
+                          )
+                          ,)),
+                  )
+                ],),
+                Text("Current amount of food: $amountFood\n"),
+                Text("Additional Notes: $notes\n"),
+                Text("Hours of Operation: $schedule"),
+                Text("Requirements to be served: $requirements\n"),
+                Row(
+                    children: [
+                      Text("Phone Number: "),
+                      FlatButton(onPressed:() {
+                        setState(() {
+                          SuperListener.makePhoneCall('tel:$phone');
+                        });
+                      } ,
+                          child: Text(phone,
+                            style: TextStyle(
+                                color: Colors.blueAccent
+                            ),))
+                    ]
+                ),
               ],
             ),
           );
         } );
-    }
+     }
 
     void checkMarkers() {
     markers.forEach((element) {

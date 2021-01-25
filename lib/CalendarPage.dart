@@ -133,20 +133,27 @@ class CalendarPageState extends State<CalendarPage> {
 
   }
 
-  void onVisibleDayChanged(
-      DateTime startDay, DateTime endDay, CalendarFormat calenderFormat) {
-    DateTime currentDay = startDay;
-    Duration increment1Day = Duration(days: 1);
-    bool monthGoing = true;
-    int dailyCounter = 0;
+  void onVisibleDayChanged(DateTime startDay, DateTime endDay, CalendarFormat calenderFormat) {
 
-    while (currentDay.day != 1) {
-      currentDay = currentDay.add(increment1Day);
-    }
+    print(startDay);
+    print(endDay);
+    events.keys.forEach((element) { print(element);});
 
-    addWeeklyDays(currentDay);
-    weeklyRepeats.forEach((element) {});
-    addPeriodicDays(currentDay, increment1Day);
+
+      print("On visible day changed had been called");
+      DateTime currentDay = startDay;
+      Duration increment1Day = Duration(days: 1);
+      bool monthGoing = true;
+      int dailyCounter = 0;
+
+      while (currentDay.day != 1) {
+        currentDay = currentDay.add(increment1Day);
+      }
+
+      addWeeklyDays(currentDay);
+      weeklyRepeats.forEach((element) {});
+      addPeriodicDays(currentDay, increment1Day);
+    
   }
 
   Widget buildTableCalendar() {
@@ -159,9 +166,7 @@ class CalendarPageState extends State<CalendarPage> {
           onDaySelected(events);
         },
         onVisibleDaysChanged: onVisibleDayChanged,
-        onCalendarCreated: (DateTime one, DateTime two, CalendarFormat format) {
-          loadingFirstMonth();
-          },
+
     );
 
   }
@@ -173,11 +178,6 @@ class CalendarPageState extends State<CalendarPage> {
           title: Row(
             children: [
               Text("Calendar Page"),
-              IconButton(
-                  icon: Icon(Icons.accessibility_new),
-                  onPressed: () {
-                    loadingFirstMonth();
-                  })
             ],
           ),
         ),

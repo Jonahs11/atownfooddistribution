@@ -118,68 +118,7 @@ class LocationListState extends State<LocationList> {
     return locationNames;
   }
 
-  
-  // Future createAlertDialog(BuildContext context, String name, String address,
-  //     String amountFood, String notes, String link) {
-  //   return showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         title: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text(
-  //               name,
-  //               style: TextStyle(fontSize: 30.0),
-  //             ),
-  //             IconButton(
-  //               icon: Icon(Icons.edit),
-  //               onPressed: () {
-  //                 setState(() {
-  //                   editing = true;
-  //                   Navigator.of(context).pop();
-  //                   try {
-  //                     if (mySearch.searchOpen) {
-  //                       mySearch.close(context, null);
-  //                     }
-  //                   } catch (e) {
-  //                     print("Error With Search");
-  //                   }
-  //
-  //                   currentLoc = name;
-  //                 });
-  //               },
-  //             ),
-  //             IconButton(
-  //               icon: Icon(Icons.close),
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //             )
-  //           ],
-  //         ),
-  //         content: Column(
-  //           children: [
-  //             Text(address),
-  //             Text("Current amount of food: $amountFood"),
-  //             Text(notes),
-  //             Row(
-  //               children: [
-  //                 Text("Link:"),
-  //                 IconButton(
-  //                   icon: Icon(Icons.link),
-  //                   onPressed: () {
-  //                     launch(link);
-  //                   },
-  //                 )
-  //               ],
-  //             )
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+
 
   Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone){
     CalendarController calendarController = new CalendarController();
@@ -191,26 +130,29 @@ class LocationListState extends State<LocationList> {
             Expanded(
               child: Text(name),
             ),
-            Expanded(child: IconButton(icon: Icon(Icons.edit), onPressed: () {
-              setState(() {
-                editing = true;
-                viewingLocList = false;
-                viewingFavList = false;
+            Visibility(
+              visible: administrator,
+              child: Expanded(child: IconButton(icon: Icon(Icons.edit), onPressed: () {
+                setState(() {
+                  editing = true;
+                  viewingLocList = false;
+                  viewingFavList = false;
 
-                Navigator.of(context).pop();
-                try{
-                  if(mySearch.searchOpen) {
-                    mySearch.close(context, null);
+                  Navigator.of(context).pop();
+                  try{
+                    if(mySearch.searchOpen) {
+                      mySearch.close(context, null);
+                    }
                   }
-                }
-                catch(e) {
-                  print("Error With Search");
-                }
+                  catch(e) {
+                    print("Error With Search");
+                  }
 
-                currentLoc = name;
+                  currentLoc = name;
 
-              });
-            })),
+                });
+              })),
+            ),
             SizedBox(
               width: 40.0,
             ),
@@ -279,11 +221,6 @@ class LocationListState extends State<LocationList> {
       createFile(favs);
     }
   }
-
-
-
-
-
 
 
   Future<void> makePhoneCall(String url) async {

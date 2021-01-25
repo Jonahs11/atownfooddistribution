@@ -125,6 +125,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                               setState(() {
                                 administrator = true;
                                 adminLogging = false;
+                                print("You are now an admin");
                               });
                               SuperListener.makeAdmin();
                             }

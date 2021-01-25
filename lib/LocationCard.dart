@@ -121,7 +121,7 @@ class _LocationCardState extends State<LocationCard> {
     //return Widget createCardForLocList(String key, List value) {
     return GestureDetector(
       onTap: () {
-        SuperListener.createAlertWEdit(context, name, value[0], value[3], value[4], value[5], value[8], value[9], value[10]);
+        SuperListener.makeAlert(context, name, value);
       },
       child: Card(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
@@ -132,8 +132,10 @@ class _LocationCardState extends State<LocationCard> {
                   name
               ),
             ),
+            SizedBox(width: 100.0,),
             Expanded(
               child: IconButton(
+                iconSize: 15.0,
                   icon: Icon(
                     Icons.star,
                     color: favorites.contains(name)? Colors.yellowAccent: Colors.grey,
