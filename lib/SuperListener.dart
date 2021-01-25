@@ -6,6 +6,7 @@ import 'package:atownfooddistribution/MapPage.dart';
 import 'package:atownfooddistribution/InformationPage.dart';
 import 'package:atownfooddistribution/LocationList.dart';
 import 'package:latlong/latlong.dart';
+import 'package:atownfooddistribution/CalendarPage.dart';
 
 class SuperListener {
   static MyHomePageState homePage;
@@ -13,6 +14,7 @@ class SuperListener {
   static WelcomeScreenState welcomeScreen;
   static InformationPageState informationPage;
   static LocationListState locationlist;
+  static CalendarPageState calendarPage;
 
   Search search = new Search();
 
@@ -22,6 +24,7 @@ class SuperListener {
     WelcomeScreenState wScreen,
     InformationPageState iPage,
     LocationListState lPage,
+    CalendarPageState cPage
   }) {
     if (hPage != null) {
       homePage = hPage;
@@ -37,6 +40,9 @@ class SuperListener {
     }
     if (lPage != null) {
       locationlist = lPage;
+    }
+    if(cPage != null) {
+      calendarPage = cPage;
     }
   }
 
@@ -104,6 +110,10 @@ class SuperListener {
   }
   static makePhoneCall(String url) {
     locationlist.makePhoneCall(url);
+  }
+
+  static void loadFirstMonth() {
+    calendarPage.loadingFirstMonth();
   }
 
 }

@@ -105,6 +105,7 @@ class MyHomePageState extends State<MyHomePage> {
           setState(() {
             if(!oneClick) {
               SuperListener.updateLocList();
+              SuperListener.loadFirstMonth();
               oneClick = true;
             }
             myIndex = index;
