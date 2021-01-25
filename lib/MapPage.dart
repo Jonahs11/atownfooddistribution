@@ -98,12 +98,24 @@ class MapPageState extends State<MapPage> {
           print("LOC Updated");
           if(doc['weekly'] == 'true') {
             List days = [];
-            for(int i = 0; i < doc["day"].toString().length; i = i+2) {
+            for(int i = 0; i < doc["day"].length; i += 2) {
               days.add(int.parse(doc["day"][i]));
               print(doc["day"][i]);
             }
             weeklyRepeats.add([doc['name'], days]);
 
+          }
+
+          else if(doc['periodic'] == 'true') {
+            List repeatsOn = [];
+            int dayOfWeek;
+
+            for(int k = 0; k < doc["repeatson"].length; k += 2){
+              repeatsOn.add(int.parse(doc["repeatson"][k]));
+            }
+            dayOfWeek = int.parse(doc['day']);
+            periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
+            print("A periodic day has been added");
           }
         }),
           markers.clear(),

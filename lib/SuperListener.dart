@@ -48,7 +48,7 @@ class SuperListener {
     mapPage.checkFirebase();
     //mapPage.moveToMyLoc();
   }
-  
+
 
   static void removeListLocScreen() {
     welcomeScreen.changeToWelcome();

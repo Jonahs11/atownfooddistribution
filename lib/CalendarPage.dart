@@ -5,8 +5,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 
-// List<dynamic> weeklyRepeats = [["Salem United Methodist Church", [3]], ["Everlasting Life Ministries", [6]], ["Allentown Ecumenical Food Bank", [3,6]] ];
-List<dynamic> periodicRepeats = [["Every 3rd Friday", 3, 5], ["Every 4th Monday", 4, 1]];
+
+//List<dynamic> periodicRepeats = [["Every 3rd Friday", [3,2], 5], ["Every 4th Monday", [4], 1]];
+List<dynamic> periodicRepeats = [];
 List<dynamic> weeklyRepeats = [];
 
 class CalendarPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _CalendarPageState extends State<CalendarPage> {
  // List<dynamic> weeklyRepeats = [["Salem United Methodist Church", [3]], ["Everlasting Life Ministries", [6]], ["Allentown Ecumenical Food Bank", [3,6]] ];
 
   //List of lists that has the order [name, the week of the month it repeats, the day of the week)]
-  List<dynamic> periodicRepeats = [["Every 3rd Friday", 3, 5], ["Every 4th Monday", 4, 1]];
+
   Map<String, List> allDateTimes = {};
 
   CalendarController calendarController = new CalendarController();
@@ -32,68 +33,6 @@ class _CalendarPageState extends State<CalendarPage> {
   List selectedEvents = [];
 
 
-
-  // Map findDatesWeeklyRepeat(int repeatingDayOfWeek, String name) {
-  //   Map<String, List> nameDates = {name: []};
-  //   int firstDayOfWeekInMonth;
-  //   int currentDayOmonth;
-  //   int lengthMonth = 31;
-  //   DateTime tempDateTime;
-  //
-  //
-  //
-  //   for(int i = 1; i < 12; i++) {
-  //     if(repeatingDayOfWeek >= monthStartsDayOfWeek[i]) {
-  //       firstDayOfWeekInMonth = (1 + (repeatingDayOfWeek - monthStartsDayOfWeek[i]));
-  //     }
-  //     else {
-  //       firstDayOfWeekInMonth = (8 - (monthStartsDayOfWeek[i] - repeatingDayOfWeek));
-  //     }
-  //
-  //     if (i == 2 || i == 4 || i == 6 || i == 7 || i == 9 || i == 11) {
-  //       lengthMonth = 31;
-  //     }
-  //     else if(i == 1) {
-  //       lengthMonth = 28;
-  //     }
-  //     else {
-  //       lengthMonth = 30;
-  //     }
-  //
-  //     currentDayOmonth = firstDayOfWeekInMonth;
-  //
-  //     while(currentDayOmonth <= lengthMonth) {
-  //       tempDateTime = new DateTime(2021, i + 1, currentDayOmonth);
-  //
-  //       if(!events.keys.contains(tempDateTime)) {
-  //         events.addAll({tempDateTime: []});
-  //       }
-  //
-  //       nameDates[name].add(tempDateTime);
-  //       currentDayOmonth += 7;
-  //       print(tempDateTime);
-  //     }
-  //   }
-  //
-  //   return nameDates;
-  // }
-
-
-  // void setUpRecurrences() {
-  //   locsAndReps.forEach((element) {
-  //     allDateTimes.addAll(findDatesWeeklyRepeat(element[1], element[0]));
-  //   });
-  //
-  //   events.forEach((eventDateTime, listNames) {
-  //     allDateTimes.forEach((name, dateTimesForName) {
-  //
-  //       if(allDateTimes[name].contains(eventDateTime)) {
-  //         events[eventDateTime].add(name);
-  //       }
-  //     });
-  //   });
-  //
-  // }
 
   @override
   void initState() {
@@ -183,35 +122,28 @@ class _CalendarPageState extends State<CalendarPage> {
       currentDay = currentDay.add(oneDay);
     }
 
-    // firstDayOfWeekOccurance.forEach((key, value) {
-    //   print("$key  $value");
-    // });
 
     for(int k = 0; k < periodicRepeats.length; k++) {
-      int weekToRepeat = periodicRepeats[k][1];
-      int dayOfWeek = periodicRepeats[k][2];
-      String name = periodicRepeats[k][0];
 
 
+      for(int j = 0; j < periodicRepeats[k][1].length; j++) {
+         print(periodicRepeats[k][1][j]);
+        int weekToRepeat = periodicRepeats[k][1][j];
+        int dayOfWeek = periodicRepeats[k][2];
+        String name = periodicRepeats[k][0];
 
-      int dayOfMonth = firstDayOfWeekOccurance[dayOfWeek] + (7 * (weekToRepeat - 1));
-      DateTime tempDay = DateTime(startOfMonth.year, startOfMonth.month, startOfMonth.day + dayOfMonth - 1);
 
+        int dayOfMonth = firstDayOfWeekOccurance[dayOfWeek] +
+            (7 * (weekToRepeat - 1));
+        DateTime tempDay = DateTime(startOfMonth.year, startOfMonth.month,
+            startOfMonth.day + dayOfMonth - 1);
+        print(tempDay);
 
-
-      // events.keys.forEach((element) {
-      //   print(element);
-      // });
-
-      // if(!events.keys.contains(tempDay)) {
-      //   print("Adding Date");
-      //   events.addAll({tempDay: []});
-      // }
-
-      setState(() {
-        events[tempDay].add(name);
-        print("$name has been added to $tempDay");
-      });
+        setState(() {
+          events[tempDay].add(name);
+          //print("$name has been added to $tempDay");
+        });
+      }
     }
 
   }
@@ -230,59 +162,13 @@ class _CalendarPageState extends State<CalendarPage> {
 
     addedWeeklyDays(currentDay);
     weeklyRepeats.forEach((element) {
-      print(element);
+      //print(element);
     });
     addPeriodicDays(currentDay, increment1Day);
 
 
-
-
-
-
-    // DateTime startOfMonth = currentDay;
-    // int startDayOfWeekOfMonth = currentDay.weekday;
-    //
-    // while(monthGoing) {
-    //   events.addAll({currentDay: []});
-    //   for(int k = 0; k < weeklyRepeats.length; k++) {
-    //     print((startDayOfWeekOfMonth + dailyCounter) % 7);
-    //     if(weeklyRepeats[k][1].contains((startDayOfWeekOfMonth + dailyCounter) % 7)) {
-    //       setState(() {
-    //
-    //         events[currentDay].add(weeklyRepeats[k][0]);
-    //         print('Added ${weeklyRepeats[k][0]}');
-    //       });
-    //     }
-    //   }
-    //   currentDay = currentDay.add(increment1Day);
-    //   dailyCounter += 1;
-    //   if(currentDay.day == 1) {
-    //     print("switching to false");
-    //     monthGoing = false;
-    //   }
-    //
-    // }
-
-
   }
 
-  // for(int i = 0; i < 7; i++) {
-  //   events.addAll({startDay.add(Duration(days: i)): []});
-  //   for(int k = 0; k < weeklyRepeats.length; k++) {
-  //
-  //    // print("$currentDay has been added");
-  //     if(weeklyRepeats[k][1].contains(i)) {
-  //       String name = weeklyRepeats[k][0];
-  //       setState(() {
-  //         events[startDay.add(Duration(days: i))].add(name);
-  //         print(name + " has been added");
-  //       });
-  //     }
-  //
-  //   }
-  //   //currentDay = currentDay.add(increment1Day);
-  //
-  // }
 
 
 
