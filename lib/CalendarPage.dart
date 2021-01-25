@@ -17,7 +17,6 @@ class CalendarPageState extends State<CalendarPage> {
   CalendarController calendarController = new CalendarController();
   Map<DateTime, List> events = {};
 
-  List<int> monthStartsDayOfWeek = [5, 1, 1, 4, 6, 2, 4, 0, 3, 5, 1, 3];
   List selectedEvents = [];
 
   @override
@@ -121,10 +120,27 @@ class CalendarPageState extends State<CalendarPage> {
     }
   }
 
+  int getEndOfMonth(int month, int year) {
+    if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+      return 31;
+    }
+    else if(month == 2) {
+      if(year % 4 == 0) {
+        return 29;
+      }
+      else {
+        return 28;
+      }
+    }
+    else {
+      return 30;
+    }
+
+  }
+
   void loadingFirstMonth() {
 
     DateTime start = DateTime.now();
-
 
     DateTime startingDay = DateTime(start.year, start.month, 1);
 
@@ -135,11 +151,12 @@ class CalendarPageState extends State<CalendarPage> {
 
   void onVisibleDayChanged(DateTime startDay, DateTime endDay, CalendarFormat calenderFormat) {
 
-    print(startDay);
-    print(endDay);
-    events.keys.forEach((element) { print(element);});
+    DateTime current = DateTime(startDay.year, startDay.month, startDay.day);
+    while(current.day != 1) {
+      current = current.add(Duration(days: 1));
+    }
 
-
+    if(!events.keys.contains(current) || !events.keys.contains(DateTime(current.year, current.month, getEndOfMonth(current.month, current.year)))) {
       print("On visible day changed had been called");
       DateTime currentDay = startDay;
       Duration increment1Day = Duration(days: 1);
@@ -153,7 +170,7 @@ class CalendarPageState extends State<CalendarPage> {
       addWeeklyDays(currentDay);
       weeklyRepeats.forEach((element) {});
       addPeriodicDays(currentDay, increment1Day);
-    
+    }
   }
 
   Widget buildTableCalendar() {
