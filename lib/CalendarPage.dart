@@ -42,7 +42,7 @@ class CalendarPageState extends State<CalendarPage> {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: ListTile(
-                  title: Text(event.toString() + " " + locations[event][8]),
+                  title: Text(event.toString() + " " + locations[event][7]),
                   onTap: () {
                     try {
                       List vals = locations[event];

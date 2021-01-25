@@ -60,8 +60,8 @@ class SuperListener {
     welcomeScreen.changeToWelcome();
   }
 
-  static void updateFirebase(String foodlevel, String notes, String id) {
-    mapPage.updateFirebase(foodlevel, notes, id);
+  static void updateFirebase(String notes, String id) {
+    mapPage.updateFirebase(notes, id);
   }
 
   static void updateLocList() {
@@ -87,7 +87,7 @@ class SuperListener {
 
   static Future makeAlert(BuildContext context, String key, List value) {
     return locationlist.createAlertDialog(
-        context, key, value[0], value[3], value[4], value[5],value[8], value[9], value[10]);
+        context, key, value[0], value[3], value[4],value[7], value[8], value[9]);
   }
 
   static getFavs() {

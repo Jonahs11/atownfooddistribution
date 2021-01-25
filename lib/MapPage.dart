@@ -94,7 +94,7 @@ class MapPageState extends State<MapPage> {
         querySnapshot.docs.forEach((doc) {
           distance = SuperListener.calcDistance(currentLoc.latitude, currentLoc.longitude, double.parse(doc["lat"]), double.parse(doc["long"]));
 
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance, doc['schedule'], doc['requirements'], doc['phone']];
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'], doc['notes'], doc['link'], doc.id, distance, doc['schedule'], doc['requirements'], doc['phone']];
           print("LOC Updated");
           if(doc['weekly'] == 'true') {
             List days = [];
@@ -156,7 +156,7 @@ class MapPageState extends State<MapPage> {
         visible: true,
         draggable: false,
         onTap: () {
-          createAlertDialog(context, key, value[0], value[3], value[4], value[5], value[8], value[9], value[10]);
+          createAlertDialog(context, key, value[0], value[3], value[4], value[7], value[8], value[9]);
         }
       );
       setState(() {
@@ -168,7 +168,7 @@ class MapPageState extends State<MapPage> {
 
 
     //method that return an alert dialog. This will be used when the markers are clicked on in app
-     Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone){
+     Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
             title: Row(
@@ -204,7 +204,6 @@ class MapPageState extends State<MapPage> {
                           ,)),
                   )
                 ],),
-                Text("Current amount of food: $amountFood\n"),
                 Text("Additional Notes: $notes\n"),
                 Text("Hours of Operation: $schedule"),
                 Text("Requirements to be served: $requirements\n"),
@@ -333,11 +332,11 @@ class MapPageState extends State<MapPage> {
     }
   }
 
-  void updateFirebase(String foodLevel, String notes, String id) {
+  void updateFirebase(String notes, String id) {
     try {
       print(id);
       FirebaseFirestore.instance.collection('markers').doc(id).
-      update({'notes': notes, 'foodlevel': foodLevel}).then((value) {
+      update({'notes': notes}).then((value) {
         print("Success");
       });
     }

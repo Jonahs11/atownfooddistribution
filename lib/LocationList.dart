@@ -120,7 +120,7 @@ class LocationListState extends State<LocationList> {
 
 
 
-  Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link, String schedule, String requirements, String phone){
+  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone){
     CalendarController calendarController = new CalendarController();
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
@@ -180,7 +180,6 @@ class LocationListState extends State<LocationList> {
                       ,)),
               )
             ],),
-            Text("Current amount of food: $amountFood\n"),
             Text("Additional Notes: $notes\n"),
             Text("Hours of Operation: $schedule"),
             Text("Requirements to be served: $requirements\n"),
@@ -241,7 +240,7 @@ class LocationListState extends State<LocationList> {
     List tempTuple = [];
 
     locations.forEach((key, value) {
-      distance = value[7];
+      distance = value[6];
       tempTuple = [key, distance];
       nameDist.add(tempTuple);
     });
@@ -284,7 +283,7 @@ class LocationListState extends State<LocationList> {
   }
 
   void updateFirebase(String foodLevel, String notes, String id) {
-    SuperListener.updateFirebase(foodLevel, notes, id);
+    SuperListener.updateFirebase(notes, id);
   }
 
   Widget editingPage(String key) {
