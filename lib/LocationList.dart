@@ -118,9 +118,7 @@ class LocationListState extends State<LocationList> {
     return locationNames;
   }
 
-
-
-  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone){
+  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone,String writtenSchedule,String type,bool editable){
     CalendarController calendarController = new CalendarController();
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
@@ -131,7 +129,7 @@ class LocationListState extends State<LocationList> {
               child: Text(name),
             ),
             Visibility(
-              visible: administrator,
+              visible: administrator && editable,
               child: Expanded(child: IconButton(icon: Icon(Icons.edit), onPressed: () {
                 setState(() {
                   editing = true;
@@ -147,7 +145,6 @@ class LocationListState extends State<LocationList> {
                   catch(e) {
                     print("Error With Search");
                   }
-
                   currentLoc = name;
 
                 });
@@ -181,7 +178,9 @@ class LocationListState extends State<LocationList> {
               )
             ],),
             Text("Additional Notes: $notes\n"),
-            Text("Hours of Operation: $schedule"),
+            Text("Days Open: $writtenSchedule"),
+            Text("Hours of Operation: $schedule\n"),
+            Text("Type of Food Distributed: $type \n"),
             Text("Requirements to be served: $requirements\n"),
             Row(
                 children: [
@@ -240,7 +239,7 @@ class LocationListState extends State<LocationList> {
     List tempTuple = [];
 
     locations.forEach((key, value) {
-      distance = value[6];
+      distance = value["distance"];
       tempTuple = [key, distance];
       nameDist.add(tempTuple);
     });
@@ -259,7 +258,7 @@ class LocationListState extends State<LocationList> {
 
     for (int k = 0; k < nameDist.length; k++) {
       print(locations[nameDist[k][0]][4]);
-      tempWidget = LocationCard(key: UniqueKey(), name: nameDist[k][0], value: locations[nameDist[k][0]], favorites: favorites);
+      tempWidget = LocationCard(key: UniqueKey(), name: nameDist[k][0], value: locations[nameDist[k][0]], favorites: favorites, editable: true,);
       setState(() {
         print(nameDist[k][0]);
         print("^^^");
@@ -288,9 +287,9 @@ class LocationListState extends State<LocationList> {
 
   Widget editingPage(String key) {
     String name = key;
-    String address = locations[key][0];
-    String notes = locations[key][3];
-    String docID = locations[key][5];
+    String address = locations[key]["address"];
+    String notes = locations[key]["notes"];
+    String docID = locations[key]["id"];
 
     TextEditingController myController1 =
         new TextEditingController(text: notes);
