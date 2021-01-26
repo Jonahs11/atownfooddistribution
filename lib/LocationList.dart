@@ -118,7 +118,7 @@ class LocationListState extends State<LocationList> {
     return locationNames;
   }
 
-  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone, bool editable){
+  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone,String writtenSchedule,String type,bool editable){
     CalendarController calendarController = new CalendarController();
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
@@ -178,7 +178,9 @@ class LocationListState extends State<LocationList> {
               )
             ],),
             Text("Additional Notes: $notes\n"),
-            Text("Hours of Operation: $schedule"),
+            Text("Days Open: $writtenSchedule"),
+            Text("Hours of Operation: $schedule\n"),
+            Text("Type of Food Distributed: $type \n"),
             Text("Requirements to be served: $requirements\n"),
             Row(
                 children: [

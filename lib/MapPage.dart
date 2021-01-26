@@ -107,6 +107,7 @@ class MapPageState extends State<MapPage> {
             "requirements" : doc['requirements'],
             "phone" : doc['phone'],
             "type" : doc['type'],
+            "writtenSched" : doc["writtendays"]
           };
           print("LOC Updated");
           if (doc['weekly'] == 'true') {
