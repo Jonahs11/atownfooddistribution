@@ -15,8 +15,9 @@ class LocationCard extends StatefulWidget {
   final String name;
   final List value;
   final List favorites;
+  final bool editable;
 
-  const LocationCard( {Key key, this.name, this.value, this.favorites}): super(key: key);
+  const LocationCard( {Key key, this.name, this.value, this.favorites, this.editable}): super(key: key);
 
   @override
   _LocationCardState createState() => _LocationCardState(
@@ -30,8 +31,9 @@ class _LocationCardState extends State<LocationCard> {
   String name;
   List value;
   List favorites;
+  bool editable;
 
-  _LocationCardState({this.name, this.value, this.favorites});
+  _LocationCardState({this.name, this.value, this.favorites, this.editable});
 
 
   Future removeFavoriteConfirmation(BuildContext context) {
@@ -121,7 +123,7 @@ class _LocationCardState extends State<LocationCard> {
     //return Widget createCardForLocList(String key, List value) {
     return GestureDetector(
       onTap: () {
-        SuperListener.makeAlert(context, name, value);
+        SuperListener.makeAlert(context, name, value, true);
       },
       child: Card(
         margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),

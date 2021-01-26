@@ -65,8 +65,6 @@ class MapPageState extends State<MapPage> {
 
 
 
-
-
     //method used to initialize the database. This is necissary in order to pull anything from it
     void initFlutterFire() async {
       try {
@@ -92,34 +90,55 @@ class MapPageState extends State<MapPage> {
             .get()
             .then((QuerySnapshot querySnapshot) => {
         querySnapshot.docs.forEach((doc) {
-          distance = SuperListener.calcDistance(currentLoc.latitude, currentLoc.longitude, double.parse(doc["lat"]), double.parse(doc["long"]));
+          try {
+          distance = SuperListener.calcDistance(
+              currentLoc.latitude, currentLoc.longitude,
+              double.parse(doc["lat"]), double.parse(doc["long"]));
 
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'], doc['notes'], doc['link'], doc.id, distance, doc['schedule'], doc['requirements'], doc['phone']];
+          locations[doc['name']] = [
+            doc['address'],
+            doc['lat'],
+            doc['long'],
+            doc['notes'],
+            doc['link'],
+            doc.id,
+            distance,
+            doc['schedule'],
+            doc['requirements'],
+            doc['phone'],
+            doc['type'],
+          ];
           print("LOC Updated");
-          if(doc['weekly'] == 'true') {
+          if (doc['weekly'] == 'true') {
             List days = [];
-            for(int i = 0; i < doc["day"].length; i += 2) {
+            for (int i = 0; i < doc["day"].length; i += 2) {
               days.add(int.parse(doc["day"][i]));
               print(doc["day"][i]);
             }
             weeklyRepeats.add([doc['name'], days]);
-
+            locations[doc['name']].add(["weekly", days]);
           }
 
-          else if(doc['periodic'] == 'true') {
+          else if (doc['periodic'] == 'true') {
             List repeatsOn = [];
             int dayOfWeek;
 
-            for(int k = 0; k < doc["repeatson"].length; k += 2){
+            for (int k = 0; k < doc["repeatson"].length; k += 2) {
               repeatsOn.add(int.parse(doc["repeatson"][k]));
             }
             dayOfWeek = int.parse(doc['day']);
             periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
+            locations[doc['name']].add(['periodic', repeatsOn, dayOfWeek]);
             print("A periodic day has been added");
           }
+        }
+        catch(e) {
+            print("There has been an error loading in ${doc['name']}");
+        }
         }),
           markers.clear(),
           createMarkers(markers),
+
 
         });
 
@@ -156,7 +175,7 @@ class MapPageState extends State<MapPage> {
         visible: true,
         draggable: false,
         onTap: () {
-          createAlertDialog(context, key, value[0], value[3], value[4], value[7], value[8], value[9]);
+          SuperListener.makeAlert(context, key, value, false);
         }
       );
       setState(() {
@@ -167,65 +186,65 @@ class MapPageState extends State<MapPage> {
     }
 
 
-    //method that return an alert dialog. This will be used when the markers are clicked on in app
-     Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone){
-        return showDialog(context: context, builder: (context) {
-          return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Text(name),
-                ),
-                SizedBox(
-                  width: 40.0,
-                ),
-                IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            )
-            ,
-            content: Column(
-              children: [
-                Row(children: [
-                  Expanded(
-                    child: FlatButton(
-                        onPressed: () {
-                          launch(link);
-                        },
-                        child: Text("Address: $address\n",
-                          style: TextStyle(
-                              color: Colors.blueAccent
-                          )
-                          ,)),
-                  )
-                ],),
-                Text("Additional Notes: $notes\n"),
-                Text("Hours of Operation: $schedule"),
-                Text("Requirements to be served: $requirements\n"),
-                Row(
-                    children: [
-                      Text("Phone Number: "),
-                      FlatButton(onPressed:() {
-                        setState(() {
-                          SuperListener.makePhoneCall('tel:$phone');
-                        });
-                      } ,
-                          child: Text(phone,
-                            style: TextStyle(
-                                color: Colors.blueAccent
-                            ),))
-                    ]
-                ),
-              ],
-            ),
-          );
-        } );
-     }
+    // //method that return an alert dialog. This will be used when the markers are clicked on in app
+    //  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone){
+    //     return showDialog(context: context, builder: (context) {
+    //       return AlertDialog(
+    //         title: Row(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [
+    //             Expanded(
+    //               child: Text(name),
+    //             ),
+    //             SizedBox(
+    //               width: 40.0,
+    //             ),
+    //             IconButton(
+    //               icon: Icon(Icons.close),
+    //               onPressed: () {
+    //                 Navigator.of(context).pop();
+    //               },
+    //             )
+    //           ],
+    //         )
+    //         ,
+    //         content: Column(
+    //           children: [
+    //             Row(children: [
+    //               Expanded(
+    //                 child: FlatButton(
+    //                     onPressed: () {
+    //                       launch(link);
+    //                     },
+    //                     child: Text("Address: $address\n",
+    //                       style: TextStyle(
+    //                           color: Colors.blueAccent
+    //                       )
+    //                       ,)),
+    //               )
+    //             ],),
+    //             Text("Additional Notes: $notes\n"),
+    //             Text("Hours of Operation: $schedule"),
+    //             Text("Requirements to be served: $requirements\n"),
+    //             Row(
+    //                 children: [
+    //                   Text("Phone Number: "),
+    //                   FlatButton(onPressed:() {
+    //                     setState(() {
+    //                       SuperListener.makePhoneCall('tel:$phone');
+    //                     });
+    //                   } ,
+    //                       child: Text(phone,
+    //                         style: TextStyle(
+    //                             color: Colors.blueAccent
+    //                         ),))
+    //                 ]
+    //             ),
+    //           ],
+    //         ),
+    //       );
+    //     } );
+    //  }
 
     void checkMarkers() {
     markers.forEach((element) {

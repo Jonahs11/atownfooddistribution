@@ -85,9 +85,9 @@ class SuperListener {
   }
 
 
-  static Future makeAlert(BuildContext context, String key, List value) {
+  static Future makeAlert(BuildContext context, String key, List value, bool editable) {
     return locationlist.createAlertDialog(
-        context, key, value[0], value[3], value[4],value[7], value[8], value[9]);
+        context, key, value[0], value[3], value[4],value[7], value[8], value[9], editable);
   }
 
   static getFavs() {

@@ -118,9 +118,7 @@ class LocationListState extends State<LocationList> {
     return locationNames;
   }
 
-
-
-  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone){
+  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone, bool editable){
     CalendarController calendarController = new CalendarController();
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
@@ -131,7 +129,7 @@ class LocationListState extends State<LocationList> {
               child: Text(name),
             ),
             Visibility(
-              visible: administrator,
+              visible: administrator && editable,
               child: Expanded(child: IconButton(icon: Icon(Icons.edit), onPressed: () {
                 setState(() {
                   editing = true;
@@ -147,7 +145,6 @@ class LocationListState extends State<LocationList> {
                   catch(e) {
                     print("Error With Search");
                   }
-
                   currentLoc = name;
 
                 });
@@ -259,7 +256,7 @@ class LocationListState extends State<LocationList> {
 
     for (int k = 0; k < nameDist.length; k++) {
       print(locations[nameDist[k][0]][4]);
-      tempWidget = LocationCard(key: UniqueKey(), name: nameDist[k][0], value: locations[nameDist[k][0]], favorites: favorites);
+      tempWidget = LocationCard(key: UniqueKey(), name: nameDist[k][0], value: locations[nameDist[k][0]], favorites: favorites, editable: true,);
       setState(() {
         print(nameDist[k][0]);
         print("^^^");

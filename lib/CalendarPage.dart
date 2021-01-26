@@ -46,7 +46,7 @@ class CalendarPageState extends State<CalendarPage> {
                   onTap: () {
                     try {
                       List vals = locations[event];
-                      SuperListener.makeAlert(context, event, vals);
+                      SuperListener.makeAlert(context, event, vals, false);
                     } catch (e) {
                       print("Error no Alert");
                     }
