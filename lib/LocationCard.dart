@@ -13,7 +13,7 @@ import 'dart:convert';
 class LocationCard extends StatefulWidget {
 
   final String name;
-  final List value;
+  final Map value;
   final List favorites;
   final bool editable;
 
@@ -29,7 +29,7 @@ class LocationCard extends StatefulWidget {
 
 class _LocationCardState extends State<LocationCard> {
   String name;
-  List value;
+  Map value;
   List favorites;
   bool editable;
 

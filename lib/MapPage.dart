@@ -13,7 +13,7 @@ import 'package:atownfooddistribution/CalendarPage.dart';
 
 
 //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
- Map<String, List> locations = <String, List>{};
+ Map<String, Map> locations = <String, Map>{};
 
 class MapPage extends StatefulWidget {
   @override
@@ -95,19 +95,19 @@ class MapPageState extends State<MapPage> {
               currentLoc.latitude, currentLoc.longitude,
               double.parse(doc["lat"]), double.parse(doc["long"]));
 
-          locations[doc['name']] = [
-            doc['address'],
-            doc['lat'],
-            doc['long'],
-            doc['notes'],
-            doc['link'],
-            doc.id,
-            distance,
-            doc['schedule'],
-            doc['requirements'],
-            doc['phone'],
-            doc['type'],
-          ];
+          locations[doc['name']] = {
+            "address" : doc['address'],
+            "lat" : doc['lat'],
+            "long" : doc['long'],
+            "notes" : doc['notes'],
+            "link" : doc['link'],
+            "id" : doc.id,
+            "distance" : distance,
+            "schedule" : doc['schedule'],
+            "requirements" : doc['requirements'],
+            "phone" : doc['phone'],
+            "type" : doc['type'],
+          };
           print("LOC Updated");
           if (doc['weekly'] == 'true') {
             List days = [];
@@ -116,7 +116,6 @@ class MapPageState extends State<MapPage> {
               print(doc["day"][i]);
             }
             weeklyRepeats.add([doc['name'], days]);
-            locations[doc['name']].add(["weekly", days]);
           }
 
           else if (doc['periodic'] == 'true') {
@@ -128,7 +127,6 @@ class MapPageState extends State<MapPage> {
             }
             dayOfWeek = int.parse(doc['day']);
             periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
-            locations[doc['name']].add(['periodic', repeatsOn, dayOfWeek]);
             print("A periodic day has been added");
           }
         }
@@ -158,8 +156,8 @@ class MapPageState extends State<MapPage> {
     void checkMap() {
     locations.forEach((key, value) {
       print(key);
-      value.forEach((element) {
-        print(element);
+      value.forEach((key, value) {
+        print(key + " " + value);
       });
     });
     }
@@ -171,7 +169,7 @@ class MapPageState extends State<MapPage> {
     locations.forEach((key, value) {
       tempMarker = new Marker(
         markerId: MarkerId(key),
-        position: LatLng(double.parse(value[1]), double.parse(value[2])),
+        position: LatLng(double.parse(value["lat"]), double.parse(value["long"])),
         visible: true,
         draggable: false,
         onTap: () {
@@ -186,65 +184,7 @@ class MapPageState extends State<MapPage> {
     }
 
 
-    // //method that return an alert dialog. This will be used when the markers are clicked on in app
-    //  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone){
-    //     return showDialog(context: context, builder: (context) {
-    //       return AlertDialog(
-    //         title: Row(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: [
-    //             Expanded(
-    //               child: Text(name),
-    //             ),
-    //             SizedBox(
-    //               width: 40.0,
-    //             ),
-    //             IconButton(
-    //               icon: Icon(Icons.close),
-    //               onPressed: () {
-    //                 Navigator.of(context).pop();
-    //               },
-    //             )
-    //           ],
-    //         )
-    //         ,
-    //         content: Column(
-    //           children: [
-    //             Row(children: [
-    //               Expanded(
-    //                 child: FlatButton(
-    //                     onPressed: () {
-    //                       launch(link);
-    //                     },
-    //                     child: Text("Address: $address\n",
-    //                       style: TextStyle(
-    //                           color: Colors.blueAccent
-    //                       )
-    //                       ,)),
-    //               )
-    //             ],),
-    //             Text("Additional Notes: $notes\n"),
-    //             Text("Hours of Operation: $schedule"),
-    //             Text("Requirements to be served: $requirements\n"),
-    //             Row(
-    //                 children: [
-    //                   Text("Phone Number: "),
-    //                   FlatButton(onPressed:() {
-    //                     setState(() {
-    //                       SuperListener.makePhoneCall('tel:$phone');
-    //                     });
-    //                   } ,
-    //                       child: Text(phone,
-    //                         style: TextStyle(
-    //                             color: Colors.blueAccent
-    //                         ),))
-    //                 ]
-    //             ),
-    //           ],
-    //         ),
-    //       );
-    //     } );
-    //  }
+
 
     void checkMarkers() {
     markers.forEach((element) {

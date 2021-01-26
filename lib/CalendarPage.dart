@@ -42,10 +42,10 @@ class CalendarPageState extends State<CalendarPage> {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: ListTile(
-                  title: Text(event.toString() + " " + locations[event][7]),
+                  title: Text(event.toString() + " " + locations[event]["schedule"]),
                   onTap: () {
                     try {
-                      List vals = locations[event];
+                      Map vals = locations[event];
                       SuperListener.makeAlert(context, event, vals, false);
                     } catch (e) {
                       print("Error no Alert");

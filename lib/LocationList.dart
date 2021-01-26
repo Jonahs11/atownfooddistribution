@@ -237,7 +237,7 @@ class LocationListState extends State<LocationList> {
     List tempTuple = [];
 
     locations.forEach((key, value) {
-      distance = value[6];
+      distance = value["distance"];
       tempTuple = [key, distance];
       nameDist.add(tempTuple);
     });
@@ -285,9 +285,9 @@ class LocationListState extends State<LocationList> {
 
   Widget editingPage(String key) {
     String name = key;
-    String address = locations[key][0];
-    String notes = locations[key][3];
-    String docID = locations[key][5];
+    String address = locations[key]["address"];
+    String notes = locations[key]["notes"];
+    String docID = locations[key]["id"];
 
     TextEditingController myController1 =
         new TextEditingController(text: notes);
