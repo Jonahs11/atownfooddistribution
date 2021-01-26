@@ -282,22 +282,19 @@ class LocationListState extends State<LocationList> {
     return dist;
   }
 
-  void updateFirebase(String foodLevel, String notes, String id) {
+  void updateFirebase(String notes, String id) {
     SuperListener.updateFirebase(notes, id);
   }
 
   Widget editingPage(String key) {
     String name = key;
     String address = locations[key][0];
-    String foodLevel = locations[key][3];
-    String notes = locations[key][4];
-    String docID = locations[key][6];
+    String notes = locations[key][3];
+    String docID = locations[key][5];
+
     TextEditingController myController1 =
-        new TextEditingController(text: foodLevel);
-    TextEditingController myController2 =
         new TextEditingController(text: notes);
-    TextEditingController myController3 = new TextEditingController();
-    TextEditingController myController4 = new TextEditingController();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -334,12 +331,9 @@ class LocationListState extends State<LocationList> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+
                     TextFormField(
                       controller: myController1,
-                      onChanged: (String val) {},
-                    ),
-                    TextFormField(
-                      controller: myController2,
                     )
                   ],
                 ),
@@ -349,7 +343,7 @@ class LocationListState extends State<LocationList> {
           FlatButton(
               onPressed: () {
                 setState(() {
-                updateFirebase(myController1.text, myController2.text, docID);
+                updateFirebase(myController1.text,  docID);
                 SuperListener.updateLocations();
                 mySearch.searchOpen = false;
                 editing = false;
