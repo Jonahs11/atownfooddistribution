@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:atownfooddistribution/CalendarPage.dart';
 
 
 
@@ -36,6 +37,8 @@ class MapPageState extends State<MapPage> {
   DateTime now = new DateTime.now();
   GestureDetector gestureDetector = new GestureDetector();
 
+  //List weeklyReps = [];
+
 
   //markers is a set that stores the Markers onto the Google Map
   final Set<Marker> markers = <Marker>{};
@@ -59,6 +62,8 @@ class MapPageState extends State<MapPage> {
     );
     locationStream.pause();
     }
+
+
 
 
 
@@ -89,11 +94,33 @@ class MapPageState extends State<MapPage> {
         querySnapshot.docs.forEach((doc) {
           distance = SuperListener.calcDistance(currentLoc.latitude, currentLoc.longitude, double.parse(doc["lat"]), double.parse(doc["long"]));
 
-          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'] ,doc['foodlevel'], doc['notes'], doc['link'], doc.id, distance];
+          locations[doc['name']] = [doc['address'], doc['lat'], doc['long'], doc['notes'], doc['link'], doc.id, distance, doc['schedule'], doc['requirements'], doc['phone']];
           print("LOC Updated");
+          if(doc['weekly'] == 'true') {
+            List days = [];
+            for(int i = 0; i < doc["day"].length; i += 2) {
+              days.add(int.parse(doc["day"][i]));
+              print(doc["day"][i]);
+            }
+            weeklyRepeats.add([doc['name'], days]);
+
+          }
+
+          else if(doc['periodic'] == 'true') {
+            List repeatsOn = [];
+            int dayOfWeek;
+
+            for(int k = 0; k < doc["repeatson"].length; k += 2){
+              repeatsOn.add(int.parse(doc["repeatson"][k]));
+            }
+            dayOfWeek = int.parse(doc['day']);
+            periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
+            print("A periodic day has been added");
+          }
         }),
           markers.clear(),
           createMarkers(markers),
+
         });
 
       }
@@ -106,8 +133,6 @@ class MapPageState extends State<MapPage> {
           print("Completed");
       }
     }
-
-
 
 
   //method used to check what is currently being stored in the locations map
@@ -131,7 +156,7 @@ class MapPageState extends State<MapPage> {
         visible: true,
         draggable: false,
         onTap: () {
-          createAlertDialog(context, key, value[0], value[3], value[4], value[5]);
+          createAlertDialog(context, key, value[0], value[3], value[4], value[7], value[8], value[9]);
         }
       );
       setState(() {
@@ -143,19 +168,18 @@ class MapPageState extends State<MapPage> {
 
 
     //method that return an alert dialog. This will be used when the markers are clicked on in app
-     Future createAlertDialog(BuildContext context, String name, String address, String amountFood, String notes, String link){
+     Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone){
         return showDialog(context: context, builder: (context) {
           return AlertDialog(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(child: Text(name,
-                  style: TextStyle(
-                      fontSize: 40.0
-                  ),),),
-               //  SizedBox(
-               //    width: 40.0,
-               //  ),
+                Expanded(
+                  child: Text(name),
+                ),
+                SizedBox(
+                  width: 40.0,
+                ),
                 IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
@@ -164,29 +188,44 @@ class MapPageState extends State<MapPage> {
                 )
               ],
             )
-              ,
+            ,
             content: Column(
               children: [
-
-                Text(address),
-                Text("Current amount of food: $amountFood"),
-                Text(notes),
+                Row(children: [
+                  Expanded(
+                    child: FlatButton(
+                        onPressed: () {
+                          launch(link);
+                        },
+                        child: Text("Address: $address\n",
+                          style: TextStyle(
+                              color: Colors.blueAccent
+                          )
+                          ,)),
+                  )
+                ],),
+                Text("Additional Notes: $notes\n"),
+                Text("Hours of Operation: $schedule"),
+                Text("Requirements to be served: $requirements\n"),
                 Row(
-                  children: [
-                    Text("Link:"),
-                    IconButton(
-                      icon: Icon(Icons.link),
-                      onPressed: () {
-                        launch(link);
-                      },
-                    )
-                  ],
-                )
+                    children: [
+                      Text("Phone Number: "),
+                      FlatButton(onPressed:() {
+                        setState(() {
+                          SuperListener.makePhoneCall('tel:$phone');
+                        });
+                      } ,
+                          child: Text(phone,
+                            style: TextStyle(
+                                color: Colors.blueAccent
+                            ),))
+                    ]
+                ),
               ],
             ),
           );
         } );
-    }
+     }
 
     void checkMarkers() {
     markers.forEach((element) {
@@ -293,11 +332,11 @@ class MapPageState extends State<MapPage> {
     }
   }
 
-  void updateFirebase(String foodLevel, String notes, String id) {
+  void updateFirebase(String notes, String id) {
     try {
       print(id);
       FirebaseFirestore.instance.collection('markers').doc(id).
-      update({'notes': notes, 'foodlevel': foodLevel}).then((value) {
+      update({'notes': notes}).then((value) {
         print("Success");
       });
     }

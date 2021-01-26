@@ -2,10 +2,13 @@ import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
+import 'package:atownfooddistribution/LocationCard.dart';
 
 class Search extends SearchDelegate<String> {
 
   bool searchOpen = false;
+  List favs = SuperListener.getFavs();
+  //bool addedOrRemovedFav = false;
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -23,6 +26,7 @@ class Search extends SearchDelegate<String> {
     return IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
       close(context, null);
       searchOpen = false;
+      //SuperListener.moveToFavs();
     });
   }
 
@@ -41,7 +45,7 @@ class Search extends SearchDelegate<String> {
         itemCount: myList.length,
         itemBuilder: (context, index) {
           final String listItem = myList[index];
-           return SuperListener.createCard(listItem, locations[listItem]);
+           return LocationCard(key: UniqueKey(), name: listItem, value: locations[listItem], favorites: favs,);
         });
 
   }
@@ -63,8 +67,7 @@ class Search extends SearchDelegate<String> {
           itemCount: myList.length,
           itemBuilder: (context, index) {
             final String listItem = myList[index];
-             return SuperListener.createCard(listItem, locations[listItem]);
-
+             return LocationCard(key: UniqueKey(), name: listItem, value: locations[listItem], favorites: favs,);
           }),
     );
   }

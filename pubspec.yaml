@@ -35,6 +35,9 @@ dependencies:
   url_launcher: ^5.7.10
   pull_to_refresh: ^1.6.3
   latlong: ^0.6.1
+  path_provider: ^1.6.27
+  table_calendar: ^2.3.3
+
 
 
 dev_dependencies:

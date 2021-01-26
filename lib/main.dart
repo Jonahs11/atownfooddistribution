@@ -1,3 +1,4 @@
+import 'package:atownfooddistribution/CalendarPage.dart';
 import 'package:atownfooddistribution/InformationPage.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class MyHomePageState extends State<MyHomePage> {
   MapPage mapPage = new MapPage();
   InformationPage informationPage = new InformationPage();
   LocationList locationList = new LocationList();
+  CalendarPage calendarPage = new CalendarPage();
   bool oneClick = false;
 
   @override
@@ -63,6 +65,7 @@ class MyHomePageState extends State<MyHomePage> {
             welcomeScreen,
             mapPage,
             locationList,
+            calendarPage,
             informationPage,
           ],
         ),
@@ -88,6 +91,11 @@ class MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.blue
           ),
           BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today),
+              label: "Calendar Page",
+              backgroundColor: Colors.blue
+          ),
+          BottomNavigationBarItem(
               icon: Icon(Icons.info),
               label: "Information Page",
               backgroundColor: Colors.blue
@@ -97,6 +105,7 @@ class MyHomePageState extends State<MyHomePage> {
           setState(() {
             if(!oneClick) {
               SuperListener.updateLocList();
+              SuperListener.loadFirstMonth();
               oneClick = true;
             }
             myIndex = index;
