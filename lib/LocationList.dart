@@ -122,7 +122,7 @@ class LocationListState extends State<LocationList> {
     CalendarController calendarController = new CalendarController();
     String hoursOfOp;
     if(name == "Allentown Salvation Army" && mapPage) {
-      hoursOfOp = "${locations[name]['firstwritten']} \n\n ${locations[name]['secondwritten']} \n\n ${locations[name]['thirdwritten']}\n";
+      hoursOfOp = "${locations[name]['secondwritten']} \n\n ${locations[name]['thirdwritten']} \n\n ${locations[name]['firstwritten']}\n";
 
     }
 

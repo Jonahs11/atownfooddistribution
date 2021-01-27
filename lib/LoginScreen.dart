@@ -149,6 +149,40 @@ class WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
+  Widget loggedIn() {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 100,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(
+                    "You are now logged in as an administrator.\n\n"
+                        "To make any edits to a site, you must navigate to the Location List and click on a card.",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 150,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void showLocs() {
     locations.forEach((key, value) {
       print(key);
@@ -163,6 +197,6 @@ class WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return locListUp ? LocationList() : welcomeScreen();
+    return administrator? loggedIn(): welcomeScreen();
   }
 }

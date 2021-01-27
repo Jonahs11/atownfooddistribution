@@ -17,6 +17,7 @@ class CalendarPageState extends State<CalendarPage> {
   CalendarController calendarController = new CalendarController();
   Map<DateTime, List> events = {};
 
+  DateTime currentDay;
   List selectedEvents = [];
 
   @override
@@ -33,10 +34,17 @@ class CalendarPageState extends State<CalendarPage> {
 
   Widget buildEventList() {
     int timesFound = 0;
+    List salvationHours = [];
+    int salvationsIndexed = 0;
     selectedEvents.forEach((element) {
       if(element == "Allentown Salvation Army") {
         timesFound += 1;
+        print("$timesFound Salvation Army");
       }
+      if(timesFound > 0) {
+
+      }
+
     });
     return ListView(
       children: selectedEvents
@@ -205,8 +213,12 @@ class CalendarPageState extends State<CalendarPage> {
         initialCalendarFormat: CalendarFormat.month,
         availableGestures: AvailableGestures.none,
         onDaySelected: (date, events, holidays) {
+          currentDay = date;
           onDaySelected(events);
         },
+      onCalendarCreated: (date, events, holidays) {
+          currentDay = date;
+      },
         onVisibleDaysChanged: onVisibleDayChanged,
 
     );

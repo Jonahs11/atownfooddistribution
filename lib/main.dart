@@ -4,7 +4,7 @@ import 'package:atownfooddistribution/MapPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:atownfooddistribution/WelcomeScreen.dart';
+import 'package:atownfooddistribution/LoginScreen.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/LocationList.dart';
 
@@ -66,7 +66,7 @@ class MyHomePageState extends State<MyHomePage> {
             mapPage,
             locationList,
             calendarPage,
-            informationPage,
+            //informationPage,
           ],
         ),
       bottomNavigationBar: BottomNavigationBar(
@@ -95,11 +95,11 @@ class MyHomePageState extends State<MyHomePage> {
               label: "Calendar Page",
               backgroundColor: Colors.blue
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.info),
-              label: "Information Page",
-              backgroundColor: Colors.blue
-          ),
+          // BottomNavigationBarItem(
+          //     icon: Icon(Icons.info),
+          //     label: "Information Page",
+          //     backgroundColor: Colors.blue
+          // ),
         ],
         onTap: (int index) {
           setState(() {

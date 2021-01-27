@@ -1,7 +1,7 @@
 import 'package:atownfooddistribution/Search.dart';
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/main.dart';
-import 'package:atownfooddistribution/WelcomeScreen.dart';
+import 'package:atownfooddistribution/LoginScreen.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 import 'package:atownfooddistribution/InformationPage.dart';
 import 'package:atownfooddistribution/LocationList.dart';
@@ -96,6 +96,7 @@ class SuperListener {
 
   static void makeAdmin() {
     locationlist.makeAdmin();
+    navTo(2);
   }
 
   static writeToFile(List favs) {
