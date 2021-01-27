@@ -303,30 +303,40 @@ class LocationListState extends State<LocationList> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Editing information for $key"),
+        title: Row(
+          children: [
+            IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
+              setState(() {
+                mySearch.searchOpen = false;
+                editing = false;
+                viewingFavList = false;
+                viewingLocList = true;
+              });
+            },
+            ),
+            Text("Editing"),
+          ],
+        ),
       ),
       body: Column(
         children: [
+          SizedBox(height: 20.0,),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
-                setState(() {
-                  mySearch.searchOpen = false;
-                  editing = false;
-                  viewingFavList = false;
-                  viewingLocList = true;
-
-                });
-              })
+              Flexible(
+                child: Text("Location Name:       $name\n\n",
+                style: TextStyle(
+                  fontSize: 15.0
+                ),),
+              )
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [Text("Location Name: "), Text(name)],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [Text("Address of Location: "), Text(address)],
+          Flexible(
+            child: Text("Address:       $address\n\n",
+              style: TextStyle(
+                  fontSize: 15.0
+              ),),
           ),
           Card(
             child: Padding(
@@ -337,6 +347,7 @@ class LocationListState extends State<LocationList> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
 
+                    Text("Notes to User: "),
                     TextFormField(
                       controller: myController1,
                     )
