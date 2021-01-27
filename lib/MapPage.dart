@@ -153,6 +153,11 @@ class MapPageState extends State<MapPage> {
             periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
             print("A periodic day has been added");
           }
+          else {
+            print("Adding Grace Community Foundation");
+            weeklyRepeats.add(["Grace Community Foundation", [5]]);
+            periodicRepeats.add(["Grace Community Foundation", [3], 6]);
+          }
         }
         catch(e) {
             print("There has been an error loading in ${doc['name']}");
