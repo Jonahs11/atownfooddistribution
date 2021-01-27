@@ -118,8 +118,14 @@ class LocationListState extends State<LocationList> {
     return locationNames;
   }
 
-  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone,String writtenSchedule,String type,bool editable){
+  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone,String writtenSchedule,String type,bool editable, bool mapPage){
     CalendarController calendarController = new CalendarController();
+    String hoursOfOp;
+    if(name == "Allentown Salvation Army" && mapPage) {
+      hoursOfOp = "${locations[name]['secondwritten']} \n\n ${locations[name]['thirdwritten']} \n\n ${locations[name]['firstwritten']}\n";
+
+    }
+
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
         title: Row(
@@ -178,9 +184,9 @@ class LocationListState extends State<LocationList> {
               )
             ],),
             Text("Additional Notes: $notes\n"),
-            Text("Days Open: $writtenSchedule"),
-            Text("Hours of Operation: $schedule\n"),
-            Text("Type of Food Distributed: $type \n"),
+            name != "Allentown Salvation Army" && mapPage? Text("Days Open: $writtenSchedule"): Text("Hours of operation: $hoursOfOp"),
+            name != "Allentown Salvation Army" && mapPage?Text("Hours of Operation: $schedule\n"):
+            name != "Allentown Salvation Army" && mapPage? Text("Type of Food Distributed: $type \n"):
             Text("Requirements to be served: $requirements\n"),
             Row(
                 children: [

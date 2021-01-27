@@ -17,6 +17,7 @@ class CalendarPageState extends State<CalendarPage> {
   CalendarController calendarController = new CalendarController();
   Map<DateTime, List> events = {};
 
+  DateTime currentDay;
   List selectedEvents = [];
 
   @override
@@ -32,6 +33,19 @@ class CalendarPageState extends State<CalendarPage> {
   }
 
   Widget buildEventList() {
+    int timesFound = 0;
+    List salvationHours = [];
+    int salvationsIndexed = 0;
+    selectedEvents.forEach((element) {
+      if(element == "Allentown Salvation Army") {
+        timesFound += 1;
+        print("$timesFound Salvation Army");
+      }
+      if(timesFound > 0) {
+
+      }
+
+    });
     return ListView(
       children: selectedEvents
           .map((event) => Container(
@@ -42,11 +56,11 @@ class CalendarPageState extends State<CalendarPage> {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: ListTile(
-                  title: Text(event.toString() + " " + locations[event]["schedule"]),
+                  title: Text(event.toString() + ": " + locations[event]["schedule"]),
                   onTap: () {
                     try {
                       Map vals = locations[event];
-                      SuperListener.makeAlert(context, event, vals, false);
+                      SuperListener.makeAlert(context, event, vals, false, true);
                     } catch (e) {
                       print("Error no Alert");
                     }
@@ -71,6 +85,7 @@ class CalendarPageState extends State<CalendarPage> {
 
     int startDayOfWeekOfMonth = currentDay.weekday;
 
+
     while (monthGoing) {
       events.addAll(
           {DateTime(currentDay.year, currentDay.month, currentDay.day): []});
@@ -88,6 +103,24 @@ class CalendarPageState extends State<CalendarPage> {
       if (currentDay.day == 1) {
         monthGoing = false;
       }
+    }
+    if(startDayOfWeekOfMonth > 0 && startDayOfWeekOfMonth < 4) {
+      if (getEndOfMonth(startOfMonth.month, startOfMonth.year) == 31) {
+        print(startDayOfWeekOfMonth);
+        events[DateTime(startOfMonth.year, startOfMonth.month, 29 + (3-  startDayOfWeekOfMonth))].remove(
+            "Allentown Salvation Army");
+      }
+    }
+    else if(startDayOfWeekOfMonth == 2 || startDayOfWeekOfMonth == 3) {
+      if (getEndOfMonth(startOfMonth.month, startOfMonth.year) == 30) {
+        print(startDayOfWeekOfMonth);
+        events[DateTime(startOfMonth.year, startOfMonth.month, 29 + (3 - startDayOfWeekOfMonth))].remove(
+            "Allentown Salvation Army");
+      }
+    }
+    else if(startOfMonth.year % 4 == 0 && startOfMonth.weekday == 3 && startOfMonth.month == 2) {
+      events[DateTime(startOfMonth.year, startOfMonth.month, 29)].remove(
+          "Allentown Salvation Army");
     }
   }
 
@@ -180,8 +213,12 @@ class CalendarPageState extends State<CalendarPage> {
         initialCalendarFormat: CalendarFormat.month,
         availableGestures: AvailableGestures.none,
         onDaySelected: (date, events, holidays) {
+          currentDay = date;
           onDaySelected(events);
         },
+      onCalendarCreated: (date, events, holidays) {
+          currentDay = date;
+      },
         onVisibleDaysChanged: onVisibleDayChanged,
 
     );

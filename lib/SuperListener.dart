@@ -1,7 +1,7 @@
 import 'package:atownfooddistribution/Search.dart';
 import 'package:flutter/material.dart';
 import 'package:atownfooddistribution/main.dart';
-import 'package:atownfooddistribution/WelcomeScreen.dart';
+import 'package:atownfooddistribution/LoginScreen.dart';
 import 'package:atownfooddistribution/MapPage.dart';
 import 'package:atownfooddistribution/InformationPage.dart';
 import 'package:atownfooddistribution/LocationList.dart';
@@ -85,9 +85,9 @@ class SuperListener {
   }
 
 
-  static Future makeAlert(BuildContext context, String key, Map value, bool editable) {
+  static Future makeAlert(BuildContext context, String key, Map value, bool editable, bool mapPage) {
     return locationlist.createAlertDialog(
-        context, key, value["address"], value["notes"], value["link"],value["schedule"], value["requirements"], value["phone"],value["writtenSched"],value["type"],editable);
+        context, key, value["address"], value["notes"], value["link"],value["schedule"], value["requirements"], value["phone"],value["writtenSched"],value["type"],editable, mapPage);
   }
 
   static getFavs() {
@@ -96,6 +96,7 @@ class SuperListener {
 
   static void makeAdmin() {
     locationlist.makeAdmin();
+    navTo(2);
   }
 
   static writeToFile(List favs) {

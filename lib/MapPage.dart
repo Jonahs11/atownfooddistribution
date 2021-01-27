@@ -9,9 +9,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:atownfooddistribution/CalendarPage.dart';
 
-
-
-
 //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
  Map<String, Map> locations = <String, Map>{};
 
@@ -95,6 +92,32 @@ class MapPageState extends State<MapPage> {
               currentLoc.latitude, currentLoc.longitude,
               double.parse(doc["lat"]), double.parse(doc["long"]));
 
+          if(doc['name'] == "Allentown Salvation Army") {
+            locations[doc['name']] = {
+              "address" : doc['address'],
+              "lat" : doc['lat'],
+              "long" : doc['long'],
+              "notes" : doc['notes'],
+              "link" : doc['link'],
+              "id" : doc.id,
+              "distance" : distance,
+              "requirements" : doc['requirements'],
+              "phone" : doc['phone'],
+              "firsthours" : doc["first"],
+              "secondhours" : doc['second'],
+              "thirdhours" : doc['third'],
+              "firstwritten" : doc['firstwritten'],
+              "secondwritten" : doc["secondwritten"],
+              "thirdwritten" : doc["thirdwritten"],
+              "schedule" : doc["schedule"]
+            };
+
+            print("Salvation army added");
+            weeklyRepeats.add([doc['name'], [1,3]]);
+            periodicRepeats.add([doc['name'], [2,4], 3]);
+
+          }
+
           locations[doc['name']] = {
             "address" : doc['address'],
             "lat" : doc['lat'],
@@ -129,6 +152,11 @@ class MapPageState extends State<MapPage> {
             dayOfWeek = int.parse(doc['day']);
             periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
             print("A periodic day has been added");
+          }
+          else {
+            print("Adding Grace Community Foundation");
+            weeklyRepeats.add(["Grace Community Foundation", [5]]);
+            periodicRepeats.add(["Grace Community Foundation", [3], 6]);
           }
         }
         catch(e) {
@@ -174,7 +202,7 @@ class MapPageState extends State<MapPage> {
         visible: true,
         draggable: false,
         onTap: () {
-          SuperListener.makeAlert(context, key, value, false);
+          SuperListener.makeAlert(context, key, value, false, true);
         }
       );
       setState(() {
