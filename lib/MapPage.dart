@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:atownfooddistribution/CalendarPage.dart';
 
 //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
- Map<String, Map> locations = <String, Map>{};
+Map<String, Map> locations = <String, Map>{};
 
 class MapPage extends StatefulWidget {
   @override
@@ -18,8 +18,7 @@ class MapPage extends StatefulWidget {
 }
 
 class MapPageState extends State<MapPage> {
-
- // CameraPosition _center = CameraPosition(target: LatLng(-45.71, 75), zoom: currentZoom);
+  // CameraPosition _center = CameraPosition(target: LatLng(-45.71, 75), zoom: currentZoom);
   Location location = new Location();
   StreamSubscription<LocationData> locationStream;
   GoogleMapController mapController;
@@ -36,267 +35,252 @@ class MapPageState extends State<MapPage> {
 
   //List weeklyReps = [];
 
-
   //markers is a set that stores the Markers onto the Google Map
   final Set<Marker> markers = <Marker>{};
-
-
-  
 
   //Function called when GoogleMap is implemented which, upon consent, tracks the user
   void onMapCreated(GoogleMapController controller) async {
     mapController = controller;
-    locationStream =  location.onLocationChanged.listen((event) {
-
-     // print("$currentLat is the lat and $currentLong is the long");
-      mapController.animateCamera( CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(event.latitude, event.longitude),
-            zoom: 16.0,
-          )
-      ));
-    }
-    );
+    locationStream = location.onLocationChanged.listen((event) {
+      // print("$currentLat is the lat and $currentLong is the long");
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(event.latitude, event.longitude),
+        zoom: 16.0,
+      )));
+    });
     locationStream.pause();
-    }
-
-
-
-    //method used to initialize the database. This is necissary in order to pull anything from it
-    void initFlutterFire() async {
-      try {
-        await  Firebase.initializeApp();
-        setState(() {
-          appInitialized = true;
-        });
-        checkFirebase();
-      }
-      catch (e) {
-        print(e.toString());
-      }
-    }
-
-    //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
-    Future<void> checkFirebase() async {
-    Location location = new Location();
-    LocationData currentLoc =  await location.getLocation();
-    double distance;
-      try {
-         FirebaseFirestore.instance
-            .collection('markers')
-            .get()
-            .then((QuerySnapshot querySnapshot) => {
-        querySnapshot.docs.forEach((doc) {
-          try {
-          distance = SuperListener.calcDistance(
-              currentLoc.latitude, currentLoc.longitude,
-              double.parse(doc["lat"]), double.parse(doc["long"]));
-
-          if(doc['name'] == "Allentown Salvation Army") {
-            locations[doc['name']] = {
-              "address" : doc['address'],
-              "lat" : doc['lat'],
-              "long" : doc['long'],
-              "notes" : doc['notes'],
-              "link" : doc['link'],
-              "id" : doc.id,
-              "distance" : distance,
-              "requirements" : doc['requirements'],
-              "phone" : doc['phone'],
-              "firsthours" : doc["first"],
-              "secondhours" : doc['second'],
-              "thirdhours" : doc['third'],
-              "firstwritten" : doc['firstwritten'],
-              "secondwritten" : doc["secondwritten"],
-              "thirdwritten" : doc["thirdwritten"],
-              "schedule" : doc["schedule"]
-            };
-
-            print("Salvation army added");
-            weeklyRepeats.add([doc['name'], [1,3]]);
-            periodicRepeats.add([doc['name'], [2,4], 3]);
-
-          }
-
-          locations[doc['name']] = {
-            "address" : doc['address'],
-            "lat" : doc['lat'],
-            "long" : doc['long'],
-            "notes" : doc['notes'],
-            "link" : doc['link'],
-            "id" : doc.id,
-            "distance" : distance,
-            "schedule" : doc['schedule'],
-            "requirements" : doc['requirements'],
-            "phone" : doc['phone'],
-            "type" : doc['type'],
-            "writtenSched" : doc["writtendays"]
-          };
-          print("LOC Updated");
-          if (doc['weekly'] == 'true') {
-            List days = [];
-            for (int i = 0; i < doc["day"].length; i += 2) {
-              days.add(int.parse(doc["day"][i]));
-              print(doc["day"][i]);
-            }
-            weeklyRepeats.add([doc['name'], days]);
-          }
-
-          else if (doc['periodic'] == 'true') {
-            List repeatsOn = [];
-            int dayOfWeek;
-
-            for (int k = 0; k < doc["repeatson"].length; k += 2) {
-              repeatsOn.add(int.parse(doc["repeatson"][k]));
-            }
-            dayOfWeek = int.parse(doc['day']);
-            periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
-            print("A periodic day has been added");
-          }
-          else {
-            print("Adding Grace Community Foundation");
-            weeklyRepeats.add(["Grace Community Foundation", [5]]);
-            periodicRepeats.add(["Grace Community Foundation", [3], 6]);
-          }
-        }
-        catch(e) {
-            print("There has been an error loading in ${doc['name']}");
-        }
-        }),
-          markers.clear(),
-          createMarkers(markers),
-
-
-        });
-
-      }
-    catch(e)
-  {
-    print(e);
   }
-  finally{
 
-          print("Completed");
-      }
+  //method used to initialize the database. This is necissary in order to pull anything from it
+  void initFlutterFire() async {
+    try {
+      await Firebase.initializeApp();
+      setState(() {
+        appInitialized = true;
+      });
+      checkFirebase();
+    } catch (e) {
+      print(e.toString());
     }
+  }
 
+  //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
+  Future<void> checkFirebase() async {
+    Location location = new Location();
+    LocationData currentLoc = await location.getLocation();
+    double distance;
+    try {
+      FirebaseFirestore.instance
+          .collection('markers')
+          .get()
+          .then((QuerySnapshot querySnapshot) => {
+                querySnapshot.docs.forEach((doc) {
+                  try {
+                    distance = SuperListener.calcDistance(
+                        currentLoc.latitude,
+                        currentLoc.longitude,
+                        double.parse(doc["lat"]),
+                        double.parse(doc["long"]));
+
+                    if (doc['name'] == "Allentown Salvation Army") {
+                      locations[doc['name']] = {
+                        "address": doc['address'],
+                        "lat": doc['lat'],
+                        "long": doc['long'],
+                        "notes": doc['notes'],
+                        "link": doc['link'],
+                        "id": doc.id,
+                        "distance": distance,
+                        "requirements": doc['requirements'],
+                        "phone": doc['phone'],
+                        "firsthours": doc["first"],
+                        "secondhours": doc['second'],
+                        "thirdhours": doc['third'],
+                        "firstwritten": doc['firstwritten'],
+                        "secondwritten": doc["secondwritten"],
+                        "thirdwritten": doc["thirdwritten"],
+                        "schedule": doc["schedule"]
+                      };
+
+                      print("Salvation army added");
+                      weeklyRepeats.add([
+                        doc['name'],
+                        [1, 3]
+                      ]);
+                      periodicRepeats.add([
+                        doc['name'],
+                        [2, 4],
+                        3
+                      ]);
+                    }
+
+                    locations[doc['name']] = {
+                      "address": doc['address'],
+                      "lat": doc['lat'],
+                      "long": doc['long'],
+                      "notes": doc['notes'],
+                      "link": doc['link'],
+                      "id": doc.id,
+                      "distance": distance,
+                      "schedule": doc['schedule'],
+                      "requirements": doc['requirements'],
+                      "phone": doc['phone'],
+                      "type": doc['type'],
+                      "writtenSched": doc["writtendays"]
+                    };
+                    if (doc['weekly'] == 'true') {
+                      List days = [];
+                      for (int i = 0; i < doc["day"].length; i += 2) {
+                        days.add(int.parse(doc["day"][i]));
+                        print(doc["day"][i]);
+                      }
+                      weeklyRepeats.add([doc['name'], days]);
+                    } else if (doc['periodic'] == 'true') {
+                      List repeatsOn = [];
+                      int dayOfWeek;
+
+                      for (int k = 0; k < doc["repeatson"].length; k += 2) {
+                        repeatsOn.add(int.parse(doc["repeatson"][k]));
+                      }
+                      dayOfWeek = int.parse(doc['day']);
+                      periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
+                      print("A periodic day has been added");
+                    } else {
+                      print("Adding Grace Community Foundation");
+                      weeklyRepeats.add([
+                        "Grace Community Foundation",
+                        [5]
+                      ]);
+                      periodicRepeats.add([
+                        "Grace Community Foundation",
+                        [3],
+                        6
+                      ]);
+                    }
+                  } catch (e) {
+                    print("There has been an error loading in ${doc['name']}");
+                  }
+                }),
+                markers.clear(),
+                createMarkers(markers),
+              });
+    } catch (e) {
+      print(e);
+    } finally {
+      print("Completed");
+    }
+  }
 
   //method used to check what is currently being stored in the locations map
-    void checkMap() {
+  void checkMap() {
     locations.forEach((key, value) {
       print(key);
       value.forEach((key, value) {
         print(key + " " + value);
       });
     });
-    }
+  }
 
-    //value list goes [address, lat, long, foodlevel, notes]
+  //value list goes [address, lat, long, foodlevel, notes]
   //method used to create all the Markers and populate the markers set with Markers
-    void createMarkers(Set<Marker> markers) {
-      Marker tempMarker;
+  void createMarkers(Set<Marker> markers) {
+    Marker tempMarker;
     locations.forEach((key, value) {
       tempMarker = new Marker(
-        markerId: MarkerId(key),
-        position: LatLng(double.parse(value["lat"]), double.parse(value["long"])),
-        visible: true,
-        draggable: false,
-        onTap: () {
-          SuperListener.makeAlert(context, key, value, false, true);
-        }
-      );
+          markerId: MarkerId(key),
+          position:
+              LatLng(double.parse(value["lat"]), double.parse(value["long"])),
+          visible: true,
+          draggable: false,
+          onTap: () {
+            SuperListener.makeAlert(context, key, value, false, true);
+          });
       setState(() {
         markers.add(tempMarker);
       });
     });
-      print("Markers have been made");
-    }
+    print("Markers have been made");
+  }
 
-
-
-
-    void checkMarkers() {
+  void checkMarkers() {
     markers.forEach((element) {
       print(element.markerId);
       print(element.position);
       print(element.visible);
     });
-    }
+  }
 
-
-    void toggleSwitchSliderTap(bool val) {
+  void toggleSwitchSliderTap(bool val) {
     print(cameraMovementOn);
-    if(cameraMovementOn) {
+    if (cameraMovementOn) {
       setState(() {
         cameraMovementOn = false;
         locationStream.pause();
       });
-
-    }
-    else {
+    } else {
       setState(() {
         cameraMovementOn = true;
         locationStream.resume();
       });
     }
     print(cameraMovementOn);
+  }
 
-    }
-
-    //this method returns the standard map screen, and is what the users will see
+  //this method returns the standard map screen, and is what the users will see
   //if there is not a problem while loading into the app
   Widget mapPage() {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: cameraMovementOn? Colors.blue: Colors.red,
-        title: Column(
-          children: [
-            cameraMovementOn? Text("Auto-Camera Movment On"): Text("Auto-Camera Movement Off"),
-            Text("Map last updated on " + now.toString(),
-            style: TextStyle(
-              fontSize: 10.0,
-            ),)
-          ],
-        )
-      ),
+          backgroundColor: cameraMovementOn ? Colors.blue : Colors.red,
+          title: Column(
+            children: [
+              cameraMovementOn
+                  ? Text("Auto-Camera Movment On")
+                  : Text("Auto-Camera Movement Off"),
+              Text(
+                "Map last updated on " + now.toString(),
+                style: TextStyle(
+                  fontSize: 10.0,
+                ),
+              )
+            ],
+          )),
       body: Stack(
         children: [
           GoogleMap(
-          initialCameraPosition: CameraPosition(
-              target: LatLng(40.6023, -75.4714), zoom: 12),
-          onMapCreated: onMapCreated,
-          mapType: MapType.hybrid,
-          myLocationEnabled: true,
-          myLocationButtonEnabled: mylocationEnabled,
-          markers: markers,
+            initialCameraPosition:
+                CameraPosition(target: LatLng(40.6023, -75.4714), zoom: 12),
+            onMapCreated: onMapCreated,
+            mapType: MapType.hybrid,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: mylocationEnabled,
+            markers: markers,
           ),
-
           Positioned(
-            top: 50,
+              top: 50,
               right: 5,
               child: Switch(
                 value: cameraMovementOn,
                 onChanged: toggleSwitchSliderTap,
                 activeColor: Colors.blue,
                 inactiveTrackColor: Colors.red,
-
               )),
           Positioned(
-            top: 100.0,
+              top: 100.0,
               left: 5.0,
               child: Container(
                 color: Colors.white,
                 child: IconButton(
-            icon: Icon(
-                Icons.refresh,
-            ),
-              onPressed: () {
-              checkFirebase();
-              setState(() {
-                now = new DateTime.now();
-              });
-              },
-          ),
+                  icon: Icon(
+                    Icons.refresh,
+                  ),
+                  onPressed: () {
+                    checkFirebase();
+                    setState(() {
+                      now = new DateTime.now();
+                    });
+                  },
+                ),
               )),
         ],
       ),
@@ -310,12 +294,11 @@ class MapPageState extends State<MapPage> {
     );
   }
 
-  launchURL(String url) async{
+  launchURL(String url) async {
     print(url);
-    if(await canLaunch(url)) {
+    if (await canLaunch(url)) {
       await launchURL(url);
-    }
-    else {
+    } else {
       throw 'Could not launch $url';
     }
   }
@@ -323,12 +306,13 @@ class MapPageState extends State<MapPage> {
   void updateFirebase(String notes, String id) {
     try {
       print(id);
-      FirebaseFirestore.instance.collection('markers').doc(id).
-      update({'notes': notes}).then((value) {
+      FirebaseFirestore.instance
+          .collection('markers')
+          .doc(id)
+          .update({'notes': notes}).then((value) {
         print("Success");
       });
-    }
-    catch(e) {
+    } catch (e) {
       print("THERE WAS AN ERROR");
     }
   }
@@ -345,8 +329,7 @@ class MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     if (appInitialized) {
       return mapPage();
-    }
-    else {
+    } else {
       return errorPage();
     }
   }

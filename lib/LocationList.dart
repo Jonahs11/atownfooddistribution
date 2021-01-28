@@ -43,12 +43,10 @@ class LocationListState extends State<LocationList> {
   bool fileExists;
   List fileContent = [];
 
-
   bool viewingLocList = true;
   bool viewingFavList = false;
   bool editingLoc = false;
   bool viewingAlphaList = false;
-
 
   List<String> options = ["Alphabetical", "Distance", "Favorites"];
   String currentValue = "Distance";
@@ -66,7 +64,7 @@ class LocationListState extends State<LocationList> {
     setState(() {
       administrator = true;
     });
- }
+  }
 
   void loadInFile() {
     getApplicationDocumentsDirectory().then((Directory directory) {
@@ -74,18 +72,15 @@ class LocationListState extends State<LocationList> {
       jsonFile = new File(directory.path + "/" + fileName);
       fileExists = jsonFile.existsSync();
 
-      if(fileExists) {
+      if (fileExists) {
         this.setState(() {
           favorites = json.decode(jsonFile.readAsStringSync());
           print("Favs loaded in");
         });
-      }
-      else
-      {
+      } else {
         createFile(favorites);
         print("THERE was no file but now there is!");
       }
-
     });
   }
 
@@ -97,7 +92,7 @@ class LocationListState extends State<LocationList> {
   }
 
   void checkFavsContents() {
-    for(String i in favorites) {
+    for (String i in favorites) {
       print(i);
     }
   }
@@ -118,124 +113,137 @@ class LocationListState extends State<LocationList> {
     return locationNames;
   }
 
-  Future createAlertDialog(BuildContext context, String name, String address,String notes, String link, String schedule, String requirements, String phone,String writtenSchedule,String type,bool editable, bool mapPage){
+  Future createAlertDialog(
+      BuildContext context,
+      String name,
+      String address,
+      String notes,
+      String link,
+      String schedule,
+      String requirements,
+      String phone,
+      String writtenSchedule,
+      String type,
+      bool editable,
+      bool mapPage) {
     CalendarController calendarController = new CalendarController();
     String hoursOfOp;
-    if(name == "Allentown Salvation Army" && mapPage) {
-      hoursOfOp = "${locations[name]['secondwritten']} \n\n ${locations[name]['thirdwritten']} \n\n ${locations[name]['firstwritten']}\n";
-
+    if (name == "Allentown Salvation Army" && mapPage) {
+      hoursOfOp =
+          "${locations[name]['secondwritten']} \n\n ${locations[name]['thirdwritten']} \n\n ${locations[name]['firstwritten']}\n";
     }
 
-    return showDialog(context: context, builder: (context) {
-      return AlertDialog(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(name),
-            ),
-            Visibility(
-              visible: administrator && editable,
-              child: Expanded(child: IconButton(icon: Icon(Icons.edit), onPressed: () {
-                setState(() {
-                  editing = true;
-                  viewingLocList = false;
-                  viewingFavList = false;
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(name),
+                ),
+                Visibility(
+                  visible: administrator && editable,
+                  child: Expanded(
+                      child: IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            setState(() {
+                              editing = true;
+                              viewingLocList = false;
+                              viewingFavList = false;
 
-                  Navigator.of(context).pop();
-                  try{
-                    if(mySearch.searchOpen) {
-                      mySearch.close(context, null);
-                    }
-                  }
-                  catch(e) {
-                    print("Error With Search");
-                  }
-                  currentLoc = name;
-
-                });
-              })),
+                              Navigator.of(context).pop();
+                              try {
+                                if (mySearch.searchOpen) {
+                                  mySearch.close(context, null);
+                                }
+                              } catch (e) {
+                                print("Error With Search");
+                              }
+                              currentLoc = name;
+                            });
+                          })),
+                ),
+                SizedBox(
+                  width: 40.0,
+                ),
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
             ),
-            SizedBox(
-              width: 40.0,
-            ),
-            IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        )
-        ,
-        content: Column(
-          children: [
-            Row(children: [
-              Expanded(
-                child: FlatButton(
-                    onPressed: () {
-                      launch(link);
-                    },
-                    child: Text("Address: $address\n",
-                      style: TextStyle(
-                          color: Colors.blueAccent
-                      )
-                      ,)),
-              )
-            ],),
-            Text("Additional Notes: $notes\n"),
-            name != "Allentown Salvation Army" && mapPage? Text("Days Open: $writtenSchedule"): Text("Hours of operation: $hoursOfOp"),
-            name != "Allentown Salvation Army" && mapPage?Text("Hours of Operation: $schedule\n"):
-            name != "Allentown Salvation Army" && mapPage? Text("Type of Food Distributed: $type \n"):
-            Text("Requirements to be served: $requirements\n"),
-            Row(
-                children: [
+            content: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: FlatButton(
+                          onPressed: () {
+                            launch(link);
+                          },
+                          child: Text(
+                            "Address: $address\n",
+                            style: TextStyle(color: Colors.blueAccent),
+                          )),
+                    )
+                  ],
+                ),
+                Text("Additional Notes: $notes\n"),
+                name != "Allentown Salvation Army" && mapPage
+                    ? Text("Days Open: $writtenSchedule")
+                    : Text("Hours of operation: $hoursOfOp"),
+                name != "Allentown Salvation Army" && mapPage
+                    ? Text("Hours of Operation: $schedule\n")
+                    : name != "Allentown Salvation Army" && mapPage
+                        ? Text("Type of Food Distributed: $type \n")
+                        : Text("Requirements to be served: $requirements\n"),
+                Row(children: [
                   Text("Phone Number: "),
-                  FlatButton(onPressed:() {
-                    setState(() {
-                      makePhoneCall('tel:$phone');
-                    });
-                  } ,
-                      child: Text(phone,
-                        style: TextStyle(
-                            color: Colors.blueAccent
-                        ),))
-                ]
+                  FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          makePhoneCall('tel:$phone');
+                        });
+                      },
+                      child: Text(
+                        phone,
+                        style: TextStyle(color: Colors.blueAccent),
+                      ))
+                ]),
+                // Container(
+                //   width: 100,
+                //   height: 100,
+                //     child: TableCalendar(
+                //         calendarController: calendarController))
+              ],
             ),
-            // Container(
-            //   width: 100,
-            //   height: 100,
-            //     child: TableCalendar(
-            //         calendarController: calendarController))
-          ],
-        ),
-      );
-    } );
+          );
+        });
   }
-
 
   void writeToFile(List favs) {
     print("Writing to file");
-    if(fileExists) {
+    if (fileExists) {
       print("File exists");
       jsonFile.writeAsStringSync(jsonEncode(favs));
-    }
-    else {
+    } else {
       print("Creating new file");
       createFile(favs);
     }
   }
 
-
   Future<void> makePhoneCall(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
-    }
-    else {
+    } else {
       throw 'Could not lauch url';
     }
   }
-
 
   void loadPlacesByDistance() {
     places.clear();
@@ -264,7 +272,13 @@ class LocationListState extends State<LocationList> {
 
     for (int k = 0; k < nameDist.length; k++) {
       print(locations[nameDist[k][0]][4]);
-      tempWidget = LocationCard(key: UniqueKey(), name: nameDist[k][0], value: locations[nameDist[k][0]], favorites: favorites, editable: true,);
+      tempWidget = LocationCard(
+        key: UniqueKey(),
+        name: nameDist[k][0],
+        value: locations[nameDist[k][0]],
+        favorites: favorites,
+        editable: true,
+      );
       setState(() {
         print(nameDist[k][0]);
         print("^^^");
@@ -299,7 +313,6 @@ class LocationListState extends State<LocationList> {
 
     TextEditingController myController1 =
         new TextEditingController(text: notes);
-
 
     return Scaffold(
       appBar: AppBar(
@@ -359,12 +372,12 @@ class LocationListState extends State<LocationList> {
           FlatButton(
               onPressed: () {
                 setState(() {
-                updateFirebase(myController1.text,  docID);
-                SuperListener.updateLocations();
-                mySearch.searchOpen = false;
-                editing = false;
-                viewingFavList = false;
-                viewingLocList = true;
+                  updateFirebase(myController1.text, docID);
+                  SuperListener.updateLocations();
+                  mySearch.searchOpen = false;
+                  editing = false;
+                  viewingFavList = false;
+                  viewingLocList = true;
                 });
               },
               child: Text("Save"))
@@ -378,75 +391,74 @@ class LocationListState extends State<LocationList> {
   //   refreshController.refreshCompleted();
   // }
 
-
-  void onRefresh()  {
-      SuperListener.updateLocations().then((value) => loadPlacesByDistance());
-      refreshController.refreshCompleted();
-
+  void onRefresh() {
+    SuperListener.updateLocations().then((value) => loadPlacesByDistance());
+    refreshController.refreshCompleted();
   }
-
 
   Widget favoritesPage() {
     List<Widget> myFavs = [];
-    for(String i in favorites) {
-      Widget tempWidget = LocationCard(key: UniqueKey(), name: i, value: locations[i], favorites: favorites,);
+    for (String i in favorites) {
+      Widget tempWidget = LocationCard(
+        key: UniqueKey(),
+        name: i,
+        value: locations[i],
+        favorites: favorites,
+      );
       myFavs.add(tempWidget);
     }
     return Scaffold(
         appBar: locListAppBar(),
-        body: (
-            SmartRefresher(
-              controller: refreshController,
-              enablePullDown: true,
-              child: ListView(
-                  children: myFavs.isEmpty? [Text("You have selected no favorites")] : myFavs
-              ),
-              onRefresh: onRefresh,
-            )
-        )
-    );
+        body: (SmartRefresher(
+          controller: refreshController,
+          enablePullDown: true,
+          child: ListView(
+              children: myFavs.isEmpty
+                  ? [Text("You have selected no favorites")]
+                  : myFavs),
+          onRefresh: onRefresh,
+        )));
   }
 
   Widget alphaPage() {
     List nameList = [];
-    for(LocationCard i in places) {
+    for (LocationCard i in places) {
       nameList.add(i.name);
     }
 
     nameList.sort();
+
     List<LocationCard> alphaPlaces = [];
-    for(String i in nameList) {
-      Widget tempWidget = LocationCard(key: UniqueKey(), name: i, value: locations[i], favorites: favorites,);
+    for (String i in nameList) {
+      Widget tempWidget = LocationCard(
+        key: UniqueKey(),
+        name: i,
+        value: locations[i],
+        favorites: favorites,
+      );
       alphaPlaces.add(tempWidget);
     }
     return Scaffold(
         appBar: locListAppBar(),
-        body: (
-            SmartRefresher(
-              controller: refreshController,
-              enablePullDown: true,
-              child: ListView(
-                  children: alphaPlaces
-              ),
-              onRefresh: onRefresh,
-            )
-        )
-    );
+        body: (SmartRefresher(
+          controller: refreshController,
+          enablePullDown: true,
+          child: ListView(children: alphaPlaces),
+          onRefresh: onRefresh,
+        )));
   }
 
   Widget distancePage() {
     return Scaffold(
         appBar: locListAppBar(),
-        body:
-            SmartRefresher(
-              controller: refreshController,
-              enablePullDown: true,
-              child: ListView(
-                  children: places.isEmpty? [Text("Swipe down to refresh")] : places
-              ),
-              onRefresh: onRefresh,
-            )
-        );
+        body: SmartRefresher(
+          controller: refreshController,
+          enablePullDown: true,
+          child: ListView(
+              children:
+                  places.isEmpty ? [Text("Swipe down to refresh")] : places),
+          onRefresh: onRefresh,
+        ));
   }
 
   AppBar locListAppBar() {
@@ -479,21 +491,19 @@ class LocationListState extends State<LocationList> {
   }
 
   newOrderedValueSelected(String choice) {
-    if(choice != currentValue) {
+    if (choice != currentValue) {
       setState(() {
         currentValue = choice;
 
-        if(currentValue == "Favorites") {
+        if (currentValue == "Favorites") {
           viewingLocList = false;
           viewingAlphaList = false;
           viewingFavList = true;
-        }
-        else if(currentValue == "Alphabetical") {
+        } else if (currentValue == "Alphabetical") {
           viewingLocList = false;
           viewingFavList = false;
           viewingAlphaList = true;
-        }
-        else if(currentValue == "Distance") {
+        } else if (currentValue == "Distance") {
           viewingFavList = false;
           viewingAlphaList = false;
           viewingLocList = true;
@@ -504,18 +514,14 @@ class LocationListState extends State<LocationList> {
 
   @override
   Widget build(BuildContext context) {
-    if(editing) {
+    if (editing) {
       return editingPage(currentLoc);
-    }
-    else if(viewingLocList) {
+    } else if (viewingLocList) {
       return distancePage();
-    }
-    else if(viewingFavList) {
+    } else if (viewingFavList) {
       return favoritesPage();
-    }
-    else if(viewingAlphaList) {
+    } else if (viewingAlphaList) {
       return alphaPage();
     }
   }
 }
-
