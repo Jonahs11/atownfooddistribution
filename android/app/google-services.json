@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331417015601:android:0f22375218bf6a95254c10",
+        "mobilesdk_app_id": "1:331417015601:android:4efb5936c44c28ae254c10",
         "android_client_info": {
-          "package_name": "com.example.atownfooddistribution"
+          "package_name": "edu.muhlenberg.allentownFoodDistribution"
         }
       },
       "oauth_client": [
@@ -29,6 +29,14 @@
             {
               "client_id": "331417015601-hqnkrjjusi2mend6i72s535f24u066fq.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "331417015601-gerb94di7rvo4mhqv9h6mmu05kl9bn39.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "edu.muhlenberg.allentownFoodDistribution",
+                "app_store_id": "1551375696"
+              }
             }
           ]
         }
