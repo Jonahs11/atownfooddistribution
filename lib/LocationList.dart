@@ -79,7 +79,7 @@ class LocationListState extends State<LocationList> {
         });
       } else {
         createFile(favorites);
-        print("THERE was no file but now there is!");
+        print("New File created");
       }
     });
   }
@@ -318,14 +318,16 @@ class LocationListState extends State<LocationList> {
       appBar: AppBar(
         title: Row(
           children: [
-            IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
-              setState(() {
-                mySearch.searchOpen = false;
-                editing = false;
-                viewingFavList = false;
-                viewingLocList = true;
-              });
-            },
+            IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                setState(() {
+                  mySearch.searchOpen = false;
+                  editing = false;
+                  viewingFavList = false;
+                  viewingLocList = true;
+                });
+              },
             ),
             Text("Editing"),
           ],
@@ -333,23 +335,25 @@ class LocationListState extends State<LocationList> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 20.0,),
+          SizedBox(
+            height: 20.0,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Flexible(
-                child: Text("Location Name:       $name\n\n",
-                style: TextStyle(
-                  fontSize: 15.0
-                ),),
+                child: Text(
+                  "Location Name:       $name\n\n",
+                  style: TextStyle(fontSize: 15.0),
+                ),
               )
             ],
           ),
           Flexible(
-            child: Text("Address:       $address\n\n",
-              style: TextStyle(
-                  fontSize: 15.0
-              ),),
+            child: Text(
+              "Address:       $address\n\n",
+              style: TextStyle(fontSize: 15.0),
+            ),
           ),
           Card(
             child: Padding(
@@ -359,7 +363,6 @@ class LocationListState extends State<LocationList> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-
                     Text("Notes to User: "),
                     TextFormField(
                       controller: myController1,
