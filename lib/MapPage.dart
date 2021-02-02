@@ -28,7 +28,6 @@ class MapPageState extends State<MapPage> {
   double currentLat;
   double currentLong;
   final mylocationEnabled = true;
-  bool appInitialized = false;
   bool cameraMovementOn = false;
   DateTime now = new DateTime.now();
   GestureDetector gestureDetector = new GestureDetector();
@@ -52,17 +51,24 @@ class MapPageState extends State<MapPage> {
   }
 
   //method used to initialize the database. This is necissary in order to pull anything from it
-  void initFlutterFire() async {
-    try {
-      await Firebase.initializeApp();
-      setState(() {
-        appInitialized = true;
-      });
-      checkFirebase();
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  // void initFlutterFire() async {
+  //   try {
+  //     // FirebaseFirestore.instance
+  //     //     .collection('markers')
+  //     //     .get()
+  //     //     .then((QuerySnapshot querySnapshot) => {
+  //     //           querySnapshot.docs.forEach((doc) {
+  //     //             print(doc['name']);
+  //     //           })
+  //     //         });
+  //     setState(() {
+  //       appInitialized = true;
+  //     });
+  //     checkFirebase();
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   //method used to extract all the inforamtion from the database and store it in a map to be used to populate markers on the map
   Future<void> checkFirebase() async {
@@ -275,7 +281,7 @@ class MapPageState extends State<MapPage> {
                     Icons.refresh,
                   ),
                   onPressed: () {
-                    checkFirebase();
+                    //checkFirebase();
                     setState(() {
                       now = new DateTime.now();
                     });
@@ -320,17 +326,12 @@ class MapPageState extends State<MapPage> {
   @override
   void initState() {
     SuperListener.setPages(mPage: this);
-    initFlutterFire();
-    checkMap();
+    checkFirebase();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (appInitialized) {
-      return mapPage();
-    } else {
-      return errorPage();
-    }
+    return mapPage();
   }
 }
