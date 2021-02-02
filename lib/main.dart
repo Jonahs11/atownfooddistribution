@@ -7,8 +7,11 @@ import 'package:location/location.dart';
 import 'package:atownfooddistribution/LoginScreen.dart';
 import 'package:atownfooddistribution/SuperListener.dart';
 import 'package:atownfooddistribution/LocationList.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -34,7 +37,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-
   int myIndex = 1;
   WelcomeScreen welcomeScreen = new WelcomeScreen();
   MapPage mapPage = new MapPage();
@@ -57,44 +59,39 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-        body: IndexedStack(
-          index: myIndex,
-          children: [
-            welcomeScreen,
-            mapPage,
-            locationList,
-            calendarPage,
-            //informationPage,
-          ],
-        ),
+      body: IndexedStack(
+        index: myIndex,
+        children: [
+          welcomeScreen,
+          mapPage,
+          locationList,
+          calendarPage,
+          //informationPage,
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.blue,
         currentIndex: myIndex,
-       selectedItemColor: Colors.red,
-       // selectedItemColor: Colors.red,
+        selectedItemColor: Colors.red,
+        // selectedItemColor: Colors.red,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.accessibility_new_rounded),
               label: "Welcome Screen",
-            backgroundColor: Colors.blue
-          ),
+              backgroundColor: Colors.blue),
           BottomNavigationBarItem(
               icon: Icon(Icons.map_outlined),
               label: "Map Page",
-              backgroundColor: Colors.blue
-          ),
+              backgroundColor: Colors.blue),
           BottomNavigationBarItem(
               icon: Icon(Icons.list),
               label: "Location List",
-              backgroundColor: Colors.blue
-          ),
+              backgroundColor: Colors.blue),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today),
               label: "Calendar Page",
-              backgroundColor: Colors.blue
-          ),
+              backgroundColor: Colors.blue),
           // BottomNavigationBarItem(
           //     icon: Icon(Icons.info),
           //     label: "Information Page",
@@ -103,15 +100,15 @@ class MyHomePageState extends State<MyHomePage> {
         ],
         onTap: (int index) {
           setState(() {
-            if(!oneClick) {
+            if (!oneClick) {
               SuperListener.updateLocList();
               SuperListener.loadFirstMonth();
               oneClick = true;
             }
             myIndex = index;
           });
-        } ,
+        },
       ),
-        );
+    );
   }
 }

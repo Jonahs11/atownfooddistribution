@@ -31,8 +31,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
     getAdminInfo();
   }
 
-  void getAdminInfo() async {
-    await Firebase.initializeApp();
+  void getAdminInfo() {
     adminInfo = new Map<String, String>();
     FirebaseFirestore.instance.collection('credentials').get().then(
           (snapshot) => {
@@ -166,7 +165,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                 Flexible(
                   child: Text(
                     "You are now logged in as an administrator.\n\n"
-                        "To make any edits to a site, you must navigate to the Location List and click on a card.",
+                    "To make any edits to a site, you must navigate to the Location List and click on a card.",
                     style: TextStyle(
                       fontSize: 20.0,
                     ),
@@ -197,6 +196,6 @@ class WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return administrator? loggedIn(): welcomeScreen();
+    return administrator ? loggedIn() : welcomeScreen();
   }
 }

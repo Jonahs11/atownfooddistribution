@@ -18,14 +18,13 @@ class SuperListener {
 
   Search search = new Search();
 
-  static void setPages({
-    MyHomePageState hPage,
-    MapPageState mPage,
-    WelcomeScreenState wScreen,
-    InformationPageState iPage,
-    LocationListState lPage,
-    CalendarPageState cPage
-  }) {
+  static void setPages(
+      {MyHomePageState hPage,
+      MapPageState mPage,
+      WelcomeScreenState wScreen,
+      InformationPageState iPage,
+      LocationListState lPage,
+      CalendarPageState cPage}) {
     if (hPage != null) {
       homePage = hPage;
     }
@@ -41,7 +40,7 @@ class SuperListener {
     if (lPage != null) {
       locationlist = lPage;
     }
-    if(cPage != null) {
+    if (cPage != null) {
       calendarPage = cPage;
     }
   }
@@ -54,7 +53,6 @@ class SuperListener {
     mapPage.checkFirebase();
     //mapPage.moveToMyLoc();
   }
-
 
   static void removeListLocScreen() {
     welcomeScreen.changeToWelcome();
@@ -84,10 +82,21 @@ class SuperListener {
     return locationlist.getListLocs();
   }
 
-
-  static Future makeAlert(BuildContext context, String key, Map value, bool editable, bool mapPage) {
+  static Future makeAlert(BuildContext context, String key, Map value,
+      bool editable, bool mapPage) {
     return locationlist.createAlertDialog(
-        context, key, value["address"], value["notes"], value["link"],value["schedule"], value["requirements"], value["phone"],value["writtenSched"],value["type"],editable, mapPage);
+        context,
+        key,
+        value["address"],
+        value["notes"],
+        value["link"],
+        value["schedule"],
+        value["requirements"],
+        value["phone"],
+        value["writtenSched"],
+        value["type"],
+        editable,
+        mapPage);
   }
 
   static getFavs() {
@@ -106,6 +115,7 @@ class SuperListener {
   static moveToFavs() {
     locationlist.moveToFavs();
   }
+
   static makePhoneCall(String url) {
     locationlist.makePhoneCall(url);
   }
@@ -113,5 +123,4 @@ class SuperListener {
   static void loadFirstMonth() {
     calendarPage.loadingFirstMonth();
   }
-
 }
