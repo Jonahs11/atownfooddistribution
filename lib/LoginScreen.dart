@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:atownfooddistribution/main.dart';
-import 'package:atownfooddistribution/SuperListener.dart';
-import 'package:atownfooddistribution/MapPage.dart';
-import 'package:atownfooddistribution/LocationList.dart';
+import 'package:allentownfooddist/main.dart';
+import 'package:allentownfooddist/SuperListener.dart';
+import 'package:allentownfooddist/MapPage.dart';
+import 'package:allentownfooddist/LocationList.dart';
 import 'package:location/location.dart';
 import 'decorationInfo.dart';
 import 'package:firebase_core/firebase_core.dart';

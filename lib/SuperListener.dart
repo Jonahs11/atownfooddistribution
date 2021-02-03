@@ -1,18 +1,16 @@
-import 'package:atownfooddistribution/Search.dart';
+import 'package:allentownfooddist/Search.dart';
 import 'package:flutter/material.dart';
-import 'package:atownfooddistribution/main.dart';
-import 'package:atownfooddistribution/LoginScreen.dart';
-import 'package:atownfooddistribution/MapPage.dart';
-import 'package:atownfooddistribution/InformationPage.dart';
-import 'package:atownfooddistribution/LocationList.dart';
+import 'package:allentownfooddist/main.dart';
+import 'package:allentownfooddist/LoginScreen.dart';
+import 'package:allentownfooddist/MapPage.dart';
+import 'package:allentownfooddist/LocationList.dart';
 import 'package:latlong/latlong.dart';
-import 'package:atownfooddistribution/CalendarPage.dart';
+import 'package:allentownfooddist/CalendarPage.dart';
 
 class SuperListener {
   static MyHomePageState homePage;
   static MapPageState mapPage;
   static WelcomeScreenState welcomeScreen;
-  static InformationPageState informationPage;
   static LocationListState locationlist;
   static CalendarPageState calendarPage;
 
@@ -22,7 +20,6 @@ class SuperListener {
       {MyHomePageState hPage,
       MapPageState mPage,
       WelcomeScreenState wScreen,
-      InformationPageState iPage,
       LocationListState lPage,
       CalendarPageState cPage}) {
     if (hPage != null) {
@@ -33,9 +30,6 @@ class SuperListener {
     }
     if (wScreen != null) {
       welcomeScreen = wScreen;
-    }
-    if (iPage != null) {
-      informationPage = iPage;
     }
     if (lPage != null) {
       locationlist = lPage;

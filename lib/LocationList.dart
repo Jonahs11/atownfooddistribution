@@ -3,14 +3,14 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:async';
 
-import 'package:atownfooddistribution/LocationCard.dart';
+import 'package:allentownfooddist/LocationCard.dart';
 import 'package:flutter/material.dart';
-import 'package:atownfooddistribution/SuperListener.dart';
-import 'package:atownfooddistribution/MapPage.dart';
+import 'package:allentownfooddist/SuperListener.dart';
+import 'package:allentownfooddist/MapPage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:latlong/latlong.dart';
-import 'package:atownfooddistribution/Search.dart';
+import 'package:allentownfooddist/Search.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:table_calendar/table_calendar.dart';
