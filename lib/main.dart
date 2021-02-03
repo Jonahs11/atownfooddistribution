@@ -1,12 +1,11 @@
-import 'package:atownfooddistribution/CalendarPage.dart';
-import 'package:atownfooddistribution/InformationPage.dart';
-import 'package:atownfooddistribution/MapPage.dart';
+import 'package:allentownfooddist/CalendarPage.dart';
+import 'package:allentownfooddist/MapPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:atownfooddistribution/LoginScreen.dart';
-import 'package:atownfooddistribution/SuperListener.dart';
-import 'package:atownfooddistribution/LocationList.dart';
+import 'package:allentownfooddist/LoginScreen.dart';
+import 'package:allentownfooddist/SuperListener.dart';
+import 'package:allentownfooddist/LocationList.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -40,7 +39,6 @@ class MyHomePageState extends State<MyHomePage> {
   int myIndex = 1;
   WelcomeScreen welcomeScreen = new WelcomeScreen();
   MapPage mapPage = new MapPage();
-  InformationPage informationPage = new InformationPage();
   LocationList locationList = new LocationList();
   CalendarPage calendarPage = new CalendarPage();
   bool oneClick = false;

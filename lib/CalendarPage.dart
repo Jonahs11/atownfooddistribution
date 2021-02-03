@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:atownfooddistribution/main.dart';
+import 'package:allentownfooddist/main.dart';
 import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:atownfooddistribution/SuperListener.dart';
-import 'package:atownfooddistribution/MapPage.dart';
+import 'package:allentownfooddist/SuperListener.dart';
+import 'package:allentownfooddist/MapPage.dart';
 
 List<dynamic> periodicRepeats = [];
 List<dynamic> weeklyRepeats = [];
@@ -37,14 +37,11 @@ class CalendarPageState extends State<CalendarPage> {
     List salvationHours = [];
     int salvationsIndexed = 0;
     selectedEvents.forEach((element) {
-      if(element == "Allentown Salvation Army") {
+      if (element == "Allentown Salvation Army") {
         timesFound += 1;
         print("$timesFound Salvation Army");
       }
-      if(timesFound > 0) {
-
-      }
-
+      if (timesFound > 0) {}
     });
     return ListView(
       children: selectedEvents
@@ -56,11 +53,13 @@ class CalendarPageState extends State<CalendarPage> {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: ListTile(
-                  title: Text(event.toString() + ": " + locations[event]["schedule"]),
+                  title: Text(
+                      event.toString() + ": " + locations[event]["schedule"]),
                   onTap: () {
                     try {
                       Map vals = locations[event];
-                      SuperListener.makeAlert(context, event, vals, false, true);
+                      SuperListener.makeAlert(
+                          context, event, vals, false, true);
                     } catch (e) {
                       print("Error no Alert");
                     }
@@ -85,7 +84,6 @@ class CalendarPageState extends State<CalendarPage> {
 
     int startDayOfWeekOfMonth = currentDay.weekday;
 
-
     while (monthGoing) {
       events.addAll(
           {DateTime(currentDay.year, currentDay.month, currentDay.day): []});
@@ -104,23 +102,25 @@ class CalendarPageState extends State<CalendarPage> {
         monthGoing = false;
       }
     }
-    if(startDayOfWeekOfMonth > 0 && startDayOfWeekOfMonth < 4) {
+    if (startDayOfWeekOfMonth > 0 && startDayOfWeekOfMonth < 4) {
       if (getEndOfMonth(startOfMonth.month, startOfMonth.year) == 31) {
         print(startDayOfWeekOfMonth);
-        events[DateTime(startOfMonth.year, startOfMonth.month, 29 + (3-  startDayOfWeekOfMonth))].remove(
-            "Allentown Salvation Army");
+        events[DateTime(startOfMonth.year, startOfMonth.month,
+                29 + (3 - startDayOfWeekOfMonth))]
+            .remove("Allentown Salvation Army");
       }
-    }
-    else if(startDayOfWeekOfMonth == 2 || startDayOfWeekOfMonth == 3) {
+    } else if (startDayOfWeekOfMonth == 2 || startDayOfWeekOfMonth == 3) {
       if (getEndOfMonth(startOfMonth.month, startOfMonth.year) == 30) {
         print(startDayOfWeekOfMonth);
-        events[DateTime(startOfMonth.year, startOfMonth.month, 29 + (3 - startDayOfWeekOfMonth))].remove(
-            "Allentown Salvation Army");
+        events[DateTime(startOfMonth.year, startOfMonth.month,
+                29 + (3 - startDayOfWeekOfMonth))]
+            .remove("Allentown Salvation Army");
       }
-    }
-    else if(startOfMonth.year % 4 == 0 && startOfMonth.weekday == 3 && startOfMonth.month == 2) {
-      events[DateTime(startOfMonth.year, startOfMonth.month, 29)].remove(
-          "Allentown Salvation Army");
+    } else if (startOfMonth.year % 4 == 0 &&
+        startOfMonth.weekday == 3 &&
+        startOfMonth.month == 2) {
+      events[DateTime(startOfMonth.year, startOfMonth.month, 29)]
+          .remove("Allentown Salvation Army");
     }
   }
 
@@ -154,42 +154,44 @@ class CalendarPageState extends State<CalendarPage> {
   }
 
   int getEndOfMonth(int month, int year) {
-    if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+    if (month == 1 ||
+        month == 3 ||
+        month == 5 ||
+        month == 7 ||
+        month == 8 ||
+        month == 10 ||
+        month == 12) {
       return 31;
-    }
-    else if(month == 2) {
-      if(year % 4 == 0) {
+    } else if (month == 2) {
+      if (year % 4 == 0) {
         return 29;
-      }
-      else {
+      } else {
         return 28;
       }
-    }
-    else {
+    } else {
       return 30;
     }
-
   }
 
   void loadingFirstMonth() {
-
     DateTime start = DateTime.now();
 
     DateTime startingDay = DateTime(start.year, start.month, 1);
 
     addWeeklyDays(startingDay);
     addPeriodicDays(startingDay, Duration(days: 1));
-
   }
 
-  void onVisibleDayChanged(DateTime startDay, DateTime endDay, CalendarFormat calenderFormat) {
-
+  void onVisibleDayChanged(
+      DateTime startDay, DateTime endDay, CalendarFormat calenderFormat) {
     DateTime current = DateTime(startDay.year, startDay.month, startDay.day);
-    while(current.day != 1) {
+    while (current.day != 1) {
       current = current.add(Duration(days: 1));
     }
 
-    if(!events.keys.contains(current) || !events.keys.contains(DateTime(current.year, current.month, getEndOfMonth(current.month, current.year)))) {
+    if (!events.keys.contains(current) ||
+        !events.keys.contains(DateTime(current.year, current.month,
+            getEndOfMonth(current.month, current.year)))) {
       print("On visible day changed had been called");
       DateTime currentDay = startDay;
       Duration increment1Day = Duration(days: 1);
@@ -208,21 +210,19 @@ class CalendarPageState extends State<CalendarPage> {
 
   Widget buildTableCalendar() {
     return TableCalendar(
-        calendarController: calendarController,
-        events: events,
-        initialCalendarFormat: CalendarFormat.month,
-        availableGestures: AvailableGestures.none,
-        onDaySelected: (date, events, holidays) {
-          currentDay = date;
-          onDaySelected(events);
-        },
-      onCalendarCreated: (date, events, holidays) {
-          currentDay = date;
+      calendarController: calendarController,
+      events: events,
+      initialCalendarFormat: CalendarFormat.month,
+      availableGestures: AvailableGestures.none,
+      onDaySelected: (date, events, holidays) {
+        currentDay = date;
+        onDaySelected(events);
       },
-        onVisibleDaysChanged: onVisibleDayChanged,
-
+      onCalendarCreated: (date, events, holidays) {
+        currentDay = date;
+      },
+      onVisibleDaysChanged: onVisibleDayChanged,
     );
-
   }
 
   @override
