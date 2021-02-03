@@ -177,7 +177,7 @@ class LocationListState extends State<LocationList> {
                 )
               ],
             ),
-            content: Column(
+            content: ListView(
               children: [
                 Row(
                   children: [
@@ -215,11 +215,6 @@ class LocationListState extends State<LocationList> {
                         style: TextStyle(color: Colors.blueAccent),
                       ))
                 ]),
-                // Container(
-                //   width: 100,
-                //   height: 100,
-                //     child: TableCalendar(
-                //         calendarController: calendarController))
               ],
             ),
           );
