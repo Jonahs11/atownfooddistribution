@@ -69,6 +69,17 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                 ),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(
+                    "If you would like to change any of the information reguarding one of the locations, use an administrator login",
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                )
+              ],
+            ),
             SizedBox(
               height: 150,
             ),

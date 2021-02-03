@@ -39,7 +39,10 @@ class Search extends SearchDelegate<String> {
         ? SuperListener().getListLocations()
         : SuperListener()
             .getListLocations()
-            .where((element) => element.toString().startsWith(query))
+            .where((element) => element
+                .toString()
+                .toLowerCase()
+                .startsWith(query.toLowerCase()))
             .toList();
     return myList.isEmpty
         ? Center(
