@@ -88,37 +88,37 @@ class MapPageState extends State<MapPage> {
                         double.parse(doc["lat"]),
                         double.parse(doc["long"]));
 
-                    if (doc['name'] == "Allentown Salvation Army") {
-                      locations[doc['name']] = {
-                        "address": doc['address'],
-                        "lat": doc['lat'],
-                        "long": doc['long'],
-                        "notes": doc['notes'],
-                        "link": doc['link'],
-                        "id": doc.id,
-                        "distance": distance,
-                        "requirements": doc['requirements'],
-                        "phone": doc['phone'],
-                        "firsthours": doc["first"],
-                        "secondhours": doc['second'],
-                        "thirdhours": doc['third'],
-                        "firstwritten": doc['firstwritten'],
-                        "secondwritten": doc["secondwritten"],
-                        "thirdwritten": doc["thirdwritten"],
-                        "schedule": doc["schedule"]
-                      };
-
-                      print("Salvation army added");
-                      weeklyRepeats.add([
-                        doc['name'],
-                        [1, 3]
-                      ]);
-                      periodicRepeats.add([
-                        doc['name'],
-                        [2, 4],
-                        3
-                      ]);
-                    }
+                    // if (doc['name'] == "Allentown Salvation Army") {
+                    //   locations[doc['name']] = {
+                    //     "address": doc['address'],
+                    //     "lat": doc['lat'],
+                    //     "long": doc['long'],
+                    //     "notes": doc['notes'],
+                    //     "link": doc['link'],
+                    //     "id": doc.id,
+                    //     "distance": distance,
+                    //     "requirements": doc['requirements'],
+                    //     "phone": doc['phone'],
+                    //     "firsthours": doc["first"],
+                    //     "secondhours": doc['second'],
+                    //     "thirdhours": doc['third'],
+                    //     "firstwritten": doc['firstwritten'],
+                    //     "secondwritten": doc["secondwritten"],
+                    //     "thirdwritten": doc["thirdwritten"],
+                    //     "schedule": doc["schedule"]
+                    //   };
+                    //
+                    //   print("Salvation army added");
+                    //   weeklyRepeats.add([
+                    //     doc['name'],
+                    //     [1, 3]
+                    //   ]);
+                    //   periodicRepeats.add([
+                    //     doc['name'],
+                    //     [2, 4],
+                    //     3
+                    //   ]);
+                    // }
 
                     locations[doc['name']] = {
                       "address": doc['address'],
