@@ -88,37 +88,37 @@ class MapPageState extends State<MapPage> {
                         double.parse(doc["lat"]),
                         double.parse(doc["long"]));
 
-                    if (doc['name'] == "Allentown Salvation Army") {
-                      locations[doc['name']] = {
-                        "address": doc['address'],
-                        "lat": doc['lat'],
-                        "long": doc['long'],
-                        "notes": doc['notes'],
-                        "link": doc['link'],
-                        "id": doc.id,
-                        "distance": distance,
-                        "requirements": doc['requirements'],
-                        "phone": doc['phone'],
-                        "firsthours": doc["first"],
-                        "secondhours": doc['second'],
-                        "thirdhours": doc['third'],
-                        "firstwritten": doc['firstwritten'],
-                        "secondwritten": doc["secondwritten"],
-                        "thirdwritten": doc["thirdwritten"],
-                        "schedule": doc["schedule"]
-                      };
-
-                      print("Salvation army added");
-                      weeklyRepeats.add([
-                        doc['name'],
-                        [1, 3]
-                      ]);
-                      periodicRepeats.add([
-                        doc['name'],
-                        [2, 4],
-                        3
-                      ]);
-                    }
+                    // if (doc['name'] == "Allentown Salvation Army") {
+                    //   locations[doc['name']] = {
+                    //     "address": doc['address'],
+                    //     "lat": doc['lat'],
+                    //     "long": doc['long'],
+                    //     "notes": doc['notes'],
+                    //     "link": doc['link'],
+                    //     "id": doc.id,
+                    //     "distance": distance,
+                    //     "requirements": doc['requirements'],
+                    //     "phone": doc['phone'],
+                    //     "firsthours": doc["first"],
+                    //     "secondhours": doc['second'],
+                    //     "thirdhours": doc['third'],
+                    //     "firstwritten": doc['firstwritten'],
+                    //     "secondwritten": doc["secondwritten"],
+                    //     "thirdwritten": doc["thirdwritten"],
+                    //     "schedule": doc["schedule"]
+                    //   };
+                    //
+                    //   print("Salvation army added");
+                    //   weeklyRepeats.add([
+                    //     doc['name'],
+                    //     [1, 3]
+                    //   ]);
+                    //   periodicRepeats.add([
+                    //     doc['name'],
+                    //     [2, 4],
+                    //     3
+                    //   ]);
+                    // }
 
                     locations[doc['name']] = {
                       "address": doc['address'],
@@ -134,14 +134,14 @@ class MapPageState extends State<MapPage> {
                       "type": doc['type'],
                       "writtenSched": doc["writtendays"]
                     };
-                    if (doc['weekly'] == 'true') {
+                    if (doc['weekly'] == 'TRUE') {
                       List days = [];
                       for (int i = 0; i < doc["day"].length; i += 2) {
                         days.add(int.parse(doc["day"][i]));
                         print(doc["day"][i]);
                       }
                       weeklyRepeats.add([doc['name'], days]);
-                    } else if (doc['periodic'] == 'true') {
+                    } else if (doc['periodic'] == 'TRUE') {
                       List repeatsOn = [];
                       int dayOfWeek;
 
@@ -151,18 +151,19 @@ class MapPageState extends State<MapPage> {
                       dayOfWeek = int.parse(doc['day']);
                       periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
                       print("A periodic day has been added");
-                    } else {
-                      print("Adding Grace Community Foundation");
-                      weeklyRepeats.add([
-                        "Grace Community Foundation",
-                        [5]
-                      ]);
-                      periodicRepeats.add([
-                        "Grace Community Foundation",
-                        [3],
-                        6
-                      ]);
                     }
+                    //            else {
+                    //   print("Adding Grace Community Foundation");
+                    //   weeklyRepeats.add([
+                    //     "Grace Community Foundation",
+                    //     [5]
+                    //   ]);
+                    //   periodicRepeats.add([
+                    //     "Grace Community Foundation",
+                    //     [3],
+                    //     6
+                    //   ]);
+                    // }
                   } catch (e) {
                     print("There has been an error loading in ${doc['name']}");
                   }

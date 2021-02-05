@@ -57,7 +57,7 @@ class _LocationCardState extends State<LocationCard> {
                     },
                     child: Text(
                       "Yes Remove.",
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(color: Colors.red, fontSize: 12.0),
                     )),
                 FlatButton(
                     onPressed: () {
@@ -66,7 +66,7 @@ class _LocationCardState extends State<LocationCard> {
                     },
                     child: Text(
                       "No cancel",
-                      style: TextStyle(color: Colors.black87),
+                      style: TextStyle(color: Colors.black87, fontSize: 12.0),
                     )),
               ],
             ),
