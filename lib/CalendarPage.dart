@@ -138,17 +138,19 @@ class CalendarPageState extends State<CalendarPage> {
     for (int k = 0; k < periodicRepeats.length; k++) {
       for (int j = 0; j < periodicRepeats[k][1].length; j++) {
         int weekToRepeat = periodicRepeats[k][1][j];
-        int dayOfWeek = periodicRepeats[k][2];
+        List daysOfWeek = periodicRepeats[k][2];
         String name = periodicRepeats[k][0];
 
-        int dayOfMonth =
-            firstDayOfWeekOccurance[dayOfWeek] + (7 * (weekToRepeat - 1));
-        DateTime tempDay = DateTime(startOfMonth.year, startOfMonth.month,
-            startOfMonth.day + dayOfMonth - 1);
+        for (int y = 0; y < daysOfWeek.length; y++) {
+          int dayOfMonth =
+              firstDayOfWeekOccurance[daysOfWeek[y]] + (7 * (weekToRepeat - 1));
+          DateTime tempDay = DateTime(startOfMonth.year, startOfMonth.month,
+              startOfMonth.day + dayOfMonth - 1);
 
-        setState(() {
-          events[tempDay].add(name);
-        });
+          setState(() {
+            events[tempDay].add(name);
+          });
+        }
       }
     }
   }

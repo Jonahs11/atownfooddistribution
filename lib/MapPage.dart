@@ -143,13 +143,16 @@ class MapPageState extends State<MapPage> {
                       weeklyRepeats.add([doc['name'], days]);
                     } else if (doc['periodic'] == 'TRUE') {
                       List repeatsOn = [];
-                      int dayOfWeek;
-
+                      List dayz = [];
+                      for (int i = 0; i < doc["day"].length; i += 2) {
+                        dayz.add(int.parse(doc["day"][i]));
+                        print(doc["day"][i]);
+                      }
                       for (int k = 0; k < doc["repeatson"].length; k += 2) {
                         repeatsOn.add(int.parse(doc["repeatson"][k]));
                       }
-                      dayOfWeek = int.parse(doc['day']);
-                      periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
+
+                      periodicRepeats.add([doc['name'], repeatsOn, dayz]);
                       print("A periodic day has been added");
                     }
                     //            else {
