@@ -134,14 +134,14 @@ class MapPageState extends State<MapPage> {
                       "type": doc['type'],
                       "writtenSched": doc["writtendays"]
                     };
-                    if (doc['weekly'] == 'true') {
+                    if (doc['weekly'] == 'TRUE') {
                       List days = [];
                       for (int i = 0; i < doc["day"].length; i += 2) {
                         days.add(int.parse(doc["day"][i]));
                         print(doc["day"][i]);
                       }
                       weeklyRepeats.add([doc['name'], days]);
-                    } else if (doc['periodic'] == 'true') {
+                    } else if (doc['periodic'] == 'TRUE') {
                       List repeatsOn = [];
                       int dayOfWeek;
 
@@ -151,18 +151,19 @@ class MapPageState extends State<MapPage> {
                       dayOfWeek = int.parse(doc['day']);
                       periodicRepeats.add([doc['name'], repeatsOn, dayOfWeek]);
                       print("A periodic day has been added");
-                    } else {
-                      print("Adding Grace Community Foundation");
-                      weeklyRepeats.add([
-                        "Grace Community Foundation",
-                        [5]
-                      ]);
-                      periodicRepeats.add([
-                        "Grace Community Foundation",
-                        [3],
-                        6
-                      ]);
                     }
+                    //            else {
+                    //   print("Adding Grace Community Foundation");
+                    //   weeklyRepeats.add([
+                    //     "Grace Community Foundation",
+                    //     [5]
+                    //   ]);
+                    //   periodicRepeats.add([
+                    //     "Grace Community Foundation",
+                    //     [3],
+                    //     6
+                    //   ]);
+                    // }
                   } catch (e) {
                     print("There has been an error loading in ${doc['name']}");
                   }

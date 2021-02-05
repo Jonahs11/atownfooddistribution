@@ -177,45 +177,48 @@ class LocationListState extends State<LocationList> {
                 )
               ],
             ),
-            content: ListView(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: FlatButton(
-                          onPressed: () {
-                            launch(link);
-                          },
-                          child: Text(
-                            "Address: $address\n",
-                            style: TextStyle(color: Colors.blueAccent),
-                          )),
-                    )
-                  ],
-                ),
-                Text("Additional Notes: $notes\n"),
-                name != "Allentown Salvation Army" && mapPage
-                    ? Text("Days Open: $writtenSchedule")
-                    : Text("Hours of operation: $hoursOfOp"),
-                name != "Allentown Salvation Army" && mapPage
-                    ? Text("Hours of Operation: $schedule\n")
-                    : name != "Allentown Salvation Army" && mapPage
-                        ? Text("Type of Food Distributed: $type \n")
-                        : Text("Requirements to be served: $requirements\n"),
-                Row(children: [
-                  Text("Phone Number: "),
-                  FlatButton(
-                      onPressed: () {
-                        setState(() {
-                          makePhoneCall('tel:$phone');
-                        });
-                      },
-                      child: Text(
-                        phone,
-                        style: TextStyle(color: Colors.blueAccent),
-                      ))
-                ]),
-              ],
+            content: Container(
+              width: double.maxFinite,
+              child: ListView(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FlatButton(
+                            onPressed: () {
+                              launch(link);
+                            },
+                            child: Text(
+                              "Address: $address\n",
+                              style: TextStyle(color: Colors.blueAccent),
+                            )),
+                      )
+                    ],
+                  ),
+                  Text("Additional Notes: $notes\n"),
+                  name != "Allentown Salvation Army" && mapPage
+                      ? Text("Days Open: $writtenSchedule")
+                      : Text("Hours of operation: $hoursOfOp"),
+                  name != "Allentown Salvation Army" && mapPage
+                      ? Text("Hours of Operation: $schedule\n")
+                      : name != "Allentown Salvation Army" && mapPage
+                          ? Text("Type of Food Distributed: $type \n")
+                          : Text("Requirements to be served: $requirements\n"),
+                  Row(children: [
+                    Text("Phone Number: "),
+                    FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            makePhoneCall('tel:$phone');
+                          });
+                        },
+                        child: Text(
+                          phone,
+                          style: TextStyle(color: Colors.blueAccent),
+                        ))
+                  ]),
+                ],
+              ),
             ),
           );
         });
