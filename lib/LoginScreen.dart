@@ -7,6 +7,9 @@ import 'package:location/location.dart';
 import 'decorationInfo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+FirebaseAuth auth = FirebaseAuth.instance;
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -131,15 +134,23 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                         ),
                         FlatButton(
                           color: Colors.green[700],
-                          onPressed: () {
-                            if (checkAdminCredentials(
-                                adminUsername.text, adminPassword.text)) {
-                              setState(() {
-                                administrator = true;
-                                adminLogging = false;
-                                print("You are now an admin");
-                              });
+                          onPressed: () async {
+                            try {
+                              UserCredential userCred = await FirebaseAuth
+                                  .instance
+                                  .signInWithEmailAndPassword(
+                                      email: adminUsername.text,
+                                      password: adminPassword.text);
+                              print("Signed in");
+                              administrator = true;
+                              adminLogging = false;
                               SuperListener.makeAdmin();
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == "user-not-found") {
+                                print("No user found");
+                              } else if (e.code == "wrong-password") {
+                                print("wrong password");
+                              }
                             }
                           },
                           child: Text(
