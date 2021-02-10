@@ -38,6 +38,7 @@ dependencies:
   latlong: ^0.6.1
   path_provider: ^1.6.27
   table_calendar: ^2.3.3
+  firebase_auth: ^0.18.1
 
 
 

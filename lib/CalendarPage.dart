@@ -33,16 +33,6 @@ class CalendarPageState extends State<CalendarPage> {
   }
 
   Widget buildEventList() {
-    int timesFound = 0;
-    List salvationHours = [];
-    int salvationsIndexed = 0;
-    selectedEvents.forEach((element) {
-      if (element == "Allentown Salvation Army") {
-        timesFound += 1;
-        print("$timesFound Salvation Army");
-      }
-      if (timesFound > 0) {}
-    });
     return ListView(
       children: selectedEvents
           .map((event) => Container(
