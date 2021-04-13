@@ -112,6 +112,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331417015601:android:ebfcc505faee1e00254c10",
+        "android_client_info": {
+          "package_name": "edu.muhlenberg.allentownfooddist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331417015601-hqnkrjjusi2mend6i72s535f24u066fq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzYLKU6BpzHD_zGso9Wkz9DypqDekHckE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331417015601-hqnkrjjusi2mend6i72s535f24u066fq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "331417015601-e43uvsvdfb80q2s7ajde8labm737brm3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "edu.muhlenberg.allentownfoodbank"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
