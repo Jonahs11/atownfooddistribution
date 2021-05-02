@@ -1,11 +1,11 @@
-import 'package:allentownfooddist/CalendarPage.dart';
-import 'package:allentownfooddist/MapPage.dart';
+import 'package:distfoodapp/CalendarPage.dart';
+import 'package:distfoodapp/MapPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:allentownfooddist/LoginScreen.dart';
-import 'package:allentownfooddist/SuperListener.dart';
-import 'package:allentownfooddist/LocationList.dart';
+import 'package:distfoodapp/LoginScreen.dart';
+import 'package:distfoodapp/SuperListener.dart';
+import 'package:distfoodapp/LocationList.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {

@@ -1,4 +1,4 @@
-# allentownfooddist
+# distfoodapp
 
 A new Flutter application.
 

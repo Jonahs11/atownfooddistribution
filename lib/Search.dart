@@ -1,8 +1,8 @@
-import 'package:allentownfooddist/SuperListener.dart';
+import 'package:distfoodapp/SuperListener.dart';
 import 'package:flutter/material.dart';
-import 'package:allentownfooddist/MapPage.dart';
-import 'package:allentownfooddist/SuperListener.dart';
-import 'package:allentownfooddist/LocationCard.dart';
+import 'package:distfoodapp/MapPage.dart';
+import 'package:distfoodapp/SuperListener.dart';
+import 'package:distfoodapp/LocationCard.dart';
 
 class Search extends SearchDelegate<String> {
   bool searchOpen = false;

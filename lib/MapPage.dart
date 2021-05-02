@@ -1,13 +1,13 @@
 import 'dart:async';
-import 'package:allentownfooddist/SuperListener.dart';
-import 'package:allentownfooddist/main.dart';
+import 'package:distfoodapp/SuperListener.dart';
+import 'package:distfoodapp/main.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:allentownfooddist/CalendarPage.dart';
+import 'package:distfoodapp/CalendarPage.dart';
 
 //locations is a map used to take the information from the cloud fire storage database and store it onto the phone
 Map<String, Map> locations = <String, Map>{};

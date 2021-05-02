@@ -1,19 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.muhlenberg.allentownfooddist">
-    <!-- io.flutter.app.FlutterApplication is an android.app.Application that
-         calls FlutterMain.startInitialization(this); in its onCreate method.
-         In most cases you can leave this as-is, but you if you want to provide
-         additional functionality it is fine to subclass or reimplement
-         FlutterApplication and put your custom class here. -->
-    <application
-        android:name="io.flutter.app.FlutterApplication"
-        android:label="allentownfooddist"
+    package="edu.muhlenberg.distfoodapp">
+   <application
+        android:label="distfoodapp"
         android:icon="@mipmap/ic_launcher">
-
-
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD1jYn3z8sIoyykbLOjssn4LAx2P-0KXpw"/>
-
+        android:name="androidx.multidex.MultiDexApplication">
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyCw36elZMcrz68OmI2JL4MLGY_xdakKRyA"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

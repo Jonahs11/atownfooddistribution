@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:allentownfooddist/main.dart';
+import 'package:distfoodapp/main.dart';
 import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:allentownfooddist/SuperListener.dart';
-import 'package:allentownfooddist/MapPage.dart';
+import 'package:distfoodapp/SuperListener.dart';
+import 'package:distfoodapp/MapPage.dart';
 
 List<dynamic> periodicRepeats = [];
 List<dynamic> weeklyRepeats = [];

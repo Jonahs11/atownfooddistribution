@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:allentownfooddist/SuperListener.dart';
-import 'package:allentownfooddist/MapPage.dart';
+import 'package:distfoodapp/SuperListener.dart';
+import 'package:distfoodapp/MapPage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:latlong/latlong.dart';
-import 'package:allentownfooddist/Search.dart';
+import 'package:distfoodapp/Search.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 

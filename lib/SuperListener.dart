@@ -1,11 +1,11 @@
-import 'package:allentownfooddist/Search.dart';
+import 'package:distfoodapp/Search.dart';
 import 'package:flutter/material.dart';
-import 'package:allentownfooddist/main.dart';
-import 'package:allentownfooddist/LoginScreen.dart';
-import 'package:allentownfooddist/MapPage.dart';
-import 'package:allentownfooddist/LocationList.dart';
+import 'package:distfoodapp/main.dart';
+import 'package:distfoodapp/LoginScreen.dart';
+import 'package:distfoodapp/MapPage.dart';
+import 'package:distfoodapp/LocationList.dart';
 import 'package:latlong/latlong.dart';
-import 'package:allentownfooddist/CalendarPage.dart';
+import 'package:distfoodapp/CalendarPage.dart';
 
 class SuperListener {
   static MyHomePageState homePage;
@@ -18,10 +18,10 @@ class SuperListener {
 
   static void setPages(
       {MyHomePageState hPage,
-      MapPageState mPage,
-      WelcomeScreenState wScreen,
-      LocationListState lPage,
-      CalendarPageState cPage}) {
+        MapPageState mPage,
+        WelcomeScreenState wScreen,
+        LocationListState lPage,
+        CalendarPageState cPage}) {
     if (hPage != null) {
       homePage = hPage;
     }
